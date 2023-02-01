@@ -6,13 +6,13 @@
 #    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/01/30 11:47:06 by abiru            ###   ########.fr        #
+#    Updated: 2023/01/30 23:41:16 by abiru            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = cc
+CC = cc -I/usr/local/Cellar/readline/8.1/include
 
 CFLAGS = -Wextra -Werror -Wall
 
@@ -27,7 +27,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 		@cd libft && make
-		$(CC) $(OBJS) $(CFLAGS) ./libft/libft.a -o $(NAME)
+		$(CC) -L /usr/local/Cellar/readline/8.1/lib -lreadline $(OBJS) $(CFLAGS) ./libft/libft.a -o $(NAME)
 
 clean:
 	@cd libft && make clean
