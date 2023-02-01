@@ -2,6 +2,7 @@
 	"files.associations": {
 		"readline.h": "c",
 		"libft.h": "c",
-		"*.a": "c"
+		"*.a": "c",
+		"__node_handle": "c"
 	}
 }

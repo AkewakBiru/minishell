@@ -1,32 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_cstrlen.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/26 11:13:15 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/01 15:50:56 by abiru            ###   ########.fr       */
+/*   Created: 2023/02/01 14:51:54 by abiru             #+#    #+#             */
+/*   Updated: 2023/02/01 14:52:12 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(t_dict *content)
+size_t	ft_cstrlen(const char *s, char c)
 {
-	t_list	*new_node;
+	size_t	i;
 
-	new_node = (t_list *)malloc(sizeof(t_list));
-	if (!new_node)
-		return (NULL);
-	new_node->dict = (t_dict *)malloc(sizeof(t_dict));
-	if (!new_node->dict)
-	{
-		free(new_node);
-		return (0);
-	}
-	new_node->dict->key = ft_strdup(content->key);
-	new_node->dict->value = ft_strdup(content->value);
-	new_node->next = 0;
-	return (new_node);
+	i = 0;
+	while (s[i] != '\0' && s[i] != c)
+		i++;
+	return (i);
 }
