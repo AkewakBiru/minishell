@@ -6,17 +6,17 @@
 #    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/01/30 23:41:16 by abiru            ###   ########.fr        #
+#    Updated: 2023/02/06 20:58:39 by abiru            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = cc -I/usr/local/Cellar/readline/8.1/include
+CC = gcc -g -O0 -I/usr/local/Cellar/readline/8.1/include
 
 CFLAGS = -Wextra -Werror -Wall
 
-SRCS = main.c
+SRCS = main.c dict_utils.c export_builtin.c list_utils.c
 
 OBJS = $(SRCS:.c=.o)
 

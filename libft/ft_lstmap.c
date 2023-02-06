@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 14:17:22 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/01 15:42:10 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/06 20:31:20 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 		return (NULL);
 	while (lst != NULL)
 	{
-		temp = ft_lstnew((*f)(lst -> dict));
+		temp = ft_lstnew((*f)(lst -> content));
 		if (!temp)
 		{
 			ft_lstclear(&new, del);

@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 14:14:07 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/01 15:41:51 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/06 20:31:02 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
 	while (lst != NULL)
 	{
-		(*f)(lst -> dict);
+		(*f)(lst -> content);
 		lst = lst -> next;
 	}
 	return ;

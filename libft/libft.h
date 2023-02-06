@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:03:50 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/01 15:38:05 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/06 20:33:31 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@
 
 typedef struct s_dict
 {
-	char *key;
-	char *value;
+	char	*key;
+	char	*value;
+	int		flag;
 }	t_dict;
 
 typedef struct s_list
 {
-	struct s_dict	*dict;
+	void			*content;
 	struct s_list	*next;
 }	t_list;
 
@@ -65,7 +66,8 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
-t_list	*ft_lstnew(t_dict *content);
+t_list	*ft_lstnew(void *content);
+t_list	*ft_lstnew_dict(t_dict *content);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);

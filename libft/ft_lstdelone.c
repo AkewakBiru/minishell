@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 13:56:13 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/01 15:41:30 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/06 20:30:33 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,6 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *))
 {
 	if (!lst || !del)
 		return ;
-	(*del)(lst->dict);
+	(*del)(lst->content);
 	free(lst);
 }

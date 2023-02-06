@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 12:42:41 by abiru             #+#    #+#             */
-/*   Updated: 2022/09/30 18:04:15 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/06 19:23:34 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
-	while (s[i] != '\0')
+	if (!s)
+		return (0);
+	while (s + i && s[i] != '\0')
 		i++;
 	return (i);
 }
