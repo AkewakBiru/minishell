@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/06 20:58:20 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/08 11:58:11 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "./libft/libft.h"
+
+enum e_input_type {cmd, arg, pip, file, symbol};
+
+typedef struct s_token
+{
+	char				*token;
+	enum e_input_type	type;
+}	t_token;
 
 typedef struct cmd_utils
 {
