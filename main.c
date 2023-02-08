@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/06 21:03:22 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/08 13:51:46 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void	exec_cmd(t_utils *cmd_utils, t_list **lst, t_list **export)
 
 int	main(int ac, char **av, char **envp)
 {
+	t_list	*tokens;
 	t_list	*lst;
 	t_utils	cmd_utils;
 	t_list	*export;
@@ -79,9 +80,17 @@ int	main(int ac, char **av, char **envp)
 	create_env(&export, envp);
 	while (1)
 	{
+		tokens = NULL;
 		line = readline("Minishell> ");
 		if (!line)
 			free_exit(&lst);
+		parse(line, &tokens);
+		// t_list *node = tokens;
+		// while(node)
+		// {
+		// 	printf("%s\n", ((t_token *)node->content)->token);
+		// 	node = node->next;
+		// }
 		cmd_utils.cmd_arg = ft_split(line, ' ');
 		if (ft_strcmp(line, "") == 0)
 			continue ;
@@ -103,5 +112,6 @@ int	main(int ac, char **av, char **envp)
 		}
 		exec_cmd(&cmd_utils, &lst, &export);
 		free(line);
+		ft_lstclear(&tokens, free);
 	}
 }
