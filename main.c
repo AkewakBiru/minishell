@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/08 13:51:46 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/08 21:44:49 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@ void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export)
 		print_env(lst);
 	else if (ft_strcmp(cmd_utils->cmd, "export") == 0)
 		export_bltin(lst, cmd_utils, export);
+	else if (ft_strcmp(cmd_utils->cmd, "pwd") == 0)
+		print_pwd();
+	else if (ft_strcmp(cmd_utils->cmd, "cd") == 0)
+		chg_dir(cmd_utils, lst, export);
 }
 
 void	exec_pipex(t_utils *cmd_utils, t_list **lst)
@@ -78,6 +82,8 @@ int	main(int ac, char **av, char **envp)
 		return (1);
 	create_env(&lst, envp);
 	create_env(&export, envp);
+	cmd_utils.flag = 1;
+	cmd_utils.pwd = 0;
 	while (1)
 	{
 		tokens = NULL;

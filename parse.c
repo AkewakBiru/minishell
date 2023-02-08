@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/08 14:20:07 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/08 21:43:51 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ char	**tokenize2(char *line)
 
 	i = 0;
 	open_quote = 0;
+	(void)line;
+	(void)i;
+	(void)open_quote;
+	return (0);
 }
 
 void	tokenize(t_list **head, char *line)

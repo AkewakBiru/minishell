@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/08 14:05:43 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/08 21:47:09 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct cmd_utils
 	char	*key;
 	char	*value;
 	int		flag;
+	char	*pwd;
 }	t_utils;
 
 void	parse(char *line, t_list **tokens);
@@ -66,6 +67,11 @@ void	print_list(t_list **lst);
 void	update_env(t_utils *cmd, t_list **env);
 void	export_bltin(t_list **lst, t_utils *cmd_utils, t_list **export);
 void	create_env(t_list **head, char **envp);
+
+// cd and pwd utils
+char	*get_pwd(void);
+void	print_pwd(void);
+void	chg_dir(t_utils *cmd_utils, t_list **lst, t_list **export);
 
 // linked list utils
 void	sort_list(t_list **head);
