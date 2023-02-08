@@ -6,22 +6,36 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/08 13:25:40 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/08 14:05:43 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "./libft/libft.h"
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "./libft/libft.h"
 
-enum e_input_type {cmd, arg, pip, file, symbol};
+enum e_input_type
+{
+	cmd,
+	option,
+	arg,
+	pip,
+	file,
+	redir_in,
+	redir_out,
+	here_doc,
+	redir_out_append,
+	dollar,
+	s_quote,
+	d_quote
+};
 
 typedef struct s_token
 {
