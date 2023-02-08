@@ -6,11 +6,20 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/08 13:30:05 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/08 14:20:07 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	**tokenize2(char *line)
+{
+	int	i;
+	int	open_quote;
+
+	i = 0;
+	open_quote = 0;
+}
 
 void	tokenize(t_list **head, char *line)
 {
