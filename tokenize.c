@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split2.c                                        :+:      :+:    :+:   */
+/*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/12 00:22:52 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/12 00:30:09 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	check_squotes(char c, int s_quote, int d_quote)
 	return (s_quote);
 }
 
-static int	get_number_tokens(char const *s, char c)
+static int	get_num_tokens(char const *s, char c)
 {
 	int	i;
 	int	num;
@@ -88,7 +88,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 	j = 0;
 	d_quote = 0;
 	s_quote = 0;
-	while (i < get_number_tokens(s, c))
+	while (i < get_num_tokens(s, c))
 	{
 		num = 0;
 		while (s[j] != 0 && (s[j] == c || s[j] == '\"' || s[j] == '\'') && !d_quote && !s_quote)
@@ -126,7 +126,7 @@ char	**tokenize(char const *line, char c)
 	char	**res;
 	int		count;
 
-	count = get_number_tokens(line, c);
+	count = get_num_tokens(line, c);
 	if (!count)
 		return (NULL);
 	res = malloc(sizeof(char *) * (count + 1));
@@ -143,7 +143,7 @@ char	**tokenize(char const *line, char c)
 // 	char **r = tokenize(s, ' ');
 // 	int i = 0;
 // 	printf("%s\n", s);
-// 	printf("%d\n\n", get_number_tokens(s, ' '));
+// 	printf("%d\n\n", get_num_tokens(s, ' '));
 // 	while (r + i && r[i])
 // 	{
 // 		printf("%s\n", r[i]);
