@@ -6,13 +6,11 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/12 00:21:22 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/12 00:22:52 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//should split spaces but not sapces inside doubele or single quotes
 
 int	check_dquotes(char c, int s_quote, int d_quote)
 {
