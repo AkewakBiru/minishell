@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
+#    By: youssef <youssef@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/02/11 18:32:03 by abiru            ###   ########.fr        #
+#    Updated: 2023/02/12 00:43:37 by youssef          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC = gcc -g -O0 -I/usr/local/Cellar/readline/8.1/include
 
 CFLAGS = -Wextra -Werror -Wall
 
-SRCS = main.c dict_utils.c export_builtin.c list_utils.c parse.c cd_pwd_builtins.c unset.c
+SRCS = main.c dict_utils.c export_builtin.c list_utils.c parse.c tokenize.c cd_pwd_builtins.c unset.c
 
 OBJS = $(SRCS:.c=.o)
 
