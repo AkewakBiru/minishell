@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/08 17:03:57 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/11 16:22:27 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,19 @@ static int	get_number_str(char const *s, char c)
 	{
 		s_quote = check_squotes(s[i], s_quote, d_quote);
 		d_quote = check_dquotes(s[i], s_quote, d_quote);
-		if (s[i] == c && s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
+		if (((s[i] == c || s[i] == '\"' || s[i] == '\'')
+			&& s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
+			|| (i && s[i - 1] != c && s[i - 1] != '\'' && s[i - 1] != '\"'
+			&& (((s)[i] == '\'' && s_quote) || ((s)[i] == '\"' && d_quote))))
 			num++;
+		if ((s[i] == '\"' && s[i + 1] != 0 && s[i + 1] == '\"' && d_quote)
+			|| (s[i] == '\'' && s[i + 1] != 0 && s[i + 1] == '\'' && s_quote))
+			num--;
+		// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
 		i++;
 	}
+	if (s_quote || d_quote)
+		return (0);
 	return (num);
 }
 
@@ -108,8 +117,12 @@ char	**split(char const *s, char c, char ***res)
 char	**ft_split2(char const *s, char c)
 {
 	char	**res;
+	int		count;
 
-	res = malloc(sizeof(char *) * (get_number_str(s, c) + 1));
+	count = get_number_str(s, c);
+	if (!count)
+		return (NULL);
+	res = malloc(sizeof(char *) * (count + 1));
 	if (!res)
 		return (0);
 	return (split(s, c, &res));
@@ -117,12 +130,14 @@ char	**ft_split2(char const *s, char c)
 
 int main()
 {
-	char **s = ft_split2("echo 'hi \" there'", ' ');
-	int i = 0;
-	while (s[i])
-	{
-		printf("%s\n", s[i]);
-		i++;
-	}
-	printf("%d\n", get_number_str("echo \'hi \' there\'", ' '));
+	// char **s = ft_split2("echo 'hi \" there'", ' ');
+	// int i = 0;
+	// while (s[i])
+	// {
+	// 	printf("%s\n", s[i]);
+	// 	i++;
+	// }
+	char *s = "echo \'hi\'f\"\' \'\'\"\"\'\"\'there\'  ";
+	printf("%s\n", s);
+	printf("%d\n", get_number_str(s, ' '));
 }
