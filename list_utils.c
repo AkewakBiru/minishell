@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:57:09 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/06 21:05:17 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/11 18:33:50 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,21 @@ void	sort_list(t_list **head)
 		tmp = tmp->next;
 	}
 	return ;
+}
+
+void	ft_list_remove_if(t_list **head, char *str, int (*cmp)())
+{
+	t_list	*cur;
+
+	if (head == NULL || *head == NULL)
+		return ;
+	cur = *head;
+	if (!(*cmp)(((t_dict *)cur->content)->key, str))
+	{
+		*head = cur->next;
+		del_node(cur);
+		return ;
+	}
+	cur = *head;
+	ft_list_remove_if(&cur->next, str, cmp);
 }

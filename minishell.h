@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/08 21:47:09 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/11 18:32:44 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,12 @@ void	chg_dir(t_utils *cmd_utils, t_list **lst, t_list **export);
 
 // linked list utils
 void	sort_list(t_list **head);
+void	ft_list_remove_if(t_list **head, char *str, int (*cmp)());
+
+// unset
+void	unset_builtin(t_utils *cmd_utils, t_list **lst, t_list **export);
 
 // free utils
 void	free_exit(t_list **head);
+void	del_node(t_list *node);
 #endif

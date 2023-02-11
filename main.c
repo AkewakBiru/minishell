@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/08 21:44:49 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/11 18:34:52 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@ int	is_builtin(const char *cmd)
 	return (0);
 }
 
+void	del_node(t_list *node)
+{
+	free(((t_dict *)node->content)->key);
+	free(((t_dict *)node->content)->value);
+	free(((t_dict *)node->content));
+	return ;
+}
+
 void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export)
 {
 	if (ft_strcmp(cmd_utils->cmd, "env") == 0)
@@ -50,6 +58,8 @@ void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export)
 		print_pwd();
 	else if (ft_strcmp(cmd_utils->cmd, "cd") == 0)
 		chg_dir(cmd_utils, lst, export);
+	else if (ft_strcmp(cmd_utils->cmd, "unset") == 0)
+		unset_builtin(cmd_utils, lst, export);
 }
 
 void	exec_pipex(t_utils *cmd_utils, t_list **lst)
