@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/11 16:22:27 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/11 22:49:34 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	check_squotes(char c, int s_quote, int d_quote)
 	return (s_quote);
 }
 
-static int	get_number_str(char const *s, char c)
+static int	get_number_tokens(char const *s, char c)
 {
 	int	i;
 	int	num;
@@ -58,9 +58,6 @@ static int	get_number_str(char const *s, char c)
 			|| (i && s[i - 1] != c && s[i - 1] != '\'' && s[i - 1] != '\"'
 			&& (((s)[i] == '\'' && s_quote) || ((s)[i] == '\"' && d_quote))))
 			num++;
-		if ((s[i] == '\"' && s[i + 1] != 0 && s[i + 1] == '\"' && d_quote)
-			|| (s[i] == '\'' && s[i + 1] != 0 && s[i + 1] == '\'' && s_quote))
-			num--;
 		// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
 		i++;
 	}
@@ -93,7 +90,7 @@ char	**split(char const *s, char c, char ***res)
 	j = 0;
 	d_quote = 0;
 	s_quote = 0;
-	while (i < get_number_str(s, c))
+	while (i < get_number_tokens(s, c))
 	{
 		num = 0;
 		while (s[j] == c && s[j] != 0 && !d_quote && !s_quote)
@@ -119,7 +116,7 @@ char	**ft_split2(char const *s, char c)
 	char	**res;
 	int		count;
 
-	count = get_number_str(s, c);
+	count = get_number_tokens(s, c);
 	if (!count)
 		return (NULL);
 	res = malloc(sizeof(char *) * (count + 1));
@@ -137,7 +134,8 @@ int main()
 	// 	printf("%s\n", s[i]);
 	// 	i++;
 	// }
-	char *s = "echo \'hi\'f\"\' \'\'\"\"\'\"\'there\'  ";
+	// char *s = "echo \'hi\'f\"\' \'\'\"\"\'\"\'there\'  ";
+	char *s = "echo \'hi\'\" \"\' \'there  ";
 	printf("%s\n", s);
-	printf("%d\n", get_number_str(s, ' '));
+	printf("%d\n", get_number_tokens(s, ' '));
 }
