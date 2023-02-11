@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/12 00:30:09 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/12 00:40:42 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,18 +121,18 @@ char	**split_tokens(char const *s, char c, char ***res)
 	return (*res);
 }
 
-char	**tokenize(char const *line, char c)
+char	**tokenize(char const *line)
 {
 	char	**res;
 	int		count;
 
-	count = get_num_tokens(line, c);
+	count = get_num_tokens(line, ' ');
 	if (!count)
 		return (NULL);
 	res = malloc(sizeof(char *) * (count + 1));
 	if (!res)
 		return (NULL);
-	return (split_tokens(line, c, &res));
+	return (split_tokens(line, ' ', &res));
 }
 
 // int main()
