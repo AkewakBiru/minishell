@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: youssef <youssef@student.42.fr>            +#+  +:+       +#+         #
+#    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/02/12 00:43:37 by youssef          ###   ########.fr        #
+#    Updated: 2023/02/12 15:04:05 by abiru            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = gcc -g -O0 -I/usr/local/Cellar/readline/8.1/include
+CC = gcc -g -O0
 
 CFLAGS = -Wextra -Werror -Wall
 
@@ -27,7 +27,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 		@cd libft && make
-		$(CC) -L /usr/local/Cellar/readline/8.1/lib -lreadline $(OBJS) $(CFLAGS) ./libft/libft.a -o $(NAME)
+		$(CC) -lreadline $(OBJS) $(CFLAGS) ./libft/libft.a -o $(NAME)
 
 clean:
 	@cd libft && make clean
