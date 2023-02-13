@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/12 19:04:06 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/13 16:26:56 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,10 @@ static int	get_num_tokens(char const *s, char c)
 	{
 		s_quote = check_squotes(s[i], s_quote, d_quote);
 		d_quote = check_dquotes(s[i], s_quote, d_quote);
-		if (((s[i] == c || s[i] == '\"' || s[i] == '\'' || is_special(s[i]))
-			&& s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
-			|| (i && s[i - 1] != c && s[i - 1] != '\'' && s[i - 1] != '\"' && !is_special(s[i - 1])
-			&& ((s[i] == '\'' && s_quote) || (s[i] == '\"' && d_quote)))
-			|| (is_special(s[i + 1]) && !d_quote && !s_quote))
+		if (((s[i] == c || is_special(s[i])) && s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
+		|| (is_special(s[i + 1]) && !d_quote && !s_quote))
 			num++;
-		printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
+		// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
 		i++;
 	}
 	if (s_quote || d_quote)
@@ -146,8 +143,8 @@ char	**tokenize(char const *line)
 // int main()
 // {
 // 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-// 	char *s = "grep | echo > h | \'| hi|\'there  ";
-// 	// char *s = "| \'\'|\"\" s| ";
+// 	char *s = "grep||echo>h | \'| hi|\'there  ";
+// 	// char *s = "\"\"echo>\"\" \"hi\"";
 // 	// char *s = "echo hi \"\" there\"     s\"\"\'$x\"";
 // 	// char **r = tokenize(s);
 // 	// int i = 0;
