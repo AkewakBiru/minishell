@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/13 16:26:56 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/13 16:58:56 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ char	**tokenize(char const *line)
 // int main()
 // {
 // 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-// 	char *s = "grep||echo>h | \'| hi|\'there  ";
+// 	char *s = "grep||echo>h>> | \'| hi|\'there  ";
 // 	// char *s = "\"\"echo>\"\" \"hi\"";
 // 	// char *s = "echo hi \"\" there\"     s\"\"\'$x\"";
 // 	// char **r = tokenize(s);
