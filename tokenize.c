@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/14 14:13:04 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/14 16:02:27 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,30 @@ char	**malloc_fail(char **res, int i)
 // 	return (j);
 // }
 
+char	*combine_strs(int j, int num, const char *s, int opened_q)
+{
+	printf("combine_str called\n");
+	char	*read;
+	int	d_quote;
+	int	s_quote;
+
+	read = ft_substr(s, j - num, num);
+	while (s[j] && s[j] 1= ' ')
+	{
+		while (s[j] && (opened_q || d_quote || s_quote))
+		{
+			//read until quote closed
+			j++;
+		}
+		opened_q = 0;
+		while (s[j] && s[j] != ' ' && s[j] != '\'' && s[j] != '\"')
+		{
+			"keine ahnung"
+		}
+	}
+	return NULL;
+}
+
 char	**split_tokens(char const *s, char c, char ***res)
 {
 	int	i;
@@ -112,7 +136,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 		num = 0;
 		//skip start
 		// j = skip_start(j, s, &s_quote, &d_quote);
-		while (s[j] && ((s[j] == c && !s_quote && !d_quote)
+		while (s[j] && (s[j] == c //&& !s_quote && !d_quote)
 			|| (s[j] == '\"' && !s_quote) || (s[j] == '\'' && !d_quote)))
 		{
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
@@ -126,8 +150,6 @@ char	**split_tokens(char const *s, char c, char ***res)
 			check_squotes(s[j], &s_quote, d_quote);
 			check_dquotes(s[j], s_quote, &d_quote);
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
-			if (((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote)) && s[j + 1] != c)
-
 			if ((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote))
 				break;
 			j++;
@@ -162,7 +184,12 @@ char	**split_tokens(char const *s, char c, char ***res)
 		// 	(*res)[i] = ft_substr(s, j - num - 1, num);
 		// }
 		printf("j: %d, num:%d\n", j, num);
-		(*res)[i] = ft_substr(s, j - num, num);
+		if ((s[j] == '\'' && !d_quote) && s[j + 1] != c)
+			(*res)[i] = combine_strs(j, num, s, s_quote);
+		else if ((s[j] == '\"' && !s_quote) && s[j + 1] != c)
+			(*res)[i] = combine_strs(j, num, s, d_quote);
+		else
+			(*res)[i] = ft_substr(s, j - num, num);
 		printf("word: %s\n", (*res)[i]);
 		if ((*res)[i] == NULL)
 			return (malloc_fail(*res, i));
@@ -190,9 +217,9 @@ char	**tokenize(char const *line)
 
 int main()
 {
-	char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
 	// char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
-	// char *s = "\'echo hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
+	char *s = "e\'cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
 	// char *s = "echo hi \"\" there\"     s\"\"\'$x\"";
 	printf("%s\n", s);
 	printf("%d\n\n", get_num_tokens(s, ' '));
