@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/14 13:13:36 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/14 14:11:51 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,22 @@ int	is_redir(char c)
 	return (0);
 }
 
-int	check_dquotes(char c, int s_quote, int d_quote)
+void	check_dquotes(char c, int s_quote, int *d_quote)
 {
-	if (c == '\"' && !s_quote && !d_quote)
-		return(1);
+	if (c == '\"' && !s_quote && !*d_quote)
+		*d_quote = 1; //return(1);
 	else if (c == '\"' && !s_quote)
-		return (0);
-	return (d_quote);
+		*d_quote = 0; //return (0);
+	// return (d_quote);
 }
 
-int	check_squotes(char c, int s_quote, int d_quote)
+void	check_squotes(char c, int *s_quote, int d_quote)
 {
-	if (c == '\'' && !d_quote && !s_quote)
-		return(1);
+	if (c == '\'' && !d_quote && !*s_quote)
+		*s_quote = 1;//return(1);
 	else if (c == '\'' && !d_quote)
-		return(0);
-	return (s_quote);
+		*s_quote = 0; //return(0);
+	//return (s_quote);
 }
 
 static int	get_num_tokens(char const *s, char c)
@@ -56,8 +56,8 @@ static int	get_num_tokens(char const *s, char c)
 		return (0);
 	while (s[i] != 0)
 	{
-		s_quote = check_squotes(s[i], s_quote, d_quote);
-		d_quote = check_dquotes(s[i], s_quote, d_quote);
+		check_squotes(s[i], &s_quote, d_quote);
+		check_dquotes(s[i], s_quote, &d_quote);
 		if (((s[i] == c || s[i] == '|' || (is_redir(s[i]) && !is_redir(s[i + 1])))
 			&& s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
 			|| (((is_redir(s[i + 1]) && !is_redir(s[i])) || s[i + 1] == '|') && !d_quote && !s_quote))
@@ -102,16 +102,20 @@ char	**split_tokens(char const *s, char c, char ***res)
 			|| (s[j] == '\"' && !s_quote) || (s[j] == '\'' && !d_quote)))
 		{
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
-			s_quote = check_squotes(s[j], s_quote, d_quote);
-			d_quote = check_dquotes(s[j], s_quote, d_quote);
+			check_squotes(s[j], &s_quote, d_quote);
+			check_dquotes(s[j], s_quote, &d_quote);
 			j++;
 		}
 		printf("entering while-loop 2\n");
-		while (s[j] && s[j] != c && s[j] != '|' && !is_redir(s[j]))
+		while (s[j] && (s_quote || d_quote || (s[j] != c && s[j] != '|' && !is_redir(s[j]))))
 		{
-			s_quote = check_squotes(s[j], s_quote, d_quote);
-			d_quote = check_dquotes(s[j], s_quote, d_quote);
+			check_squotes(s[j], &s_quote, d_quote);
+			check_dquotes(s[j], s_quote, &d_quote);
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
+			// if (((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote)) && s[j + 1] != c)
+
+			if ((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote))
+				break;
 			j++;
 			num++;
 		}
@@ -148,7 +152,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 		printf("word: %s\n", (*res)[i]);
 		if ((*res)[i] == NULL)
 			return (malloc_fail(*res, i));
-		if (s[i] == c)
+		if (s[j] == c || s[j] == '\'' || s[j] == '\"')
 			j++;
 		i++;
 	}
@@ -172,9 +176,9 @@ char	**tokenize(char const *line)
 
 int main()
 {
-	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+	char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
 	// char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
-	char *s = "echo|hi >>>there";//"\"\"echo>\"\" \"hi\"";
+	// char *s = "\'echo hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
 	// char *s = "echo hi \"\" there\"     s\"\"\'$x\"";
 	printf("%s\n", s);
 	printf("%d\n\n", get_num_tokens(s, ' '));
