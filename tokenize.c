@@ -6,15 +6,15 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/13 16:58:56 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/14 11:26:22 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_special(char c)
+int	is_redir(char c)
 {
-	if (c == '|' || c == '<' || c == '>')
+	if (c == '<' || c == '>')
 		return (1);
 	return (0);
 }
@@ -58,8 +58,9 @@ static int	get_num_tokens(char const *s, char c)
 	{
 		s_quote = check_squotes(s[i], s_quote, d_quote);
 		d_quote = check_dquotes(s[i], s_quote, d_quote);
-		if (((s[i] == c || is_special(s[i])) && s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
-		|| (is_special(s[i + 1]) && !d_quote && !s_quote))
+		if (((s[i] == c || s[i] == '|' || (is_redir(s[i]) && !is_redir(s[i + 1])))
+			&& s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
+			|| (((is_redir(s[i + 1]) && !is_redir(s[i])) || s[i + 1] == '|') && !d_quote && !s_quote))
 			num++;
 		// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
 		i++;
@@ -140,20 +141,20 @@ char	**tokenize(char const *line)
 	return (split_tokens(line, ' ', &res));
 }
 
-// int main()
-// {
-// 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-// 	char *s = "grep||echo>h>> | \'| hi|\'there  ";
-// 	// char *s = "\"\"echo>\"\" \"hi\"";
-// 	// char *s = "echo hi \"\" there\"     s\"\"\'$x\"";
-// 	// char **r = tokenize(s);
-// 	// int i = 0;
-// 	printf("%s\n", s);
-// 	printf("%d\n\n", get_num_tokens(s, ' '));
-// 	// while (r + i && r[i])
-// 	// {
-// 	// 	printf("%s\n", r[i]);
-// 	// 	i++;
-// 	// }
-// 	// printf("i: %d\n", i);
-// }
+int main()
+{
+	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+	char *s = "grep||echo>h>>< | \'| hi>|\'there  ";
+	// char *s = "\"\"echo>\"\" \"hi\"";
+	// char *s = "echo hi \"\" there\"     s\"\"\'$x\"";
+	// char **r = tokenize(s);
+	// int i = 0;
+	printf("%s\n", s);
+	printf("%d\n\n", get_num_tokens(s, ' '));
+	// while (r + i && r[i])
+	// {
+	// 	printf("%s\n", r[i]);
+	// 	i++;
+	// }
+	// printf("i: %d\n", i);
+}
