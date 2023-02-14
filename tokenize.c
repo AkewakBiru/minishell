@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/14 14:11:51 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/14 14:13:04 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,19 @@ char	**malloc_fail(char **res, int i)
 	return (0);
 }
 
+// int	skip_start(int j, char const *s, int *s_quote, int *d_quote)
+// {
+// 	while (s[j] && ((s[j] == ' ' && !*s_quote && !*d_quote)
+// 			|| (s[j] == '\"' && !*s_quote) || (s[j] == '\'' && !*d_quote)))
+// 		{
+// 			printf("letter: %c, sq: %d, dq: %d\n", s[j], *s_quote, *d_quote);
+// 			check_squotes(s[j], s_quote, *d_quote);
+// 			check_dquotes(s[j], *s_quote, d_quote);
+// 			j++;
+// 		}
+// 	return (j);
+// }
+
 char	**split_tokens(char const *s, char c, char ***res)
 {
 	int	i;
@@ -98,6 +111,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 	{
 		num = 0;
 		//skip start
+		// j = skip_start(j, s, &s_quote, &d_quote);
 		while (s[j] && ((s[j] == c && !s_quote && !d_quote)
 			|| (s[j] == '\"' && !s_quote) || (s[j] == '\'' && !d_quote)))
 		{
@@ -112,7 +126,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 			check_squotes(s[j], &s_quote, d_quote);
 			check_dquotes(s[j], s_quote, &d_quote);
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
-			// if (((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote)) && s[j + 1] != c)
+			if (((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote)) && s[j + 1] != c)
 
 			if ((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote))
 				break;
