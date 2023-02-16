@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/14 16:02:27 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/15 22:29:17 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,24 +98,28 @@ char	**malloc_fail(char **res, int i)
 char	*combine_strs(int j, int num, const char *s, int opened_q)
 {
 	printf("combine_str called\n");
-	char	*read;
-	int	d_quote;
-	int	s_quote;
+	(void) j;
+	(void) num;
+	(void) s;
+	(void) opened_q;
+	// char	*read;
+	// int	d_quote;
+	// int	s_quote;
 
-	read = ft_substr(s, j - num, num);
-	while (s[j] && s[j] 1= ' ')
-	{
-		while (s[j] && (opened_q || d_quote || s_quote))
-		{
-			//read until quote closed
-			j++;
-		}
-		opened_q = 0;
-		while (s[j] && s[j] != ' ' && s[j] != '\'' && s[j] != '\"')
-		{
-			"keine ahnung"
-		}
-	}
+	// read = ft_substr(s, j - num, num);
+	// while (s[j] && s[j] != ' ')
+	// {
+	// 	while (s[j] && (opened_q || d_quote || s_quote))
+	// 	{
+	// 		//read until quote closed
+	// 		j++;
+	// 	}
+	// 	opened_q = 0;
+	// 	while (s[j] && s[j] != ' ' && s[j] != '\'' && s[j] != '\"')
+	// 	{
+	// 		// "keine ahnung";
+	// 	}
+	// }
 	return NULL;
 }
 
@@ -168,21 +172,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 				j++;
 			}
 		}
-		// while (s[j] != 0 && (d_quote || s_quote || (s[j] != c && s[j] != '|' && !is_redir(s[j]))))
-		// {
-		// 	s_quote = check_squotes(s[j], s_quote, d_quote);
-		// 	d_quote = check_dquotes(s[j], s_quote, d_quote);
-		// 	printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
-		// 	if ((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote))
-		// 		break;
-		// 	j++;
-		// 	num++;
-		// }
 		printf("left while loop with letter %c\n", s[j]);
-		// if (s[j] != c || s[j] != '\'' || s[j] != '\"')
-		// {
-		// 	(*res)[i] = ft_substr(s, j - num - 1, num);
-		// }
 		printf("j: %d, num:%d\n", j, num);
 		if ((s[j] == '\'' && !d_quote) && s[j + 1] != c)
 			(*res)[i] = combine_strs(j, num, s, s_quote);
