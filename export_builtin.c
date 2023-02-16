@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/06 21:04:57 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/12 15:15:35 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ void	update_env(t_utils *cmd, t_list **env)
 
 void	export_bltin(t_list **lst, t_utils *cmd_utils, t_list **export)
 {
-	if (!cmd_utils->cmd_arg || !cmd_utils->cmd_arg[1])
+	if ((!cmd_utils->cmd_arg || !cmd_utils->cmd_arg[1]) && export && *export)
 		print_list(export);
-	else
+	else if (export && *export)
 	{
 		if (cmd_utils->flag)
 			update_env(cmd_utils, lst);

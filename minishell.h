@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/12 00:41:09 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/12 15:35:25 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,9 @@ void	ft_list_remove_if(t_list **head, char *str, int (*cmp)());
 
 // unset
 void	unset_builtin(t_utils *cmd_utils, t_list **lst, t_list **export);
+
+// echo
+void	echo(char **arg);
 
 // free utils
 void	free_exit(t_list **head);
