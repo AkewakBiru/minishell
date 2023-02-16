@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/16 17:07:05 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/16 19:06:29 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,8 @@ char	**split_tokens(char const *s, char c, char ***res)
 		//skip start
 		// j = skip_start(j, s, &s_quote, &d_quote);
 		while (s[j] && (s[j] == c
-			|| (s[j] == '\"' && (s[j + 1] == '\"') || d_quote)
-			|| (s[j] == '\'' && (s[j + 1] == '\'') || s_quote)))
+			|| ((s[j] == '\"' && s[j + 1] == '\"') || d_quote)
+			|| ((s[j] == '\'' && s[j + 1] == '\'') || s_quote)))
 		{
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
 			check_quotes(s[j], &s_quote, &d_quote);
