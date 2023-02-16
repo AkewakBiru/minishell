@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/15 22:29:17 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/16 15:05:45 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,8 +140,9 @@ char	**split_tokens(char const *s, char c, char ***res)
 		num = 0;
 		//skip start
 		// j = skip_start(j, s, &s_quote, &d_quote);
-		while (s[j] && (s[j] == c //&& !s_quote && !d_quote)
-			|| (s[j] == '\"' && !s_quote) || (s[j] == '\'' && !d_quote)))
+		while (s[j] && (s[j] == c
+			|| (s[j] == '\"' && (s[j + 1] == '\"') || d_quote)
+			|| (s[j] == '\'' && (s[j + 1] == '\'') || s_quote)))
 		{
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
 			check_squotes(s[j], &s_quote, d_quote);
@@ -149,15 +150,29 @@ char	**split_tokens(char const *s, char c, char ***res)
 			j++;
 		}
 		printf("entering while-loop 2\n");
-		while (s[j] && (s_quote || d_quote || (s[j] != c && s[j] != '|' && !is_redir(s[j]))))
+		while (s[j] && s[j] != c && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
 		{
-			check_squotes(s[j], &s_quote, d_quote);
-			check_dquotes(s[j], s_quote, &d_quote);
 			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
-			if ((s[j] == '\'' && !d_quote) || (s[j] == '\"' && !s_quote))
-				break;
 			j++;
 			num++;
+		}
+		printf("left while loop with letter %c\n", s[j]);
+		printf("j: %d, num:%d\n", j, num);
+		// if ((s[j] == '\'' && !d_quote) && s[j + 1] != c)
+		// 	(*res)[i] = combine_strs(j, num, s, s_quote);
+		// else if ((s[j] == '\"' && !s_quote) && s[j + 1] != c)
+		// 	(*res)[i] = combine_strs(j, num, s, d_quote);
+		if (s[j] == '\'')
+		{
+			printf("combine called\n"); //(*res)[i] = combine_strs(j, num, s, s_quote);
+			i++;
+			continue;
+		}
+		if (s[j] == '\"')
+		{
+			printf("combine called\n"); // (*res)[i] = combine_strs(j, num, s, d_quote);
+			i++;
+			continue;
 		}
 		if (!num && s[j] == '|')
 		{
@@ -172,14 +187,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 				j++;
 			}
 		}
-		printf("left while loop with letter %c\n", s[j]);
-		printf("j: %d, num:%d\n", j, num);
-		if ((s[j] == '\'' && !d_quote) && s[j + 1] != c)
-			(*res)[i] = combine_strs(j, num, s, s_quote);
-		else if ((s[j] == '\"' && !s_quote) && s[j + 1] != c)
-			(*res)[i] = combine_strs(j, num, s, d_quote);
-		else
-			(*res)[i] = ft_substr(s, j - num, num);
+		(*res)[i] = ft_substr(s, j - num, num);
 		printf("word: %s\n", (*res)[i]);
 		if ((*res)[i] == NULL)
 			return (malloc_fail(*res, i));
@@ -209,7 +217,7 @@ int main()
 {
 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
 	// char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
-	char *s = "e\'cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
+	char *s = "\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
 	// char *s = "echo hi \"\" there\"     s\"\"\'$x\"";
 	printf("%s\n", s);
 	printf("%d\n\n", get_num_tokens(s, ' '));
