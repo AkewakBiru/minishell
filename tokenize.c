@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/16 20:22:19 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/16 21:00:52 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,18 +95,15 @@ int	combine_strs(int j, int num, const char *s, char **token)
 	int		d_quote;
 	int		s_quote;
 
-	printf("\n");
 	s_quote = 0;
 	d_quote = 0;
 	read = ft_substr(s, j - num, num);
-	res = NULL;
 	if (!read)
 		return (0);
+	res = NULL;
 	while (s[j] && s[j] != ' ' && s[j] != '|' && !is_redir(s[j]))
 	{
 		num = 0;
-		printf("read: %s\n", read);
-		printf("read j: %d, num:%d, s_quote: %d, d_quote: %d\n", j, num, s_quote, d_quote);
 		while (s[j] && s[j] != '\'' && s[j] != '\"' && s[j] != ' ' && s[j] != '|' && !is_redir(s[j]))
 		{
 			num++;
@@ -114,11 +111,9 @@ int	combine_strs(int j, int num, const char *s, char **token)
 		}
 		if (num)
 		{
-			printf("j: %d, num:%d, s_quote: %d, d_quote: %d\n", j, num, s_quote, d_quote);
 			res = ft_strjoin(read, ft_substr(s, j - num, num));
 			free(read);
 			read = res;
-			printf("res: %s\n", res);
 			continue;
 		}
 		if (s[j] == '\'' || s[j] == '\"')
@@ -129,16 +124,12 @@ int	combine_strs(int j, int num, const char *s, char **token)
 			num++;
 		}
 		check_quotes(s[j], &s_quote, &d_quote);
-		printf("j: %d, num:%d, s_quote: %d, d_quote: %d\n", j, num, s_quote, d_quote);
 		res = ft_strjoin(read, ft_substr(s, j - num, num));
 		free(read);
 		read = res;
 		j++;
-		printf("res: %s\n", res);
 	}
 	*token = res;
-	printf("j: %d\n", j);
-	printf("\n");
 	return (j);
 }
 
@@ -160,13 +151,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 		//skip start
 		// j = skip_start(j, s, &s_quote, &d_quote);
 		while (s[j] && s[j] == c)
-			// || ((s[j] == '\"' && s[j + 1] == '\"') || d_quote)
-			// || ((s[j] == '\'' && s[j + 1] == '\'') || s_quote)))
-		{
-			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
-			// check_quotes(s[j], &s_quote, &d_quote);
 			j++;
-		}
 		printf("entering while-loop 2\n");
 		while (s[j] && s[j] != c && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
 		{
@@ -175,11 +160,6 @@ char	**split_tokens(char const *s, char c, char ***res)
 			num++;
 		}
 		printf("left while loop with letter %c\n", s[j]);
-		// printf("j: %d, num:%d\n", j, num);
-		// if ((s[j] == '\'' && !d_quote) && s[j + 1] != c)
-		// 	(*res)[i] = combine_strs(j, num, s, s_quote);
-		// else if ((s[j] == '\"' && !s_quote) && s[j + 1] != c)
-		// 	(*res)[i] = combine_strs(j, num, s, d_quote);
 		if (s[j] == '\'' || s[j] == '\"')
 		{
 			printf("combine called\n");
@@ -228,10 +208,11 @@ char	**tokenize(char const *line)
 
 int main()
 {
-	char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
 	// char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
 	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
+	char *s = "ec\"\"\'\'ho";
 	printf("%s\n", s);
 	printf("%d\n\n", get_num_tokens(s, ' '));
 	char **r = tokenize(s);
