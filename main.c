@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/11 18:34:52 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/12 15:34:33 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export)
 		chg_dir(cmd_utils, lst, export);
 	else if (ft_strcmp(cmd_utils->cmd, "unset") == 0)
 		unset_builtin(cmd_utils, lst, export);
+	else if (ft_strcmp(cmd_utils->cmd, "echo") == 0)
+		echo(cmd_utils->cmd_arg);
 }
 
 void	exec_pipex(t_utils *cmd_utils, t_list **lst)
