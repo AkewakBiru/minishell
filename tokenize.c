@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 17:28:54 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 17:39:41 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,27 +66,20 @@ static int	get_num_tokens(char const *s, char c)
 t_token	**malloc_fail(t_token **res, int i)
 {
 	i--;
-	while (i >= 0)
+	if (i >= 0)
 	{
 		free(res[i]);
 		i--;
 	}
+	while (i >= 0)
+	{
+		free(res[i]->token);
+		free(res[i]);
+		i--;
+	}
 	free(res);
-	return (0);
+	return (NULL);
 }
-
-// int	skip_start(int j, char const *s, int *s_quote, int *d_quote)
-// {
-// 	while (s[j] && ((s[j] == ' ' && !*s_quote && !*d_quote)
-// 			|| (s[j] == '\"' && !*s_quote) || (s[j] == '\'' && !*d_quote)))
-// 		{
-// 			printf("letter: %c, sq: %d, dq: %d\n", s[j], *s_quote, *d_quote);
-// 			check_squotes(s[j], s_quote, *d_quote);
-// 			check_dquotes(s[j], *s_quote, d_quote);
-// 			j++;
-// 		}
-// 	return (j);
-// }
 
 char	*combine_strs(char *s1, char *s2)
 {
@@ -158,7 +151,6 @@ t_token	**split_tokens(char const *s, char c, t_token ***res)
 	{
 		num = 0;
 		//skip start
-		// j = skip_start(j, s, &s_quote, &d_quote);
 		while (s[j] && s[j] == c)
 			j++;
 		// printf("entering while-loop 2\n");
@@ -174,7 +166,7 @@ t_token	**split_tokens(char const *s, char c, t_token ***res)
 			// printf("combine called\n");
 			j = handle_quotes(j, num, s, &((*res)[i]));
 			if (!j)
-				return (NULL);
+				return (malloc_fail(*res, i));
 			i++;
 			continue;
 		}
@@ -229,8 +221,8 @@ t_token	**tokenize(char const *line)
 
 int main()
 {
-	char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-	// char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
+	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
 	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
 	// char *s = "ec\"\"\'\'ho";
@@ -241,7 +233,10 @@ int main()
 	while (r + i && r[i])
 	{
 		printf("token: %s, type: %u\n", r[i]->token, r[i]->type);
+		free(r[i]->token);
+		free(r[i]);
 		i++;
 	}
 	printf("i: %d\n", i);
+	free(r);
 }
