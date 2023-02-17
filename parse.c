@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 18:31:33 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 19:02:23 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,24 @@
 // 	}
 // }
 
-t_token	**parse(char *line)
+// int	label_tokens(t_token ***tokens)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	if ((*tokens)[i] && (*tokens)[i]->type != unset)
+// 		return (1);
+// 	(*tokens)[i++]->type = cmd;
+// 	while ((*tokens)[i])
+// 	{
+// 		if ()
+// 	}
+// }
+
+t_token	*parse(char *line)
 {
 	(void) line;
-	t_token	**tokens;
+	t_token	*tokens;
 
 	tokens = tokenize(line);
 	//need to free tokens eventually

@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 18:34:13 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 19:02:33 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ typedef struct cmd_utils
 	char	*pwd;
 }	t_utils;
 
-t_token	**parse(char *line);
-t_token	**tokenize(char const *line);
+t_token	*parse(char *line);
+t_token	*tokenize(char const *line);
 
 // dictionary utils
 void	free_dict(t_dict	*dict);

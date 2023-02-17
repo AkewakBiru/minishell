@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 18:24:39 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 19:09:40 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char	*combine_strs(char *s1, char *s2)
 	return (res);
 }
 
-int	handle_quotes(int j, int num, const char *s, t_token **token)
+int	handle_quotes(int j, int num, const char *s, t_token *token)
 {
 	int		d_quote;
 	int		s_quote;
@@ -130,11 +130,11 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 			return (0);
 		j++;
 	}
-	(*token)->token = res;
+	token->token = res;
 	return (j);
 }
 
-t_token	**split_tokens(char const *s, t_token ***res)
+t_token	**split_tokens(char const *s, t_token **res)
 {
 	int	i;
 	int	j;
@@ -149,7 +149,7 @@ t_token	**split_tokens(char const *s, t_token ***res)
 	while (i < get_num_tokens(s))
 	{
 		num = 0;
-		(*res)[i]->type = unset;
+		res[i]->type = unset;
 		//skip start
 		while (s[j] && s[j] == ' ')
 			j++;
@@ -164,9 +164,9 @@ t_token	**split_tokens(char const *s, t_token ***res)
 		if (s[j] == '\'' || s[j] == '\"')
 		{
 			// printf("combine called\n");
-			j = handle_quotes(j, num, s, &((*res)[i]));
+			j = handle_quotes(j, num, s, &(res[i]));
 			if (!j)
-				return (malloc_fail(*res, i));
+				return (malloc_fail(res, i));
 			i++;
 			continue;
 		}
@@ -174,7 +174,7 @@ t_token	**split_tokens(char const *s, t_token ***res)
 		{
 			num++;
 			j++;
-			(*res)[i]->type = pip;
+			res[i]->type = pip;
 		}
 		if (!num && is_redir(s[j]))
 		{
@@ -183,38 +183,38 @@ t_token	**split_tokens(char const *s, t_token ***res)
 				num++;
 				j++;
 			}
-			(*res)[i]->type = redirection;
+			res[i]->type = redirection;
 		}
-		(*res)[i]->token = ft_substr(s, j - num, num);
-		if ((*res)[i]->token == NULL)
-			return (malloc_fail(*res, i));
+		res[i]->token = ft_substr(s, j - num, num);
+		if (res[i]->token == NULL)
+			return (malloc_fail(res, i));
 		// printf("word: %s\n", (*res)[i]->token);
 		i++;
 	}
-	(*res)[i] = NULL;
-	return (*res);
+	res[i] = NULL;
+	return (res);
 }
 
-t_token	**tokenize(char const *line)
+t_token	*tokenize(char const *line)
 {
-	t_token	**res;
+	t_token	*res;
 	int		count;
 	int		i;
 
 	count = get_num_tokens(line);
 	if (!count)
 		return (NULL);
-	res = malloc(sizeof(t_token *) * (count + 1));
+	res = malloc(sizeof(t_token) * (count + 1));
 	if (!res)
 		return (NULL);
 	i = 0;
-	while (i < count)
-	{
-		res[i] = malloc(sizeof(t_token));
-		if (!res[i])
-			return (malloc_fail(res, i));
-		i++;
-	}
+	// while (i < count)
+	// {
+	// 	res[i] = malloc(sizeof(t_token));
+	// 	if (!res[i])
+	// 		return (malloc_fail(res, i));
+	// 	i++;
+	// }
 	split_tokens(line, &res);
 	return (res);
 }
@@ -228,12 +228,12 @@ int main()
 	// char *s = "ec\"\"\'\'ho";
 	printf("%s\n", s);
 	printf("%d\n\n", get_num_tokens(s));
-	t_token **r = tokenize(s);
+	t_token *r = tokenize(s);
 	int i = 0;
-	while (r + i && r[i])
+	while (r && r[i])
 	{
-		printf("token: %s, type: %u\n", r[i]->token, r[i]->type);
-		free(r[i]->token);
+		printf("token: %s, type: %u\n", r[i].token, r[i].type);
+		free(r[i].token);
 		free(r[i]);
 		i++;
 	}
