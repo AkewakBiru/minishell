@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/12 15:35:25 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/17 15:57:23 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ enum e_input_type
 	here_doc,
 	redir_out_append,
 	dollar,
-	s_quote,
-	d_quote
+	redirection
 };
 
 typedef struct s_token
@@ -53,8 +52,8 @@ typedef struct cmd_utils
 	char	*pwd;
 }	t_utils;
 
-void	parse(char *line, t_list **tokens);
-char	**tokenize(char const *line);
+void	parse(char *line, char **tokens);
+t_token	**tokenize(char const *line);
 
 // dictionary utils
 void	free_dict(t_dict	*dict);

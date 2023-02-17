@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/16 21:00:52 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 16:00:49 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	get_num_tokens(char const *s, char c)
 	return (num);
 }
 
-char	**malloc_fail(char **res, int i)
+t_token	**malloc_fail(t_token **res, int i)
 {
 	i--;
 	while (i >= 0)
@@ -88,7 +88,7 @@ char	**malloc_fail(char **res, int i)
 // 	return (j);
 // }
 
-int	combine_strs(int j, int num, const char *s, char **token)
+int	combine_strs(int j, int num, const char *s, t_token **token)
 {
 	char	*read;
 	char	*res;
@@ -129,11 +129,11 @@ int	combine_strs(int j, int num, const char *s, char **token)
 		read = res;
 		j++;
 	}
-	*token = res;
+	(*token)->token = res;
 	return (j);
 }
 
-char	**split_tokens(char const *s, char c, char ***res)
+t_token	**split_tokens(char const *s, char c, t_token ***res)
 {
 	int	i;
 	int	j;
@@ -152,18 +152,18 @@ char	**split_tokens(char const *s, char c, char ***res)
 		// j = skip_start(j, s, &s_quote, &d_quote);
 		while (s[j] && s[j] == c)
 			j++;
-		printf("entering while-loop 2\n");
+		// printf("entering while-loop 2\n");
 		while (s[j] && s[j] != c && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
 		{
-			printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
+			// printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
 			j++;
 			num++;
 		}
-		printf("left while loop with letter %c\n", s[j]);
+		// printf("left while loop with letter %c\n", s[j]);
 		if (s[j] == '\'' || s[j] == '\"')
 		{
-			printf("combine called\n");
-			j = combine_strs(j, num, s, &(*res)[i]);
+			// printf("combine called\n");
+			j = combine_strs(j, num, s, &((*res)[i]));
 			i++;
 			continue;
 		}
@@ -171,6 +171,7 @@ char	**split_tokens(char const *s, char c, char ***res)
 		{
 			num++;
 			j++;
+			(*res)[i]->type = pip;
 		}
 		if (!num && is_redir(s[j]))
 		{
@@ -179,47 +180,56 @@ char	**split_tokens(char const *s, char c, char ***res)
 				num++;
 				j++;
 			}
+			(*res)[i]->type = redirection;
 		}
-		(*res)[i] = ft_substr(s, j - num, num);
-		if ((*res)[i] == NULL)
+		(*res)[i]->token = ft_substr(s, j - num, num);
+		if ((*res)[i]->token == NULL)
 			return (malloc_fail(*res, i));
-		printf("word: %s\n", (*res)[i]);
-		// if (s[j] == c)
-		// 	j++;
+		// printf("word: %s\n", (*res)[i]->token);
 		i++;
 	}
-	(*res)[i] = 0;
+	(*res)[i] = NULL;
 	return (*res);
 }
 
-char	**tokenize(char const *line)
+t_token	**tokenize(char const *line)
 {
-	char	**res;
+	t_token	**res;
 	int		count;
+	int		i;
 
 	count = get_num_tokens(line, ' ');
 	if (!count)
 		return (NULL);
-	res = malloc(sizeof(char *) * (count + 1));
+	res = malloc(sizeof(t_token *) * (count + 1));
 	if (!res)
 		return (NULL);
-	return (split_tokens(line, ' ', &res));
+	i = 0;
+	while (i < count)
+	{
+		res[i] = malloc(sizeof(t_token));
+		if (!res[i])
+			return (malloc_fail(res, i));
+		i++;
+	}
+	split_tokens(line, ' ', &res);
+	return (res);
 }
 
 int main()
 {
 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-	// char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
+	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
 	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
-	char *s = "ec\"\"\'\'ho";
+	// char *s = "ec\"\"\'\'ho";
 	printf("%s\n", s);
 	printf("%d\n\n", get_num_tokens(s, ' '));
-	char **r = tokenize(s);
+	t_token **r = tokenize(s);
 	int i = 0;
 	while (r + i && r[i])
 	{
-		printf("%s\n", r[i]);
+		printf("token: %s, type: %u\n", r[i]->token, r[i]->type);
 		i++;
 	}
 	printf("i: %d\n", i);
