@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/12 15:15:35 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/17 22:19:08 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,25 +48,36 @@ void	update_env(t_utils *cmd, t_list **env)
 	t_dict	*new;
 	t_list	*node;
 
-	if (key_exists(cmd->key, env) == 1)
+	char *key = ft_strdup(cmd->key);
+	char *value = ft_strdup(cmd->value);
+	if (key_exists(key, env) == 1)
 	{
 		if (cmd->flag == 1)
-			update_dict(cmd, env);
+			update_dict(key, value, env);
+		// key already present so should be freed
+		free(key);
 		return ;
 	}
-	new = create_dict(cmd->key, cmd->value, cmd->flag);
+	new = create_dict(key, value, cmd->flag);
 	if (!new)
-		free_exit(env);
+	{
+		ft_lstclear(env, free);
+		return ;
+	}
 	node = ft_lstnew_dict(new);
+	free(new);
+	free(key);
+	free(value);
 	node->next = 0;
 	ft_lstadd_back(env, node);
+	// printf("INSIDE update end");
 }
 
 void	export_bltin(t_list **lst, t_utils *cmd_utils, t_list **export)
 {
-	if ((!cmd_utils->cmd_arg || !cmd_utils->cmd_arg[1]) && export && *export)
+	if (!cmd_utils->cmd_arg || !cmd_utils->cmd_arg[1])
 		print_list(export);
-	else if (export && *export)
+	else
 	{
 		if (cmd_utils->flag)
 			update_env(cmd_utils, lst);

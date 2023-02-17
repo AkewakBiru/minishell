@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 19:09:40 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 23:02:36 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,9 @@ int	handle_quotes(int j, int num, const char *s, t_token *token)
 	return (j);
 }
 
+/*
+* @removed "&" in line 172 because of comilation error and added (void) to some vars for compilation warning
+*/
 t_token	**split_tokens(char const *s, t_token **res)
 {
 	int	i;
@@ -144,6 +147,8 @@ t_token	**split_tokens(char const *s, t_token **res)
 
 	i = 0;
 	j = 0;
+	(void)d_quote;
+	(void)s_quote;
 	d_quote = 0;
 	s_quote = 0;
 	while (i < get_num_tokens(s))
@@ -164,7 +169,7 @@ t_token	**split_tokens(char const *s, t_token **res)
 		if (s[j] == '\'' || s[j] == '\"')
 		{
 			// printf("combine called\n");
-			j = handle_quotes(j, num, s, &(res[i]));
+			j = handle_quotes(j, num, s, (res[i]));
 			if (!j)
 				return (malloc_fail(res, i));
 			i++;
@@ -201,6 +206,7 @@ t_token	*tokenize(char const *line)
 	int		count;
 	int		i;
 
+	(void)i;
 	count = get_num_tokens(line);
 	if (!count)
 		return (NULL);
@@ -219,24 +225,27 @@ t_token	*tokenize(char const *line)
 	return (res);
 }
 
-int main()
-{
-	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
-	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
-	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
-	// char *s = "ec\"\"\'\'ho";
-	printf("%s\n", s);
-	printf("%d\n\n", get_num_tokens(s));
-	t_token *r = tokenize(s);
-	int i = 0;
-	while (r && r[i])
-	{
-		printf("token: %s, type: %u\n", r[i].token, r[i].type);
-		free(r[i].token);
-		free(r[i]);
-		i++;
-	}
-	printf("i: %d\n", i);
-	free(r);
-}
+/*
+	@commented the main because it didn't compile because of the other main
+*/
+// int main()
+// {
+// 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+// 	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
+// 	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
+// 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
+// 	// char *s = "ec\"\"\'\'ho";
+// 	printf("%s\n", s);
+// 	printf("%d\n\n", get_num_tokens(s));
+// 	t_token *r = tokenize(s);
+// 	int i = 0;
+// 	// while (r && r[i])
+// 	// {
+// 	// 	printf("token: %s, type: %u\n", r[i].token, r[i].type);
+// 	// 	free(r[i].token);
+// 	// 	free(r[i]);
+// 	// 	i++;
+// 	// }
+// 	printf("i: %d\n", i);
+// 	free(r);
+// }

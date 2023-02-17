@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 19:02:33 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 22:31:12 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
-# include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "./libft/libft.h"
@@ -42,6 +41,13 @@ typedef struct s_token
 	enum e_input_type	type;
 }	t_token;
 
+// temp for redirection
+typedef struct cmd_op
+{
+	int		redir_in;
+	int		redir_out;
+}	t_cmd_op;
+
 typedef struct cmd_utils
 {
 	char	*cmd;
@@ -50,6 +56,9 @@ typedef struct cmd_utils
 	char	*value;
 	int		flag;
 	char	*pwd;
+	int		EXIT_STATUS;
+	int		num_cmd;
+	t_cmd_op	cmd_op;
 }	t_utils;
 
 t_token	*parse(char *line);
@@ -59,7 +68,8 @@ t_token	*tokenize(char const *line);
 void	free_dict(t_dict	*dict);
 int		key_exists(char *s, t_list **new);
 t_dict	*create_dict(char *key, char *value, int flag);
-int		update_dict(t_utils *cmd, t_list **head);
+int		update_dict(char *key, char *value, t_list **head);
+char	*get_val(t_list **lst, char *key);
 
 // export and env utils
 void	print_env(t_list **lst);
@@ -80,10 +90,11 @@ void	ft_list_remove_if(t_list **head, char *str, int (*cmp)());
 // unset
 void	unset_builtin(t_utils *cmd_utils, t_list **lst, t_list **export);
 
-// echo
-void	echo(char **arg);
+// exit
+int		exit_shell(t_list **lst, t_list **export, t_utils *cmd_utils, t_token **tokens, char *line);
+void	free_split(char **str);
 
 // free utils
-void	free_exit(t_list **head);
-void	del_node(t_list *node);
+// void	free_exit(t_list **head);
+void	del_node(void *node);
 #endif
