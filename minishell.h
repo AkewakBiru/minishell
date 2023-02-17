@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 18:30:31 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 18:34:13 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ enum e_input_type
 	redir_out,
 	here_doc,
 	redir_out_append,
-	dollar,
+	unset,
 	redirection
 };
 

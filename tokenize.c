@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 17:50:46 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 18:24:39 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ t_token	**split_tokens(char const *s, t_token ***res)
 	while (i < get_num_tokens(s))
 	{
 		num = 0;
+		(*res)[i]->type = unset;
 		//skip start
 		while (s[j] && s[j] == ' ')
 			j++;
