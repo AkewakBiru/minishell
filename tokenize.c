@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 17:39:41 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 17:50:46 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	check_quotes(char c, int *s_quote, int *d_quote)
 		*s_quote = 0;
 }
 
-static int	get_num_tokens(char const *s, char c)
+static int	get_num_tokens(char const *s)
 {
 	int	i;
 	int	num;
@@ -44,15 +44,15 @@ static int	get_num_tokens(char const *s, char c)
 	s_quote = 0;
 	if (!s)
 		return (0);
-	while (s[i] == c && c != 0)
+	while (s[i] == ' ')
 		i++;
 	if (s[i] == 0)
 		return (0);
 	while (s[i] != 0)
 	{
 		check_quotes(s[i], &s_quote, &d_quote);
-		if (((s[i] == c || s[i] == '|' || (is_redir(s[i]) && !is_redir(s[i + 1])))
-			&& s[i + 1] != 0 && s[i + 1] != c && !d_quote && !s_quote)
+		if (((s[i] == ' ' || s[i] == '|' || (is_redir(s[i]) && !is_redir(s[i + 1])))
+			&& s[i + 1] != 0 && s[i + 1] != ' ' && !d_quote && !s_quote)
 			|| (((is_redir(s[i + 1]) && !is_redir(s[i])) || s[i + 1] == '|') && !d_quote && !s_quote))
 			num++;
 		// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
@@ -93,7 +93,6 @@ char	*combine_strs(char *s1, char *s2)
 
 int	handle_quotes(int j, int num, const char *s, t_token **token)
 {
-	//what to do when res == NULL???
 	int		d_quote;
 	int		s_quote;
 	char	*res;
@@ -135,7 +134,7 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 	return (j);
 }
 
-t_token	**split_tokens(char const *s, char c, t_token ***res)
+t_token	**split_tokens(char const *s, t_token ***res)
 {
 	int	i;
 	int	j;
@@ -147,14 +146,14 @@ t_token	**split_tokens(char const *s, char c, t_token ***res)
 	j = 0;
 	d_quote = 0;
 	s_quote = 0;
-	while (i < get_num_tokens(s, c))
+	while (i < get_num_tokens(s))
 	{
 		num = 0;
 		//skip start
-		while (s[j] && s[j] == c)
+		while (s[j] && s[j] == ' ')
 			j++;
 		// printf("entering while-loop 2\n");
-		while (s[j] && s[j] != c && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
+		while (s[j] && s[j] != ' ' && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
 		{
 			// printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
 			j++;
@@ -201,7 +200,7 @@ t_token	**tokenize(char const *line)
 	int		count;
 	int		i;
 
-	count = get_num_tokens(line, ' ');
+	count = get_num_tokens(line);
 	if (!count)
 		return (NULL);
 	res = malloc(sizeof(t_token *) * (count + 1));
@@ -215,7 +214,7 @@ t_token	**tokenize(char const *line)
 			return (malloc_fail(res, i));
 		i++;
 	}
-	split_tokens(line, ' ', &res);
+	split_tokens(line, &res);
 	return (res);
 }
 
@@ -227,7 +226,7 @@ int main()
 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
 	// char *s = "ec\"\"\'\'ho";
 	printf("%s\n", s);
-	printf("%d\n\n", get_num_tokens(s, ' '));
+	printf("%d\n\n", get_num_tokens(s));
 	t_token **r = tokenize(s);
 	int i = 0;
 	while (r + i && r[i])
