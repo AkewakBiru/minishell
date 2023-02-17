@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 16:00:49 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/17 16:54:32 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ int	combine_strs(int j, int num, const char *s, t_token **token)
 {
 	char	*read;
 	char	*res;
+	char	*to_join;
 	int		d_quote;
 	int		s_quote;
 
@@ -111,8 +112,10 @@ int	combine_strs(int j, int num, const char *s, t_token **token)
 		}
 		if (num)
 		{
-			res = ft_strjoin(read, ft_substr(s, j - num, num));
+			to_join = ft_substr(s, j - num, num);
+			res = ft_strjoin(read, to_join);
 			free(read);
+			free(to_join);
 			read = res;
 			continue;
 		}
@@ -124,8 +127,10 @@ int	combine_strs(int j, int num, const char *s, t_token **token)
 			num++;
 		}
 		check_quotes(s[j], &s_quote, &d_quote);
-		res = ft_strjoin(read, ft_substr(s, j - num, num));
+		to_join = ft_substr(s, j - num, num);
+		res = ft_strjoin(read, to_join);
 		free(read);
+		free(to_join);
 		read = res;
 		j++;
 	}
