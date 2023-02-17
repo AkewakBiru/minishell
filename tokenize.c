@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 16:54:32 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/17 17:28:54 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,20 +88,28 @@ t_token	**malloc_fail(t_token **res, int i)
 // 	return (j);
 // }
 
-int	combine_strs(int j, int num, const char *s, t_token **token)
+char	*combine_strs(char *s1, char *s2)
 {
-	char	*read;
-	char	*res;
-	char	*to_join;
+	char *res;
+	
+	res = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (res);
+}
+
+int	handle_quotes(int j, int num, const char *s, t_token **token)
+{
+	//what to do when res == NULL???
 	int		d_quote;
 	int		s_quote;
+	char	*res;
 
 	s_quote = 0;
 	d_quote = 0;
-	read = ft_substr(s, j - num, num);
-	if (!read)
+	res = ft_substr(s, j - num, num);
+	if (!res)
 		return (0);
-	res = NULL;
 	while (s[j] && s[j] != ' ' && s[j] != '|' && !is_redir(s[j]))
 	{
 		num = 0;
@@ -112,11 +120,9 @@ int	combine_strs(int j, int num, const char *s, t_token **token)
 		}
 		if (num)
 		{
-			to_join = ft_substr(s, j - num, num);
-			res = ft_strjoin(read, to_join);
-			free(read);
-			free(to_join);
-			read = res;
+			res = combine_strs(res, ft_substr(s, j - num, num));
+			if (!res)
+				return (0);
 			continue;
 		}
 		if (s[j] == '\'' || s[j] == '\"')
@@ -127,11 +133,9 @@ int	combine_strs(int j, int num, const char *s, t_token **token)
 			num++;
 		}
 		check_quotes(s[j], &s_quote, &d_quote);
-		to_join = ft_substr(s, j - num, num);
-		res = ft_strjoin(read, to_join);
-		free(read);
-		free(to_join);
-		read = res;
+		res = combine_strs(res, ft_substr(s, j - num, num));
+		if (!res)
+			return (0);
 		j++;
 	}
 	(*token)->token = res;
@@ -168,7 +172,9 @@ t_token	**split_tokens(char const *s, char c, t_token ***res)
 		if (s[j] == '\'' || s[j] == '\"')
 		{
 			// printf("combine called\n");
-			j = combine_strs(j, num, s, &((*res)[i]));
+			j = handle_quotes(j, num, s, &((*res)[i]));
+			if (!j)
+				return (NULL);
 			i++;
 			continue;
 		}
@@ -223,8 +229,8 @@ t_token	**tokenize(char const *line)
 
 int main()
 {
-	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
+	char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+	// char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
 	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
 	// char *s = "ec\"\"\'\'ho";
