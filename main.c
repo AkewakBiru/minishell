@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/12 15:34:33 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/17 18:33:15 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,8 @@ void	exec_cmd(t_utils *cmd_utils, t_list **lst, t_list **export)
 
 int	main(int ac, char **av, char **envp)
 {
-	t_list	*tokens;
+	// t_list	*tokens;
+	t_token	**tokens;
 	t_list	*lst;
 	t_utils	cmd_utils;
 	t_list	*export;
@@ -98,11 +99,15 @@ int	main(int ac, char **av, char **envp)
 	cmd_utils.pwd = 0;
 	while (1)
 	{
-		tokens = NULL;
+		// tokens = NULL;
 		line = readline("Minishell> ");
 		if (!line)
 			free_exit(&lst);
-		parse(line, &tokens);
+		tokens = parse(line);
+		//if (!tokens)
+		//{
+			// print error message and continue
+		// }
 		// t_list *node = tokens;
 		// while(node)
 		// {

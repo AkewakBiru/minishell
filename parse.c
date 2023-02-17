@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 15:15:28 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/17 18:31:33 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,15 @@
 // 	}
 // }
 
-void	parse(char *line, char **tokens)
+t_token	**parse(char *line)
 {
-	(void) tokens;
 	(void) line;
-	// t_list	**tokens_arr;
+	t_token	**tokens;
 
-	// tokens_arr = tokenize(line);
+	tokens = tokenize(line);
 	//need to free tokens eventually
 	// tokenize2(line, tokens);
+	return (tokens);
 }
 
 // int main(int argc, char **argv)

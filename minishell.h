@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 15:57:23 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/17 18:30:31 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct cmd_utils
 	char	*pwd;
 }	t_utils;
 
-void	parse(char *line, char **tokens);
+t_token	**parse(char *line);
 t_token	**tokenize(char const *line);
 
 // dictionary utils
