@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   label_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/18 16:00:13 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/18 19:35:33 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,8 @@ int	valid_file(char *name)
 int	label_tokens(t_token ***tokens)
 {
 	int	i;
-	int error;
 
 	i = 0;
-	error = 0;
 	if ((*tokens)[i] && (*tokens)[i]->type != unset)
 		return (1);
 	(*tokens)[i++]->type = cmd;

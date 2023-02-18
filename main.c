@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/18 13:30:25 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/18 19:38:58 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "./libft/libft.h"
 
 int	is_builtin(const char *cmd)
 {
@@ -94,6 +93,20 @@ int	check_line(char *line)
 	return (0);
 }
 
+void	free_tokens(t_token ***tokens_p)
+{
+	int		i;
+
+	i = 0;
+	while ((*tokens_p)[i])
+	{
+		free((*tokens_p)[i]->token);
+		free((*tokens_p)[i]);
+		i++;
+	}
+	free((*tokens_p));
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	// t_list	*tokens;
@@ -129,16 +142,16 @@ int	main(int ac, char **av, char **envp)
 		}
 		if (check_line(line))
 			add_history(line);
-		// tokens = parse(line);
+		tokens = parse(line);
 		//if (!tokens)
 		//{
 			// print error message and continue
 		// }
-		// t_list *node = tokens;
-		// while(node)
+		// int i = 0;
+		// while (tokens[i])
 		// {
-		// 	printf("%s\n", ((t_token *)node->content)->token);
-		// 	node = node->next;
+		// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
+		// 	i++;
 		// }
 		cmd_utils.cmd_arg = ft_split(line, ' ');
 		if (ft_strcmp(line, "") == 0)
@@ -172,6 +185,7 @@ int	main(int ac, char **av, char **envp)
 			free(cmd_utils.key);
 		if (cmd_utils.value != 0)
 			free(cmd_utils.value);
+		free_tokens(&tokens);
 		// ft_lstclear(&tokens, free);
 	}
 }

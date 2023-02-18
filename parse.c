@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/18 16:02:04 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/18 19:34:57 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,11 @@ t_token	**parse(char *line)
 	t_token	**tokens;
 
 	tokens = tokenize(line);
-	if (!tokens || label_tokens(&tokens))
+	if (!tokens)
+	return (NULL);
+	if (label_tokens(&tokens))
 	{
+		free_tokens(&tokens);
 		printf("Syntax error!\n");
 		return (NULL);
 	}

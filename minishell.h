@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/18 15:15:21 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/18 19:33:43 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct cmd_utils
 	t_cmd_op	cmd_op;
 }	t_utils;
 
+void	free_tokens(t_token ***tokens_p);
 t_token	**parse(char *line);
 int		label_tokens(t_token ***tokens);
 t_token	**tokenize(char const *line);
