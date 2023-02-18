@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/18 13:31:40 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/18 14:48:53 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,24 +221,24 @@ t_token	**tokenize(char const *line)
 	return (res);
 }
 
-int main()
-{
-	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
-	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
-	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
-	// char *s = "ec\"\"\'\'ho";
-	printf("%s\n", s);
-	printf("%d\n\n", get_num_tokens(s));
-	t_token **r = tokenize(s);
-	int i = 0;
-	while (r && r[i])
-	{
-		printf("token: %s, type: %u\n", r[i]->token, r[i]->type);
-		free(r[i]->token);
-		free(r[i]);
-		i++;
-	}
-	printf("i: %d\n", i);
-	free(r);
-}
+// int main()
+// {
+// 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
+// 	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
+// 	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
+// 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
+// 	// char *s = "ec\"\"\'\'ho";
+// 	printf("%s\n", s);
+// 	printf("%d\n\n", get_num_tokens(s));
+// 	t_token **r = tokenize(s);
+// 	int i = 0;
+// 	while (r && r[i])
+// 	{
+// 		printf("token: %s, type: %u\n", r[i]->token, r[i]->type);
+// 		free(r[i]->token);
+// 		free(r[i]);
+// 		i++;
+// 	}
+// 	printf("i: %d\n", i);
+// 	free(r);
+// }

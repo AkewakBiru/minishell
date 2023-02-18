@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/18 13:31:03 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/18 15:15:21 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ enum e_input_type
 	option,
 	arg,
 	pip,
-	file,
 	redir_in,
 	redir_out,
 	here_doc,
 	redir_out_append,
+	file,
 	unset,
 	redirection
 };
@@ -62,6 +62,7 @@ typedef struct cmd_utils
 }	t_utils;
 
 t_token	**parse(char *line);
+int		label_tokens(t_token ***tokens);
 t_token	**tokenize(char const *line);
 
 // dictionary utils
