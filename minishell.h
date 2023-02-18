@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 22:31:12 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/18 13:31:03 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ typedef struct cmd_utils
 	t_cmd_op	cmd_op;
 }	t_utils;
 
-t_token	*parse(char *line);
-t_token	*tokenize(char const *line);
+t_token	**parse(char *line);
+t_token	**tokenize(char const *line);
 
 // dictionary utils
 void	free_dict(t_dict	*dict);
@@ -91,7 +91,7 @@ void	ft_list_remove_if(t_list **head, char *str, int (*cmp)());
 void	unset_builtin(t_utils *cmd_utils, t_list **lst, t_list **export);
 
 // exit
-int		exit_shell(t_list **lst, t_list **export, t_utils *cmd_utils, t_token **tokens, char *line);
+int		exit_shell(t_list **lst, t_list **export, t_utils *cmd_utils, t_token ***tokens, char *line);
 void	free_split(char **str);
 
 // free utils

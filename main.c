@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 22:56:11 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/18 13:30:25 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ void	del_node(void *node)
 	return ;
 }
 
-void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export, t_token **tokens, char *line)
+/*
+* Added "*" before tokens because of compilation error
+*/
+void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export, t_token ***tokens, char *line)
 {
 	if (ft_strcmp(cmd_utils->cmd, "env") == 0)
 		print_env(lst);
@@ -54,7 +57,7 @@ void	exec_pipex(t_utils *cmd_utils, t_list **lst)
 	printf("pipex funcs go here\n");
 }
 
-void	exec_cmd(t_utils *cmd_utils, t_list **lst, t_list **export, t_token **tokens, char *line)
+void	exec_cmd(t_utils *cmd_utils, t_list **lst, t_list **export, t_token ***tokens, char *line)
 {
 	if (is_builtin(cmd_utils->cmd) == 1)
 		exec_builtin(cmd_utils, lst, export, tokens, line);
@@ -94,7 +97,7 @@ int	check_line(char *line)
 int	main(int ac, char **av, char **envp)
 {
 	// t_list	*tokens;
-	t_token	*tokens;
+	t_token	**tokens;
 	t_list	*lst;
 	t_utils	cmd_utils;
 	t_list	*export;

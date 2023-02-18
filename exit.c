@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:50:47 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 22:51:56 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/18 13:30:43 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,11 @@ void	free_split(char **str)
 	return ;
 }
 
-int exit_shell(t_list **lst, t_list **export, t_utils *cmd_utils, t_token **tokens, char *line)
+/*
+* Added "*" before tokens because of compilation error
+*/
+
+int exit_shell(t_list **lst, t_list **export, t_utils *cmd_utils, t_token ***tokens, char *line)
 {
 	(void)tokens;
 	int status = cmd_utils->EXIT_STATUS;

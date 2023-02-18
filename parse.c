@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/17 19:02:23 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/18 13:18:06 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@
 // 	}
 // }
 
-t_token	*parse(char *line)
+t_token	**parse(char *line)
 {
 	(void) line;
-	t_token	*tokens;
+	t_token	**tokens;
 
 	tokens = tokenize(line);
 	//need to free tokens eventually
