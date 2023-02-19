@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/18 19:33:43 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/19 16:07:19 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,9 @@ typedef struct cmd_utils
 	t_cmd_op	cmd_op;
 }	t_utils;
 
+void	check_quotes(char c, int *s_quote, int *d_quote);
 void	free_tokens(t_token ***tokens_p);
-t_token	**parse(char *line);
+t_token	**parse(char *line, t_list	*lst);
 int		label_tokens(t_token ***tokens);
 t_token	**tokenize(char const *line);
 

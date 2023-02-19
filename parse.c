@@ -6,15 +6,15 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/18 19:34:57 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/19 16:13:35 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	**parse(char *line)
+t_token	**parse(char *line, t_list *lst)
 {
-	(void) line;
+	(void) lst;
 	t_token	**tokens;
 
 	tokens = tokenize(line);

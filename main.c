@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/18 19:38:58 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/19 16:13:51 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ int	main(int ac, char **av, char **envp)
 		}
 		if (check_line(line))
 			add_history(line);
-		tokens = parse(line);
+		tokens = parse(line, lst);
 		//if (!tokens)
 		//{
 			// print error message and continue
