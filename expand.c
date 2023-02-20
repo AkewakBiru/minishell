@@ -59,14 +59,15 @@ int	should_expand(char *line)
 	return (0);
 }
 
-int	get_expanded_len(char *line, t_list *lst, int i)
+int	get_expanded_len(char *line, t_list *lst)
 {
+	int		i;
 	int		s_quote;
 	int		d_quote;
 	int		len;
 	char	*var_name;
-	char	*value;
 
+	i = -1;
 	s_quote = 0;
 	d_quote = 0;
 	len = ft_strlen(line);
@@ -80,11 +81,11 @@ int	get_expanded_len(char *line, t_list *lst, int i)
 			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
 		{
 			var_name = get_var_name(&line[i]);
+			if (!var_name)
+				return (-1);
 			len -= ft_strlen(var_name) + 1;
-			value = get_value(var_name, lst);
-			len += ft_strlen(value);
+			len += ft_strlen(get_value(var_name, lst));
 			free(var_name);
-			free(value);
 		}
 	}
 	return (len);
@@ -105,8 +106,8 @@ char	*expand(char *line, t_list *lst)
 
 	// if (!should_expand(line))
 	// 	return (line);
-	len = get_expanded_len(line, lst, -1);
-	if (!len)
+	len = get_expanded_len(line, lst);
+	if (len == -1)
 		return (0);
 	new_line = expand_line(line, len);
 	free(line);
