@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/20 12:02:40 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:04:52 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,18 +49,21 @@ int	label_tokens(t_token ***tokens)
 	i = 0;
 	if ((*tokens)[i] && (*tokens)[i]->type == pip)
 		return (1);
-	(*tokens)[i++]->type = cmd;
+	if ((*tokens)[i]->type == unset)
+		(*tokens)[i++]->type = cmd;
 	while ((*tokens)[i])
 	{
 		if (((*tokens)[i]->type == pip && (*tokens)[i - 1]->type == pip) //(is_redirection((*tokens)[i - 1]->type) || (*tokens)[i - 1]->type == pip))
-			|| ((*tokens)[i]->type == redirection && (!(*tokens)[i + 1] || (*tokens)[i + 1]->type != unset || !valid_file((*tokens)[i + 1]->token))) // is_redirection((*tokens)[i - 1]->type))
-			|| ((*tokens)[i]->type == redirection && label_redirection((*tokens)[i])))
+			|| ((*tokens)[i]->type == redirection && label_redirection((*tokens)[i]))
+			|| (is_redirection((*tokens)[i]->type) && (!(*tokens)[i + 1] || (*tokens)[i + 1]->type != unset || ((*tokens)[i]->type != here_doc && !valid_file((*tokens)[i + 1]->token))))) // is_redirection((*tokens)[i - 1]->type))
 			return (1);
-		if ((*tokens)[i - 1]->type == pip && (*tokens)[i]->type == unset)
+		if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == pip)
 			(*tokens)[i]->type = cmd;
 		else if ((*tokens)[i]->token[0] == '-')
 			(*tokens)[i]->type = option;
-		else if (is_redirection((*tokens)[i - 1]->type) && (*tokens)[i]->type == unset)
+		else if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == here_doc)
+			(*tokens)[i]->type = delimiter;
+		else if ((*tokens)[i]->type == unset && is_redirection((*tokens)[i - 1]->type))
 			(*tokens)[i]->type = file;
 		else if ((*tokens)[i]->type == unset)
 			(*tokens)[i]->type = arg;
