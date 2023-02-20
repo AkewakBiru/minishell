@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   label_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/18 19:35:33 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/20 12:02:40 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	label_tokens(t_token ***tokens)
 	int	i;
 
 	i = 0;
-	if ((*tokens)[i] && (*tokens)[i]->type != unset)
+	if ((*tokens)[i] && (*tokens)[i]->type == pip)
 		return (1);
 	(*tokens)[i++]->type = cmd;
 	while ((*tokens)[i])
