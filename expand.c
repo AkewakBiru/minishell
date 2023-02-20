@@ -59,20 +59,17 @@ int	should_expand(char *line)
 	return (0);
 }
 
-int	get_expanded_len(char *line, t_list *lst)
+int	get_expanded_len(char *line, t_list *lst, int i)
 {
-	int		i;
 	int		s_quote;
 	int		d_quote;
 	int		len;
 	char	*var_name;
-	// int	expanded;
+	char	*value;
 
-	i = -1;
 	s_quote = 0;
 	d_quote = 0;
 	len = ft_strlen(line);
-	// expanded = 0;
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
@@ -83,13 +80,14 @@ int	get_expanded_len(char *line, t_list *lst)
 			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
 		{
 			var_name = get_var_name(&line[i]);
-			// printf("name: %s\n", var_name);
-			get_value(var_name, lst);
-
+			len -= ft_strlen(var_name) + 1;
+			value = get_value(var_name, lst);
+			len += ft_strlen(value);
+			free(var_name);
+			free(value);
 		}
-
 	}
-	return (0);
+	return (len);
 }
 
 char	*expand_line(char *line, int len)
@@ -107,7 +105,7 @@ char	*expand(char *line, t_list *lst)
 
 	// if (!should_expand(line))
 	// 	return (line);
-	len = get_expanded_len(line);//, lst);
+	len = get_expanded_len(line, lst, -1);
 	if (!len)
 		return (0);
 	new_line = expand_line(line, len);
@@ -124,6 +122,6 @@ int main()
 	// char *s = "ec\"\"\'\'ho";
 	printf("%s\n", s);
 	// printf("should_expand: %d\n", should_expand(s));
-	get_expanded_len(s);
+	// get_expanded_len(s, -1);
 	// printf("name: %s\n\n", get_var_name(s));
 }
