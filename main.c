@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/20 13:12:07 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/20 16:43:23 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,20 @@ void	del_node(void *node)
 */
 void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export, t_token ***tokens, char *line)
 {
-	if (ft_strcmp(cmd_utils->cmd, "env") == 0)
+	if (!ft_strcmp(cmd_utils->cmd, "env"))
 		print_env(lst);
-	else if (ft_strcmp(cmd_utils->cmd, "export") == 0)
+	else if (!ft_strcmp(cmd_utils->cmd, "export"))
 		export_bltin(lst, cmd_utils, export);
-	else if (ft_strcmp(cmd_utils->cmd, "pwd") == 0)
+	else if (!ft_strcmp(cmd_utils->cmd, "pwd"))
 		print_pwd();
-	else if (ft_strcmp(cmd_utils->cmd, "cd") == 0)
+	else if (!ft_strcmp(cmd_utils->cmd, "cd"))
 		chg_dir(cmd_utils, lst, export);
-	else if (ft_strcmp(cmd_utils->cmd, "unset") == 0)
+	else if (!ft_strcmp(cmd_utils->cmd, "unset"))
 		unset_builtin(cmd_utils, lst, export);
-	else if (ft_strcmp(cmd_utils->cmd, "exit") == 0)
+	else if (!ft_strcmp(cmd_utils->cmd, "exit"))
 		exit_shell(lst, export, cmd_utils, tokens, line);
+	else if (!ft_strcmp(cmd_utils->cmd, "echo"))
+		echo(cmd_utils->cmd_arg);
 }
 
 void	exec_pipex(t_utils *cmd_utils, t_list **lst)
