@@ -26,8 +26,14 @@ char	*get_var_name(char *line)
 	return(var_name);
 }
 
-char	*get_value(char *key, t_list *lst)
+char	*get_value(char *var_name, t_list *lst)
 {
+	while(lst)
+	{
+		if (!ft_strncmp(var_name, ((t_dict *)lst->content)->key, ft_strlen(var_name)))
+			return (((t_dict *)lst->content)->value);
+		lst = lst->next;
+	}
 	return (0);
 }
 
@@ -53,7 +59,7 @@ int	should_expand(char *line)
 	return (0);
 }
 
-int	get_expanded_len(char *line)//, t_list *lst)
+int	get_expanded_len(char *line, t_list *lst)
 {
 	int		i;
 	int		s_quote;
@@ -77,7 +83,9 @@ int	get_expanded_len(char *line)//, t_list *lst)
 			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
 		{
 			var_name = get_var_name(&line[i]);
-			printf("name: %s\n", var_name);
+			// printf("name: %s\n", var_name);
+			get_value(var_name, lst);
+
 		}
 
 	}
