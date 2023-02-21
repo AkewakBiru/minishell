@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/20 16:43:23 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/21 10:58:39 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	handle_signal(int sig)
 	rl_redisplay();
 	write(1, "  \n", 3);
 	// add whatever text is given as first argument to the char* buffer, in this case empty string
-	// rl_replace_line("", 0);
+	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }
