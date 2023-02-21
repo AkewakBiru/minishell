@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/18 14:48:53 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:07:13 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,15 @@ static int	get_num_tokens(char const *s)
 	s_quote = 0;
 	if (!s)
 		return (0);
-	while (s[i] == ' ')
+	while (is_white_space(s[i]))
 		i++;
 	if (s[i] == 0)
 		return (0);
 	while (s[i] != 0)
 	{
 		check_quotes(s[i], &s_quote, &d_quote);
-		if (((s[i] == ' ' || s[i] == '|' || (is_redir(s[i]) && !is_redir(s[i + 1])))
-			&& s[i + 1] != 0 && s[i + 1] != ' ' && !d_quote && !s_quote)
+		if (((is_white_space(s[i]) || s[i] == '|' || (is_redir(s[i]) && !is_redir(s[i + 1])))
+			&& s[i + 1] != 0 && !is_white_space(s[i + 1]) && !d_quote && !s_quote)
 			|| (((is_redir(s[i + 1]) && !is_redir(s[i])) || s[i + 1] == '|') && !d_quote && !s_quote))
 			num++;
 		// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
@@ -102,10 +102,10 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 	res = ft_substr(s, j - num, num);
 	if (!res)
 		return (0);
-	while (s[j] && s[j] != ' ' && s[j] != '|' && !is_redir(s[j]))
+	while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))
 	{
 		num = 0;
-		while (s[j] && s[j] != '\'' && s[j] != '\"' && s[j] != ' ' && s[j] != '|' && !is_redir(s[j]))
+		while (s[j] && s[j] != '\'' && s[j] != '\"' && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))
 		{
 			num++;
 			j++;
@@ -153,10 +153,10 @@ t_token	**split_tokens(char const *s, t_token ***res)
 		num = 0;
 		(*res)[i]->type = unset;
 		//skip start
-		while (s[j] && s[j] == ' ')
+		while (s[j] && is_white_space(s[j]))
 			j++;
 		// printf("entering while-loop 2\n");
-		while (s[j] && s[j] != ' ' && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
+		while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
 		{
 			// printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
 			j++;

@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/21 14:42:51 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/21 14:58:49 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*get_var_name(char *line)
 	char	*var_name;
 
 	i = 1;
-	while(line[i] && line[i] != ' ' && line[i] != '$' && line[i] != '<'
+	while(line[i] && !is_white_space(line[i]) && line[i] != '$' && line[i] != '<'
 			&& line[i] != '>' && line[i] != '|' && line[i] != '\'' && line[i] != '\"')
 		i++;
 	var_name = malloc(sizeof(char) * (i));
@@ -64,7 +64,7 @@ int	should_expand(char *line)
 		if (line[i] == '$' && !s_quote && ((line[i + 1] == '?')
 			|| (line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
-			|| (line[i + 1] == '_' && line[i + 2] != '\0' && line[i + 2] != ' '
+			|| (line[i + 1] == '_' && line[i + 2] != '\0' && !is_white_space(line[i + 2])
 			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
 			return (1);
 	}
@@ -91,7 +91,7 @@ int	get_expanded_len(char *line, t_list *lst)
 		else if (line[i] == '$' && !s_quote
 			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
-			|| (line[i + 1] == '_' && line[i + 2] != '\0' && line[i + 2] != ' '
+			|| (line[i + 1] == '_' && line[i + 2] != '\0' && !is_white_space(line[i + 2])
 			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
 		{
 			var_name = get_var_name(&line[i]);
@@ -134,7 +134,7 @@ char	*expand_line(char *line, int len, t_list *lst)
 		if (line[i] == '$' && !s_quote
 			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
-			|| (line[i + 1] == '_' && line[i + 2] != '\0' && line[i + 2] != ' '
+			|| (line[i + 1] == '_' && line[i + 2] != '\0' && !is_white_space(line[i + 2])
 			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
 		{
 			var_name = get_var_name(&line[i]);
