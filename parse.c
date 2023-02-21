@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/19 16:13:35 by youssef          ###   ########.fr       */
+/*   Updated: 2023/02/21 13:00:42 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,31 @@
 
 t_token	**parse(char *line, t_list *lst)
 {
-	(void) lst;
+	char	*expanded_line;
 	t_token	**tokens;
 
-	tokens = tokenize(line);
+	expanded_line = expand(line, lst);
+	// printf("new_line %s\n", expanded_line);
+	if (expanded_line)
+	{
+		tokens = tokenize(expanded_line);
+		free(expanded_line);
+	}
+	else
+		tokens = tokenize(line);
 	if (!tokens)
-	return (NULL);
+		return (NULL);
 	if (label_tokens(&tokens))
 	{
 		free_tokens(&tokens);
-		printf("Syntax error!\n");
 		return (NULL);
 	}
+	// int i = 0;
+	// while (tokens && tokens[i])
+	// {
+	// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
+	// 	i++;
+	// }
 	//need to free tokens eventually
 	// tokenize2(line, tokens);
 	return (tokens);

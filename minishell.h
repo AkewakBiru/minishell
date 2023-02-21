@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/20 16:42:10 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/21 11:47:54 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct cmd_utils
 	t_cmd_op	cmd_op;
 }	t_utils;
 
+char	*expand(char *line, t_list *lst);
 void	check_quotes(char c, int *s_quote, int *d_quote);
 void	free_tokens(t_token ***tokens_p);
 t_token	**parse(char *line, t_list	*lst);
