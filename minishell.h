@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/21 11:47:54 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/21 14:48:14 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ typedef struct cmd_utils
 	int		num_cmd;
 	t_cmd_op	cmd_op;
 }	t_utils;
+
+// parse utils
+int	is_white_space(char c);
 
 char	*expand(char *line, t_list *lst);
 void	check_quotes(char c, int *s_quote, int *d_quote);
