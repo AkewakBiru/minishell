@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/21 13:01:12 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:22:51 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,11 @@ int	main(int ac, char **av, char **envp)
 		}
 		if (check_line(line))
 			add_history(line);
+		if (!ft_strlen(line))
+		{
+			free(line);
+			continue;
+		}
 		tokens = parse(line, lst);
 		if (!tokens)
 		{
