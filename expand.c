@@ -49,8 +49,8 @@ int	should_expand(char *line)
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
-		if (line[i] == '$' && !s_quote
-			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
+		if (line[i] == '$' && !s_quote && ((line[i + 1] == '?')
+			|| (line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
 			|| (line[i + 1] == '_' && line[i + 2] != '\0' && line[i + 2] != ' '
 			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
@@ -74,7 +74,9 @@ int	get_expanded_len(char *line, t_list *lst)
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
-		if (line[i] == '$' && !s_quote
+		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
+			len--;
+		else if (line[i] == '$' && !s_quote
 			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
 			|| (line[i + 1] == '_' && line[i + 2] != '\0' && line[i + 2] != ' '
@@ -110,6 +112,13 @@ char	*expand_line(char *line, int len, t_list *lst)
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
+		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
+		{
+			//needs to be set to actual exit status
+			new_line[j++] = '0';
+			i += 2;
+			continue;
+		}
 		if (line[i] == '$' && !s_quote
 			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
