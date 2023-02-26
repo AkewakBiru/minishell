@@ -1,38 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   error_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/12 15:27:50 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:33:58 by abiru            ###   ########.fr       */
+/*   Created: 2023/02/26 21:35:43 by abiru             #+#    #+#             */
+/*   Updated: 2023/02/26 21:35:46 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "./libft/libft.h"
 
-void	echo(char **arg)
+void	custom_err_msg(char *cmd, char *arg)
 {
-	int	i;
-
-	i = 1;
-	if (!(arg + 1) || !arg[1])
-	{
-		printf("\n");
-		return ;
-	}
-	if (arg + 1 && arg[i] && !ft_strcmp(arg[1], "-n"))
-		i++;
-	while (arg + i && arg[i])
-	{
-		printf("%s", arg[i]);
-		if (arg + i + 1 && arg[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (arg + 1 && arg[1] && ft_strcmp(arg[1], "-n") != 0)
-		printf("\n");
-	return ;
+	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putendl_fd("': not a valid identifier", 2);
 }

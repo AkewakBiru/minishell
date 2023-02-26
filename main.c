@@ -3,24 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/21 15:22:51 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/26 21:41:49 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_builtin(const char *cmd)
-{
-	if (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "cd")
-		|| !ft_strcmp(cmd, "pwd") || !ft_strcmp(cmd, "export")
-		|| !ft_strcmp(cmd, "unset") || !ft_strcmp(cmd, "env")
-		|| !ft_strcmp(cmd, "exit"))
-		return (1);
-	return (0);
-}
 
 void	del_node(void *node)
 {
@@ -33,38 +23,6 @@ void	del_node(void *node)
 /*
 * Added "*" before tokens because of compilation error
 */
-void	exec_builtin(t_utils *cmd_utils, t_list **lst, t_list **export, t_token ***tokens, char *line)
-{
-	if (!ft_strcmp(cmd_utils->cmd, "env"))
-		print_env(lst);
-	else if (!ft_strcmp(cmd_utils->cmd, "export"))
-		export_bltin(lst, cmd_utils, export);
-	else if (!ft_strcmp(cmd_utils->cmd, "pwd"))
-		print_pwd();
-	else if (!ft_strcmp(cmd_utils->cmd, "cd"))
-		chg_dir(cmd_utils, lst, export);
-	else if (!ft_strcmp(cmd_utils->cmd, "unset"))
-		unset_builtin(cmd_utils, lst, export);
-	else if (!ft_strcmp(cmd_utils->cmd, "exit"))
-		exit_shell(lst, export, cmd_utils, tokens, line);
-	else if (!ft_strcmp(cmd_utils->cmd, "echo"))
-		echo(cmd_utils->cmd_arg);
-}
-
-void	exec_pipex(t_utils *cmd_utils, t_list **lst)
-{
-	(void)lst;
-	(void)cmd_utils;
-	printf("pipex funcs go here\n");
-}
-
-void	exec_cmd(t_utils *cmd_utils, t_list **lst, t_list **export, t_token ***tokens, char *line)
-{
-	if (is_builtin(cmd_utils->cmd) == 1)
-		exec_builtin(cmd_utils, lst, export, tokens, line);
-	else
-		exec_pipex(cmd_utils, lst);
-}
 
 void	handle_signal(int sig)
 {
@@ -83,13 +41,14 @@ void	handle_signal(int sig)
 int	check_line(char *line)
 {
 	int	i;
-	
+
 	if (!line)
 		return (0);
 	i = -1;
 	while (line[++i])
 	{
-		if (line[i] != ' ')
+		if (line[i] != ' ' || line[i] != '\t' || line[i] != '\n'
+			|| line[i] != '\v' || line[i] != '\f' || line[i] != '\r')
 			return (1);
 	}
 	return (0);
@@ -109,14 +68,44 @@ void	free_tokens(t_token ***tokens_p)
 	free((*tokens_p));
 }
 
+int count_cmd_nums(t_token	**tokens)
+{
+	int i = 0;
+	int count = 0;
+
+	while (tokens + i && tokens[i])
+	{
+		if (tokens[i]->type == cmd)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+void	free_cmd_params(t_cmd_op **cmds)
+{
+	int	i;
+	
+	i = 0;
+	while (cmds + i && cmds[i])
+	{
+		free(cmds[i]->cmd);
+		free(cmds[i]->cmd_args);
+		free(cmds[i]);
+		i++;
+	}
+	free(cmds);
+}
+
 int	main(int ac, char **av, char **envp)
 {
-	// t_list	*tokens;
 	t_token	**tokens;
 	t_list	*lst;
-	t_utils	cmd_utils;
 	t_list	*export;
 	char	*line;
+	t_strs *cmd_list;
+	t_cmd_op	**cmds;
+	int			exit_status;
 
 	lst = NULL;
 	export = NULL;
@@ -127,74 +116,47 @@ int	main(int ac, char **av, char **envp)
 	signal(SIGQUIT, SIG_IGN);
 	create_env(&lst, envp);
 	create_env(&export, envp);
-	cmd_utils.flag = 1;
-	cmd_utils.pwd = 0;
-	cmd_utils.EXIT_STATUS = 0;
+	exit_status = 0;
 	while (1)
 	{
-		// tokens = NULL;
-		cmd_utils.key = 0;
-		cmd_utils.value = 0;
 		line = readline("Minishell> ");
 		if (!line)
 		{
 			ft_lstclear_dict(&lst, free);
 			ft_lstclear_dict(&export, free);
+			ft_putendl_fd("exit", 2);
 			return (0);
 		}
-		if (check_line(line))
-			add_history(line);
 		if (!ft_strlen(line))
 		{
 			free(line);
 			continue;
 		}
+		add_history(line);
 		tokens = parse(line, lst);
 		if (!tokens)
 		{
 			printf("Syntax error!\n");
 			free(line);
+			exit_status = 2;
 			continue;
 		}
-		// int i = 0;
-		// while (tokens[i])
-		// {
-		// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
-		// 	i++;
-		// }
-		cmd_utils.cmd_arg = ft_split(line, ' ');
-		if (ft_strcmp(line, "") == 0)
-		{
-			free(line);
-			free_split(cmd_utils.cmd_arg);
-			// ft_lstclear(&tokens, free);
-			continue ;
-		}
-		cmd_utils.cmd = cmd_utils.cmd_arg[0];
-		if (cmd_utils.cmd_arg && cmd_utils.cmd_arg[0] && ft_strcmp(cmd_utils.cmd_arg[0], "export") == 0)
-		{
-			if (cmd_utils.cmd_arg[1])
-			{
-				if (ft_strchr(cmd_utils.cmd_arg[1], '='))
-					cmd_utils.flag = 1;
-				else
-					cmd_utils.flag = 0;
-				cmd_utils.key = ft_strndup(cmd_utils.cmd_arg[1], '=');
-				if (ft_strchr(cmd_utils.cmd_arg[1], '='))
-					cmd_utils.value = ft_strdup(ft_strchr(cmd_utils.cmd_arg[1], '=') + 1);
-				else
-					cmd_utils.value = ft_strdup("");
-			}
-		}
-
-		exec_cmd(&cmd_utils, &lst, &export, &tokens, line);
+		cmd_list = init_struct();
+		cmd_list->env_p = ft_strdup(get_val(&lst, "PATH"));
+		cmd_list->ind_p = ft_split(cmd_list->env_p, ':');
+		cmd_list->cmd_len = count_cmd_nums(tokens);
+		cmds = create_cmd_list(&cmd_list, tokens, &lst);
+		executor(cmds, &lst, &export, tokens, line);
+		free(cmd_list->env_p);
+		cmd_list->env_p = 0;
+		free_arr(cmd_list->ind_p);
+		cmd_list->ind_p = 0;
+		free(cmd_list);
+		cmd_list = 0;
+		free_cmd_params(cmds);
+		cmds = 0;
 		free(line);
-		free_split(cmd_utils.cmd_arg);
-		if (cmd_utils.key != 0)
-			free(cmd_utils.key);
-		if (cmd_utils.value != 0)
-			free(cmd_utils.value);
 		free_tokens(&tokens);
-		// ft_lstclear(&tokens, free);
 	}
+	return (exit_status);
 }
