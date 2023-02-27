@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:33:26 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/27 23:24:54 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	print_env(t_list **lst)
 	t_list	*tmp;
 
 	tmp = *lst;
-	printf("here\n");
 	while (tmp)
 	{
 		printf("%s=%s\n", ((t_dict *)tmp->content)->key,
@@ -30,6 +29,8 @@ void	print_list(t_list **lst)
 {
 	t_list	*tmp;
 
+	if (!lst || !(*lst))
+		return ;
 	sort_list(lst);
 	tmp = *lst;
 	while (tmp)
@@ -43,7 +44,7 @@ void	print_list(t_list **lst)
 	}
 }
 
-void	update_env(t_utils *cmd, t_list **env)
+void	update_env(t_dict *cmd, t_list **env)
 {
 	t_dict	*new;
 	t_list	*node;
@@ -104,6 +105,8 @@ int	check_key_names(char *cmd, char **cmd_utils)
 	flag = 1;
 	while (cmd_utils + i && cmd_utils[i])
 	{
+		if (cmd_utils[i] + 0 && cmd_utils[i][0] == '\0')
+			flag = 0;
 		if (cmd_utils[i] + 0 && (ft_isdigit(cmd_utils[i][0]) || cmd_utils[i][0] == '='))
 			flag = 0;
 		if (cmd_utils[i] + 0 && !check_alphanumeric(cmd_utils[i]))
@@ -115,10 +118,26 @@ int	check_key_names(char *cmd, char **cmd_utils)
 	return (flag);
 }
 
+void	create_key_val(t_dict **dict, char *cmd_utils)
+{
+	t_dict	*tmp;
+
+	tmp = *dict;
+	if (ft_strchr(cmd_utils, '='))
+		tmp->flag = 1;
+	else
+		tmp->flag = 0;
+	tmp->key = ft_strndup(cmd_utils, '=');
+	if (ft_strchr(cmd_utils, '='))
+		tmp->value = ft_strdup(ft_strchr(cmd_utils, '=') + 1);
+	else
+		tmp->value = ft_strdup("");
+}
+
 void	export_bltin(t_list **lst, char **cmd_utils, t_list **export)
 {
 	int	i;
-	t_utils	*dict;
+	t_dict	*dict;
 
 	i = 1;
 	if (!(cmd_utils + i) || !cmd_utils[i])
@@ -128,20 +147,21 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export)
 	}
 	if (!check_key_names(cmd_utils[0], cmd_utils))
 		return ;
-	dict = (t_utils *)malloc(sizeof(t_utils));
+	dict = (t_dict *)malloc(sizeof(t_dict));
 	if (!dict)
 		return ;
 	while (cmd_utils + i && cmd_utils[i])
 	{
-		if (ft_strchr(cmd_utils[i], '='))
-			dict->flag = 1;
-		else
-			dict->flag = 0;
-		dict->key = ft_strndup(cmd_utils[i], '=');
-		if (ft_strchr(cmd_utils[i], '='))
-			dict->value = ft_strdup(ft_strchr(cmd_utils[i], '=') + 1);
-		else
-			dict->value = ft_strdup("");
+		create_key_val(&dict, cmd_utils[i]);
+		// if (ft_strchr(cmd_utils[i], '='))
+		// 	dict->flag = 1;
+		// else
+		// 	dict->flag = 0;
+		// dict->key = ft_strndup(cmd_utils[i], '=');
+		// if (ft_strchr(cmd_utils[i], '='))
+		// 	dict->value = ft_strdup(ft_strchr(cmd_utils[i], '=') + 1);
+		// else
+		// 	dict->value = ft_strdup("");
 		if (ft_strchr(cmd_utils[i], '='))
 			update_env(dict, lst);
 		update_env(dict, export);

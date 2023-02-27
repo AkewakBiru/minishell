@@ -1,7 +1,9 @@
-if there is no env var, seg fault when export is used (easy fix)
-exit | exit | exit | exit | pwd - shouldn't exit but it is.
+if there is no env var, seg fault when export is used (easy fix) -> fixed
+exit | exit | exit | exit | pwd - shouldn't exit but it is -> fixed
 exit status needs fix
-shlvl is not being updated. It should be.
+shlvl is not being updated. It should be. - increase shell level whenever the ./minishell executable is run. it starts from 2 -> fixed
 lots of mem-leaks
 lots of norme_errors
-signal problems in child process (easy fix)
+signal problems in child process (easy fix) -> fixed
+ctrl + c segfaults in heredoc, because of (get_next_line protection problem)
+redirection problem not fully fixed

@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 21:33:41 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:34:29 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/27 23:32:48 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	print_pwd(void)
 int	chg_dir(char **cmd_utils, t_list **lst, t_list **export)
 {
 	char	*val;
-	t_utils	*dict;
+	t_dict	*dict;
 
 	if (cmd_utils + 1 && cmd_utils[1] && chdir(cmd_utils[1]) == -1)
 	{
@@ -56,7 +56,7 @@ int	chg_dir(char **cmd_utils, t_list **lst, t_list **export)
 	val = get_pwd();
 	if (!val)
 		return (1);
-	dict = (t_utils *)malloc(sizeof(t_utils));
+	dict = (t_dict *)malloc(sizeof(t_dict));
 	if (!dict)
 		return (1);
 	dict->key = ft_strdup("OLDPWD");

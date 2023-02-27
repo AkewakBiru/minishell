@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 15:29:46 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/27 23:28:00 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,42 @@ void	free_cmd_params(t_cmd_op **cmds)
 	free(cmds);
 }
 
+int	update_shell(t_list **lst, t_list **export)
+{
+	unsigned long long	n;
+	t_dict	*dict;
+
+	dict = (t_dict *)malloc(sizeof(t_dict));
+	if (!dict)
+	{
+		perror("malloc");
+		return (1);
+	}
+	dict->key = ft_strdup("SHLVL");
+	dict->flag = 1;
+	if (key_exists("SHLVL", lst))
+	{
+		if (get_val(lst, "SHLVL"))
+		{
+			n = ft_atoi(get_val(lst, "SHLVL"));
+			if (n >= 1000)
+				n = 0;
+			n++;
+		}
+		else
+			n = 1;
+		dict->value = ft_itoa(n);
+		update_env(dict, lst);
+		update_env(dict, export);
+		return (0);
+	}
+	n = 1;
+	dict->value = ft_itoa(n);
+	update_env(dict, lst);
+	update_env(dict, export);
+	return (0);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_token	**tokens;
@@ -115,10 +151,11 @@ int	main(int ac, char **av, char **envp)
 	signal(SIGQUIT, SIG_IGN);
 	create_env(&lst, envp);
 	create_env(&export, envp);
+	update_shell(&lst, &export);
 	exit_status = 0;
 	while (1)
 	{
-		line = readline("Minishell> ");
+		line = readline("Yash$ ");
 		if (!line)
 		{
 			ft_lstclear_dict(&lst, free);

@@ -6,87 +6,18 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:35:03 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/27 23:24:24 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int get_left_pipe(t_token **tokens, int i)
+void	child_sig_handler(int sig)
 {
-	int j;
-
-	j = i - 1;
-	while (j > 0 && tokens + j && tokens[j] && tokens[j]->type != pip)
-	{
-		j--;
-	}
-	return (j);
-}
-
-int	do_in_redir(t_token **tokens, int i)
-{
-	int	j;
-	int	k;
-
-	if (i > 0)
-		j = get_left_pipe(tokens, i);
-	else
-		j = 0;
-	if (tokens + j && tokens[j] && (tokens[j]->type == pip || tokens[j]->type == cmd))
-		j++;
-	while (tokens + j && tokens[j] && tokens[j]->type != pip)
-	{
-		if (tokens + j && tokens[j] && tokens[j]->type == redir_in)
-		{
-			k = open(tokens[j + 1]->token, O_RDONLY);
-			if (k < 0)
-			{
-				perror("");
-				return (-1);
-			}
-			close(k);
-		}
-		j++;
-	}
-	return (0);
-}
-
-int	do_out_redir(t_token **tokens, int i)
-{
-	int	j;
-	int	k;
-	if (i > 0)
-		j = get_left_pipe(tokens, i);
-	else
-		j = 0;
-	if (tokens + j && tokens[j] && (tokens[j]->type == pip || tokens[j]->type == cmd))
-		j++;
-	while (tokens + j && tokens[j] && tokens[j]->type != pip)
-	{
-		if (tokens + j && tokens[j] && tokens[j]->type == redir_out)
-		{
-			k = open(tokens[j + 1]->token, O_RDWR | O_CREAT | O_TRUNC, 0000644);
-			if (k < 0)
-			{
-				perror("");
-				return (-1);
-			}
-			close(k);
-		}
-		else if (tokens + j && tokens[j] && tokens[j]->type == redir_out_append)
-		{
-			k = open(tokens[j + 1]->token, O_RDWR | O_CREAT | O_APPEND, 0000644);
-			if (k < 0)
-			{
-				perror("");
-				return (-1);
-			}
-			close(k);
-		}
-		j++;
-	}
-	return (0);
+	(void)sig;
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	// rl_redisplay();
 }
 
 int	is_builtin(char *cmd)
@@ -225,12 +156,30 @@ int	error_msg(char *msg, char **args, int num)
 
 void	ex_fail_msg(char **args)
 {
-	if (ft_strchr(args[0], '/')
+	DIR	*dir;
+
+	dir = opendir(args[0]);
+	if (dir)
+	{
+		error_msg("Is a directory", args, 1);
+		closedir(dir);
+	}
+	else if (ft_strchr(args[0], '/')
 		&& access(args[0], F_OK) != 0)
 		error_msg("No such file or directory", args, 1);
+	else if (access(args[0], X_OK) != 0 && access(args[0], F_OK) == 0)
+		error_msg("permission denied", args, 1);
 	else
 		error_msg("command not found", args, 1);
 }
+
+/*
+DIFFERENT ERROR MESSAGES
+command not found
+permission denied
+no such file or directory
+is a directory -> i can use opendir to check if sth is a directory or not
+*/
 
 int	dup_close_builtin(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
 {
@@ -275,12 +224,14 @@ int	dup_close_builtin(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **toke
 	{
 		if (cmds[t_int->counter]->redir_in != -2)
 			dup2(infile, STDIN_FILENO);
+		else
+			dup2(t_int->RLSTDIN, STDIN_FILENO);
 		if (cmds[t_int->counter]->redir_out != -2)
 		{
 			if (cmds[t_int->counter]->redir_out == -1)
 			{
 				dup2(pipes[1], STDOUT_FILENO);
-				close(pipes[1]);
+				// close(pipes[1]);
 			}
 			else
 				dup2(outfile, STDOUT_FILENO);
@@ -300,6 +251,8 @@ int	dup_close_builtin(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **toke
 		}
 		if (cmds[t_int->counter]->redir_out != -2)
 			dup2(outfile, STDOUT_FILENO);
+		else
+			dup2(t_int->RLSTDOUT, STDOUT_FILENO);
 	}
 	else
 	{
@@ -361,6 +314,11 @@ char	**construct_envp(t_list **lst)
 	return (envp);
 }
 
+/*
+	if executable is a builtin, it should be the last command to be executed
+	@signal is reset to default in child process, but if the child is minishell it will be restored
+	in main exec func
+*/
 int	exec_cmd(t_cmd_op **cmds, t_list **lst, t_list **export, char *line, t_ints *t_int, int *pipes, t_token **tokens)
 {
 	int		pid;
@@ -368,16 +326,23 @@ int	exec_cmd(t_cmd_op **cmds, t_list **lst, t_list **export, char *line, t_ints 
 
 	if (!(cmds + t_int->counter) || !(cmds[t_int->counter]))
 		return (0);
-	if (is_builtin(cmds[t_int->counter]->cmd))
+	if ((is_builtin(cmds[t_int->counter]->cmd) && t_int->counter == t_int->cmd_count - 1) || (!ft_strcmp(cmds[t_int->counter]->cmd, "echo")))
 	{
 		dup_close_builtin(cmds, t_int, pipes, tokens);
 		exec_builtin(cmds[t_int->counter], lst, export, tokens, t_int, line);
 	}
-	else
+	else if (!is_builtin(cmds[t_int->counter]->cmd))
 	{
 		pid = fork();
+		if (pid == -1)
+		{
+			perror("");
+			return (-1);
+		}
 		if (pid == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			close(t_int->RLSTDIN);
 			close(t_int->RLSTDOUT);
 			dup_close(cmds, t_int, pipes, tokens);
@@ -389,6 +354,8 @@ int	exec_cmd(t_cmd_op **cmds, t_list **lst, t_list **export, char *line, t_ints 
 			free_cmd_params(cmds);
 			exit(1);
 		}
+		else
+			signal(SIGINT, SIG_IGN);
 	}
 	return (0);
 }
@@ -465,9 +432,15 @@ void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, 
 		if (tokens[i]->type == cmd)
 		{
 			if (do_in_redir(tokens, i) == -1)
+			{
+				i++;
 				continue ;
+			}
 			if (do_out_redir(tokens, i) == -1)
+			{
+				i++;
 				continue ;
+			}
 			exec_cmd(cmds, lst, export, line, &t_int, pipes, tokens);
 			t_int.counter++;
 		}
@@ -483,10 +456,12 @@ void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, 
 		t_int.exit_status = WEXITSTATUS(t_int.exit_status);
 	else if (WIFSIGNALED(t_int.exit_status))
 		t_int.exit_status = WTERMSIG(t_int.exit_status) + 128;
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, SIG_IGN);
 	rm_hd_files(tokens);
 	dup2(t_int.RLSTDIN, STDIN_FILENO);
 	close(t_int.RLSTDIN);
 	dup2(t_int.RLSTDOUT, STDOUT_FILENO);
 	close(t_int.RLSTDOUT);
-	printf("%d\n", t_int.exit_status);
+	// printf("%d\n", t_int.exit_status);
 }

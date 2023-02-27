@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 15:27:01 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/27 23:33:20 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <errno.h>
+# include <dirent.h>
 # define BUFFER_SIZE 42
 # define MAX_FD 256
 
@@ -58,19 +60,6 @@ typedef struct cmd_op
 	int		redir_out;
 }	t_cmd_op;
 
-typedef struct cmd_utils
-{
-	char	*cmd;
-	char	**cmd_arg;
-	char	*key;
-	char	*value;
-	int		flag;
-	char	*pwd;
-	int		EXIT_STATUS;
-	int		num_cmd;
-	t_cmd_op	cmd_op;
-}	t_utils;
-
 typedef struct strs {
 	char	*env_p;
 	char	**ind_p;
@@ -88,7 +77,6 @@ typedef struct	s_ints
 	int exit_status;
 	int	RLSTDIN;
 	int	RLSTDOUT;
-	int	pipes[4];
 }	t_ints;
 
 // parse utils
@@ -111,7 +99,7 @@ char	*get_val(t_list **lst, char *key);
 // export and env utils
 void	print_env(t_list **lst);
 void	print_list(t_list **lst);
-void	update_env(t_utils *cmd, t_list **env);
+void	update_env(t_dict *cmd, t_list **env);
 void	export_bltin(t_list **lst, char **cmd_utils, t_list **export);
 void	create_env(t_list **head, char **envp);
 
@@ -164,4 +152,10 @@ int	is_builtin(char *cmd);
 
 void	custom_err_msg(char *cmd, char *arg);
 int	check_key_names(char *cmd, char **cmd_utils);
+
+void	handle_signal(int sig);
+
+// input and output redirection utils
+int	do_in_redir(t_token **tokens, int i);
+int	do_out_redir(t_token **tokens, int i);
 #endif
