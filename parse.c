@@ -6,11 +6,22 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/21 13:00:42 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/27 14:19:08 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_token	**empty_token()
+{
+	t_token	**res;
+
+	res = malloc(sizeof(t_token *));
+	if (!res)
+		return (NULL);
+	res[0] = NULL;
+	return (res);
+}
 
 t_token	**parse(char *line, t_list *lst)
 {
@@ -18,9 +29,14 @@ t_token	**parse(char *line, t_list *lst)
 	t_token	**tokens;
 
 	expanded_line = expand(line, lst);
-	// printf("new_line %s\n", expanded_line);
 	if (expanded_line)
 	{
+		if (!ft_strcmp(expanded_line, "\0"))
+		{
+			tokens = empty_token();
+			free(expanded_line);
+			return (tokens);
+		}
 		tokens = tokenize(expanded_line);
 		free(expanded_line);
 	}
@@ -39,8 +55,6 @@ t_token	**parse(char *line, t_list *lst)
 	// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
 	// 	i++;
 	// }
-	//need to free tokens eventually
-	// tokenize2(line, tokens);
 	return (tokens);
 }
 
