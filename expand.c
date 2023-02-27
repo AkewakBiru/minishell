@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/21 14:58:49 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/27 15:28:07 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,7 @@ char	*expand_line(char *line, int len, t_list *lst)
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
 		{
-			//needs to be set to actual exit status
-			new_line[j++] = '0';
+			new_line[j++] = exit_status;
 			i += 2;
 			continue;
 		}

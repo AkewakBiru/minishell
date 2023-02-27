@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:41:49 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/27 15:29:46 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ int	main(int ac, char **av, char **envp)
 	char	*line;
 	t_strs *cmd_list;
 	t_cmd_op	**cmds;
-	int			exit_status;
 
 	lst = NULL;
 	export = NULL;
