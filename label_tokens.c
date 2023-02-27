@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/20 13:04:52 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/27 14:33:56 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	is_redirection(enum e_input_type type)
 
 int	valid_file(char *name)
 {
-	if (name[0] == '\0' || name[0] == '/' || name[0] == '.' || name[0] == ':')
+	if (name[0] == '/' || name[0] == '.' || name[0] == ':')
 		return (0);
 	return (1);
 }
