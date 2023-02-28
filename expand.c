@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/28 15:19:39 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/28 16:20:40 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,14 @@ int	get_expanded_len(char *line, t_list *lst)
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
-			len--;
+		{
+			var_name = ft_itoa(exit_status);
+			if (!var_name)
+				return (-1);
+			len -= 2;
+			len += ft_strlen(var_name);
+			free(var_name);
+		}
 		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			len--;
 		else if (line[i] == '$' && !s_quote
@@ -129,8 +136,13 @@ char	*expand_line(char *line, int len, t_list *lst)
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
 		{
-			new_line[j++] = exit_status + 48;
+			var_name = ft_itoa(exit_status);
+			if (!var_name)
+				return (0);
+			ft_memcpy(&new_line[j], var_name, ft_strlen(var_name));
+			free(var_name);
 			i++;
+			j += ft_strlen(var_name);
 			continue;
 		}
 		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
