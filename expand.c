@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/27 15:28:07 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/28 15:19:39 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	should_expand(char *line)
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && ((line[i + 1] == '?')
+			|| (!d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			|| (line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
 			|| (line[i + 1] == '_' && line[i + 2] != '\0' && !is_white_space(line[i + 2])
@@ -87,6 +88,8 @@ int	get_expanded_len(char *line, t_list *lst)
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
+			len--;
+		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			len--;
 		else if (line[i] == '$' && !s_quote
 			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
@@ -126,10 +129,12 @@ char	*expand_line(char *line, int len, t_list *lst)
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
 		{
-			new_line[j++] = exit_status;
-			i += 2;
+			new_line[j++] = exit_status + 48;
+			i++;
 			continue;
 		}
+		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
+			continue;
 		if (line[i] == '$' && !s_quote
 			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
 			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
