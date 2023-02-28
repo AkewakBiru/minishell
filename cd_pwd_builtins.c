@@ -43,7 +43,7 @@ void	print_pwd(void)
 	expecially PWD and OLDPWD
 */
 
-int	chg_dir(char **cmd_utils, t_list **lst, t_list **export)
+int	chg_dir(char **cmd_utils, t_list **lst, t_list **export, t_ints *t_int)
 {
 	char	*val;
 	t_dict	*dict;
@@ -51,7 +51,7 @@ int	chg_dir(char **cmd_utils, t_list **lst, t_list **export)
 	if (cmd_utils + 1 && cmd_utils[1] && chdir(cmd_utils[1]) == -1)
 	{
 		perror("cd");
-		exit_status = 1;
+		t_int->e_status = 1;
 		return (1);
 	}
 	val = get_pwd();

@@ -6,14 +6,32 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 15:27:50 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:33:58 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/01 00:24:51 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "./libft/libft.h"
 
-void	echo(char **arg)
+int	is_n(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str || str[i] == '\0')
+		return (0);
+	if (str + i && str[i] && str[i] == '-')
+		i++;
+	while (str + i && str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	echo(char **arg)
 {
 	int	i;
 
@@ -21,10 +39,11 @@ void	echo(char **arg)
 	if (!(arg + 1) || !arg[1])
 	{
 		printf("\n");
-		return ;
+		return (0);
 	}
-	if (arg + 1 && arg[i] && !ft_strcmp(arg[1], "-n"))
+	while (arg + i && arg[i] && !ft_strncmp(arg[i], "-n", 2) && is_n(arg[i]))
 		i++;
+	// printf("%d\n", i);
 	while (arg + i && arg[i])
 	{
 		printf("%s", arg[i]);
@@ -32,7 +51,7 @@ void	echo(char **arg)
 			printf(" ");
 		i++;
 	}
-	if (arg + 1 && arg[1] && ft_strcmp(arg[1], "-n") != 0)
+	if (arg + 1 && arg[1] && !is_n(arg[1]))
 		printf("\n");
-	return ;
+	return (0);
 }

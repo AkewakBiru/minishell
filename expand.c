@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/28 16:20:40 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/28 23:32:15 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	should_expand(char *line)
 	return (0);
 }
 
-int	get_expanded_len(char *line, t_list *lst)
+int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
 {
 	int		i;
 	int		s_quote;
@@ -84,12 +84,13 @@ int	get_expanded_len(char *line, t_list *lst)
 	s_quote = 0;
 	d_quote = 0;
 	len = ft_strlen(line);
+	(void)t_int;
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
 		{
-			var_name = ft_itoa(exit_status);
+			var_name = ft_itoa(t_int->e_status);
 			if (!var_name)
 				return (-1);
 			len -= 2;
@@ -115,7 +116,7 @@ int	get_expanded_len(char *line, t_list *lst)
 	return (len);
 }
 
-char	*expand_line(char *line, int len, t_list *lst)
+char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
 {
 	char *new_line;
 	int		s_quote;
@@ -136,13 +137,13 @@ char	*expand_line(char *line, int len, t_list *lst)
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
 		{
-			var_name = ft_itoa(exit_status);
+			var_name = ft_itoa(t_int->e_status);
 			if (!var_name)
 				return (0);
 			ft_memcpy(&new_line[j], var_name, ft_strlen(var_name));
-			free(var_name);
 			i++;
 			j += ft_strlen(var_name);
+			free(var_name);
 			continue;
 		}
 		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
@@ -165,20 +166,21 @@ char	*expand_line(char *line, int len, t_list *lst)
 		new_line[j++] = line[i];
 	}
 	new_line[j] = '\0';
+	// printf("%s\n", new_line);
 	return (new_line);
 }
 
-char	*expand(char *line, t_list *lst)
+char	*expand(char *line, t_list *lst, t_ints *t_int)
 {
 	char	*new_line;
 	int		len;
 
 	if (!should_expand(line))
 		return (0);
-	len = get_expanded_len(line, lst);
+	len = get_expanded_len(line, lst, t_int);
 	if (len == -1)
 		return (0);
-	new_line = expand_line(line, len, lst);
+	new_line = expand_line(line, len, lst, t_int);
 	if (!new_line)
 		return (0);
 	return (new_line);

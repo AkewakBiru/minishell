@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/27 14:19:08 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/28 19:03:22 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ t_token	**empty_token()
 	return (res);
 }
 
-t_token	**parse(char *line, t_list *lst)
+t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 {
 	char	*expanded_line;
 	t_token	**tokens;
 
-	expanded_line = expand(line, lst);
+	expanded_line = expand(line, lst, t_int);
 	if (expanded_line)
 	{
 		if (!ft_strcmp(expanded_line, "\0"))

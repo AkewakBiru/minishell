@@ -16,8 +16,11 @@
 void	free_dict(t_dict	*dict)
 {
 	free(dict->key);
+	dict->key = 0;
 	free(dict->value);
+	dict->value = 0;
 	free(dict);
+	dict = 0;
 }
 
 int	key_exists(char *s, t_list **new)

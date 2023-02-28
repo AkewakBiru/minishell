@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 19:48:32 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 09:53:49 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 23:52:28 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ unsigned long long	ft_atoi(const char *str)
 	sign = (int)ft_sign(str, i);
 	if (str[i] == '+' || str[i] == '-')
 		i++;
-	if (cus_strlen(str) >= 20 && sign == 1)
+	if ((str + i && str[i] == 0) || (cus_strlen(str) >= 20 && sign == 1))
 		return (9223372036854775809ULL);
 	if (cus_strlen(str) >= 20 && sign == -1)
 		return (9223372036854775809ULL);

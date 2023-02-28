@@ -15,7 +15,7 @@
 void handle_signal2(int sig)
 {
 	(void)sig;
-	exit_status = 1;
+	// t_int->e_status = 1;
 	rl_replace_line("", 0);
 	ft_putstr_fd("  \b\b\b\b", 2);
 	close(STDIN_FILENO);
@@ -51,7 +51,7 @@ void	sig_ignore(int sig)
 	// rl_replace_line("", 0);
 }
 
-int	heredoc(int num, char *delim)
+int	heredoc(int num, char *delim, t_ints *t_int)
 {
 	int		hd;
 	char	*tmp;
@@ -60,7 +60,8 @@ int	heredoc(int num, char *delim)
 	hd = create_hd_file(num, 1);
 	if (hd < 0)
 		return (0);
-	signal(SIGINT, handle_signal2);
+	if (signal(SIGINT, handle_signal2) != SIG_ERR)
+		t_int->e_status = 1;
 	signal(SIGQUIT, sig_ignore);
 	lim = ft_strjoin(delim, "\n");
 	while (1)
@@ -85,7 +86,7 @@ int	heredoc(int num, char *delim)
 	return (0);
 }
 
-void	do_heredoc(t_token **tokens)
+void	do_heredoc(t_token **tokens, t_ints *t_int)
 {
 	int	i;
 	int	j;
@@ -96,7 +97,7 @@ void	do_heredoc(t_token **tokens)
 	{
 		if (tokens[i]->type == here_doc)
 		{
-			heredoc(i, tokens[i + 1]->token);
+			heredoc(i, tokens[i + 1]->token, t_int);
 			j++;
 		}
 		i++;

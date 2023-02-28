@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 18:01:54 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 23:58:26 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	free_cmd_params(t_cmd_op **cmds)
 		free(cmds[i]->cmd);
 		free_arr(cmds[i]->cmd_args);
 		free(cmds[i]);
+		cmds[i] = 0;
 		i++;
 	}
 	if (cmds)
@@ -112,12 +113,14 @@ int	update_shell(t_list *envp[2])
 		dict->value = ft_itoa(n);
 		update_env(dict, &(envp)[0]);
 		update_env(dict, &(envp)[1]);
+		free_dict(dict);
 		return (0);
 	}
 	n = 1;
 	dict->value = ft_itoa(n);
 	update_env(dict, &(envp)[0]);
 	update_env(dict, &(envp)[1]);
+	free_dict(dict);
 	return (0);
 }
 
@@ -137,15 +140,16 @@ int	main(int ac, char **av, char **envp)
 	t_token	**tokens;
 	char	*line;
 	t_list	*env_pack[2];
+	t_ints	t_int;
 
 	(void)av;
 	if (ac != 1)
 		return (1);
 	init_env_sig(env_pack, envp);
-	exit_status = 0;
+	t_int.e_status = 0;
 	while (1)
 	{
-		line = readline("Yash$ ");
+		line = readline("Yash-10.0$ ");
 		if (!line)
 		{
 			ft_lstclear_dict(env_pack + 0, free);
@@ -159,17 +163,17 @@ int	main(int ac, char **av, char **envp)
 			continue;
 		}
 		add_history(line);
-		tokens = parse(line, env_pack[0]);
+		tokens = parse(line, env_pack[0], &t_int);
 		if (!tokens)
 		{
 			printf("Syntax error!\n");
 			free(line);
-			exit_status = 2;
+			t_int.e_status = 258;
 			continue;
 		}
 		free(line);
-		executor(env_pack, tokens);
+		executor(env_pack, tokens, &t_int);
 		free_tokens(&tokens);
 	}
-	return (exit_status);
+	return (t_int.e_status);
 }

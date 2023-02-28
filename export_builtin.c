@@ -6,13 +6,13 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 18:00:09 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/01 01:02:46 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_env(t_list **lst)
+void	print_env(t_list **lst, t_ints *t_int)
 {
 	t_list	*tmp;
 
@@ -23,10 +23,10 @@ void	print_env(t_list **lst)
 			((t_dict *)tmp->content)->value);
 		tmp = tmp->next;
 	}
-	exit_status = 0;
+	t_int->e_status = 0;
 }
 
-void	print_list(t_list **lst)
+void	print_list(t_list **lst, t_ints *t_int)
 {
 	t_list	*tmp;
 
@@ -43,7 +43,7 @@ void	print_list(t_list **lst)
 			printf("declare -x %s\n", ((t_dict *)tmp->content)->key);
 		tmp = tmp->next;
 	}
-	exit_status = 0;
+	t_int->e_status = 0;
 }
 
 void	update_env(t_dict *cmd, t_list **env)
@@ -107,6 +107,7 @@ int	check_key_names(char *cmd, char **cmd_utils)
 	flag = 1;
 	while (cmd_utils + i && cmd_utils[i])
 	{
+		flag = 1;
 		if (cmd_utils[i] + 0 && cmd_utils[i][0] == '\0')
 			flag = 0;
 		if (cmd_utils[i] + 0 && (ft_isdigit(cmd_utils[i][0]) || cmd_utils[i][0] == '='))
@@ -136,7 +137,7 @@ void	create_key_val(t_dict **dict, char *cmd_utils)
 		tmp->value = ft_strdup("");
 }
 
-void	export_bltin(t_list **lst, char **cmd_utils, t_list **export)
+void	export_bltin(t_list **lst, char **cmd_utils, t_list **export, t_ints *t_int)
 {
 	int	i;
 	t_dict	*dict;
@@ -144,11 +145,14 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export)
 	i = 1;
 	if (!(cmd_utils + i) || !cmd_utils[i])
 	{
-		print_list(export);
+		print_list(export, t_int);
 		return ;
 	}
 	if (!check_key_names(cmd_utils[0], cmd_utils))
+	{
+		t_int->e_status = 1;
 		return ;
+	}
 	dict = (t_dict *)malloc(sizeof(t_dict));
 	if (!dict)
 		return ;

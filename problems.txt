@@ -9,3 +9,8 @@ ctrl + c segfaults in heredoc, because of (get_next_line protection problem)
 redirection problem not fully fixed
 
 pipeline -> exit | exit | exit | pwd | exit - shouldn't exit (don't know why?)
+
+echo'' <$asddsaf< 8 -> opening heredoc, because expansion expands to nothing and the < symbols combine to form << -> it is called ambiguous redirect
+(when an env var gets expanded to nothing and used as a redirection operand) -> i don't know if we need to handle it
+
+<< $sdp -> syntax error

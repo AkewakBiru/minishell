@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 18:02:44 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 19:03:14 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # define BUFFER_SIZE 42
 # define MAX_FD 256
 
-int	exit_status;
+// int	t_int->e_status;
 
 enum e_input_type
 {
@@ -77,15 +77,16 @@ typedef struct	s_ints
 	int	RLSTDIN;
 	int	RLSTDOUT;
 	int	*pipes;
+	int	e_status;
 }	t_ints;
 
 // parse utils
 int	is_white_space(char c);
 
-char	*expand(char *line, t_list *lst);
+char	*expand(char *line, t_list *lst, t_ints *t_int);
 void	check_quotes(char c, int *s_quote, int *d_quote);
 void	free_tokens(t_token ***tokens_p);
-t_token	**parse(char *line, t_list	*lst);
+t_token	**parse(char *line, t_list *lst, t_ints *t_int);
 int		label_tokens(t_token ***tokens);
 t_token	**tokenize(char const *line);
 
@@ -97,29 +98,29 @@ int		update_dict(char *key, char *value, t_list **head);
 char	*get_val(t_list **lst, char *key);
 
 // export and env utils
-void	print_env(t_list **lst);
-void	print_list(t_list **lst);
+void	print_env(t_list **lst, t_ints *t_int);
+void	print_list(t_list **lst, t_ints *t_int);
 void	update_env(t_dict *cmd, t_list **env);
-void	export_bltin(t_list **lst, char **cmd_utils, t_list **export);
+void	export_bltin(t_list **lst, char **cmd_utils, t_list **export, t_ints *t_int);
 void	create_env(t_list **head, char **envp);
 
 // cd and pwd utils
 char	*get_pwd(void);
 void	print_pwd(void);
-int		chg_dir(char **cmd_utils, t_list **lst, t_list **export);
+int	chg_dir(char **cmd_utils, t_list **lst, t_list **export, t_ints *t_int);
 
 // linked list utils
 void	sort_list(t_list **head);
 void	ft_list_remove_if(t_list **head, char *str, int (*cmp)());
 
 // echo
-void	echo(char **arg);
+int	echo(char **arg);
 
 // unset
 int	unset_builtin(char **cmd_utils, t_list **lst, t_list **export);
 
 // exit
-int exit_shell(t_list *env_pack[2], char **cmd_args, t_ints *t_int, int is_child);
+int exit_shell(t_list *env_pack[2], t_cmd_op **cmd, t_ints *t_int, int is_child);
 void	free_split(char **str);
 
 // free utils
@@ -129,8 +130,8 @@ void	free_cmd_params(t_cmd_op **cmds);
 t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens);
 
 // starts execution
-int	executor(t_list *env_pack[2], t_token **tokens);
-int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds);
+int	executor(t_list *env_pack[2], t_token **tokens, t_ints *t_int);
+int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds, t_ints *t_int);
 
 // pipex utils
 char	*get_envp(char **envp);
@@ -145,8 +146,8 @@ char	*get_next_line(int fd);
 
 //heredoc utils
 void	rm_hd_files(t_token **tokens);
-void	do_heredoc(t_token **tokens);
-int		heredoc(int num, char *delim);
+void	do_heredoc(t_token **tokens, t_ints *t_int);
+int		heredoc(int num, char *delim, t_ints *t_int);
 int		create_hd_file(int num, int flag);
 
 int	is_builtin(char *cmd);
