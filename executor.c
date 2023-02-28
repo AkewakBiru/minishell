@@ -6,19 +6,11 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 09:04:02 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 18:06:50 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	child_sig_handler(int sig)
-{
-	(void)sig;
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	// rl_redisplay();
-}
 
 int	is_builtin(char *cmd)
 {
@@ -30,43 +22,41 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-void	exec_builtin(t_cmd_op *cmd_arr, t_list **lst, t_list **export, t_token **tokens, t_ints *t_int, char *line)
+void	exec_builtin(t_cmd_op *cmd_arr, t_list *env_pack[2], t_ints *t_int, int is_child)
 {
 	char	**cmd_arg;
 
 	cmd_arg = cmd_arr->cmd_args;
 	if (!ft_strcmp(cmd_arg[0], "env"))
-		print_env(lst);
+		print_env(env_pack + 0);
 	else if (!ft_strcmp(cmd_arg[0], "export"))
-		export_bltin(lst, cmd_arg, export);
+		export_bltin(env_pack + 0, cmd_arg, env_pack + 1);
 	else if (!ft_strcmp(cmd_arg[0], "pwd"))
 		print_pwd();
 	else if (!ft_strcmp(cmd_arg[0], "cd"))
 	// if it has multiple args, it should go the first args directory
-		chg_dir(cmd_arg, lst, export);
+		chg_dir(cmd_arg, env_pack + 0, env_pack + 1);
 	else if (!ft_strcmp(cmd_arg[0], "unset"))
-		unset_builtin(cmd_arg, lst, export);
+		exit_status = unset_builtin(cmd_arg, env_pack + 0, env_pack + 1);
 	else if (!ft_strcmp(cmd_arg[0], "exit"))
-		exit_shell(lst, export, cmd_arg, tokens, t_int, line);
+		exit_shell(env_pack, cmd_arg, t_int, is_child);
 	else if (!ft_strcmp(cmd_arg[0], "echo"))
 		echo(cmd_arg);
 }
 
-void	close_pipes(int *pipes, t_ints *t_int)
+void	close_pipes(t_ints *t_int)
 {
 	int	i;
 
 	i = -1;
 	while (++i < (t_int->cmd_count - 1) * 2)
-		close(pipes[i]);
+		close(t_int->pipes[i]);
 }
 
-int	dup_close(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
+int	dup_close(t_cmd_op **cmds, t_ints *t_int, t_token **tokens)
 {
 	int		infile;
 	int		outfile;
-	char	*hdname;
-	char	*tmp;
 
 	infile = 0;
 	outfile = 0;
@@ -75,13 +65,7 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
 		if (tokens[cmds[t_int->counter]->redir_in]->type == redir_in)
 			infile = open(tokens[cmds[t_int->counter]->redir_in + 1]->token, O_RDONLY);
 		else if (tokens[cmds[t_int->counter]->redir_in]->type == here_doc)
-		{
-			tmp = ft_itoa(cmds[t_int->counter]->redir_in);
-			hdname = ft_strjoin(".heredoc", tmp);
-			infile = open(hdname, O_RDONLY);
-			free(tmp);
-			free(hdname);
-		}
+			infile = create_hd_file(cmds[t_int->counter]->redir_in, 0);
 		if (infile < 0)
 		{
 			perror("");
@@ -107,7 +91,7 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
 		if (cmds[t_int->counter]->redir_out != -2)
 		{
 			if (cmds[t_int->counter]->redir_out == -1)
-				dup2(pipes[1], STDOUT_FILENO);
+				dup2(t_int->pipes[1], STDOUT_FILENO);
 			else
 				dup2(outfile, STDOUT_FILENO);
 		}
@@ -117,7 +101,7 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
 		if (cmds[t_int->counter]->redir_in != -2)
 		{
 			if (cmds[t_int->counter]->redir_in == -1)
-				dup2(pipes[2 * t_int->counter - 2], STDIN_FILENO);
+				dup2(t_int->pipes[2 * t_int->counter - 2], STDIN_FILENO);
 			else
 				dup2(infile, STDIN_FILENO);
 		}
@@ -127,11 +111,11 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
 	else
 	{
 		if (cmds[t_int->counter]->redir_in == -1)
-			dup2(pipes[2 * t_int->counter - 2], STDIN_FILENO);
+			dup2(t_int->pipes[2 * t_int->counter - 2], STDIN_FILENO);
 		else
 			dup2(infile, STDIN_FILENO);
 		if (cmds[t_int->counter]->redir_out == -1)
-			dup2(pipes[2 * t_int->counter + 1], STDOUT_FILENO);
+			dup2(t_int->pipes[2 * t_int->counter + 1], STDOUT_FILENO);
 		else
 			dup2(outfile, STDOUT_FILENO);
 	}
@@ -139,7 +123,7 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
 		close(infile);
 	if (outfile > 0)
 		close(outfile);
-	close_pipes(pipes, t_int);
+	close_pipes(t_int);
 	return (0);
 }
 
@@ -182,103 +166,6 @@ no such file or directory
 is a directory -> i can use opendir to check if sth is a directory or not
 */
 
-int	dup_close_builtin(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
-{
-	int		infile;
-	int		outfile;
-	char	*hdname;
-	char	*tmp;
-
-	infile = 0;
-	outfile = 0;
-	if (cmds[t_int->counter]->redir_in != -2 && cmds[t_int->counter]->redir_in != -1)
-	{
-		if (tokens[cmds[t_int->counter]->redir_in]->type == redir_in)
-			infile = open(tokens[cmds[t_int->counter]->redir_in + 1]->token, O_RDONLY);
-		else if (tokens[cmds[t_int->counter]->redir_in]->type == here_doc)
-		{
-			tmp = ft_itoa(cmds[t_int->counter]->redir_in);
-			hdname = ft_strjoin(".heredoc", tmp);
-			infile = open(hdname, O_RDONLY);
-			free(tmp);
-			free(hdname);
-		}
-		if (infile < 0)
-		{
-			perror("");
-			return (-1);
-		}
-	}
-	if (cmds[t_int->counter]->redir_out != -2 && cmds[t_int->counter]->redir_out != -1)
-	{
-		if (tokens[cmds[t_int->counter]->redir_out]->type == redir_out)
-			outfile = open(tokens[cmds[t_int->counter]->redir_out + 1]->token, O_RDWR | O_CREAT | O_TRUNC, 0000644);
-		else if (tokens[cmds[t_int->counter]->redir_out]->type == redir_out_append)
-			outfile = open(tokens[cmds[t_int->counter]->redir_out + 1]->token, O_RDWR | O_CREAT | O_APPEND, 0000644);
-		if (outfile < 0)
-		{
-			perror("");
-			return (-1);
-		}
-	}
-	if (t_int->counter == 0)
-	{
-		if (cmds[t_int->counter]->redir_in != -2)
-			dup2(infile, STDIN_FILENO);
-		else
-			dup2(t_int->RLSTDIN, STDIN_FILENO);
-		if (cmds[t_int->counter]->redir_out != -2)
-		{
-			if (cmds[t_int->counter]->redir_out == -1)
-			{
-				dup2(pipes[1], STDOUT_FILENO);
-				// close(pipes[1]);
-			}
-			else
-				dup2(outfile, STDOUT_FILENO);
-		}
-	}
-	else if (t_int->counter == t_int->cmd_count - 1)
-	{
-		if (cmds[t_int->counter]->redir_in != -2)
-		{
-			if (cmds[t_int->counter]->redir_in == -1)
-			{
-				dup2(pipes[2 * t_int->counter - 2], STDIN_FILENO);
-				close(pipes[2 * t_int->counter - 2]);
-			}
-			else
-				dup2(infile, STDIN_FILENO);
-		}
-		if (cmds[t_int->counter]->redir_out != -2)
-			dup2(outfile, STDOUT_FILENO);
-		else
-			dup2(t_int->RLSTDOUT, STDOUT_FILENO);
-	}
-	else
-	{
-		if (cmds[t_int->counter]->redir_in == -1)
-		{
-			dup2(pipes[2 * t_int->counter - 2], STDIN_FILENO);
-			close(pipes[2 * t_int->counter - 2]);
-		}
-		else
-			dup2(infile, STDIN_FILENO);
-		if (cmds[t_int->counter]->redir_out == -1)
-		{
-			dup2(pipes[2 * t_int->counter + 1], STDOUT_FILENO);
-			close(pipes[2 * t_int->counter + 1]);
-		}
-		else
-			dup2(outfile, STDOUT_FILENO);
-	}
-	if (infile > 0)
-		close(infile);
-	if (outfile > 0)
-		close(outfile);
-	return (0);
-}
-
 char *ft_join_free(t_dict *dict)
 {
 	char	*new;
@@ -320,19 +207,21 @@ char	**construct_envp(t_list **lst)
 	@signal is reset to default in child process, but if the child is minishell it will be restored
 	in main exec func
 */
-int	exec_cmd(t_cmd_op **cmds, t_list **lst, t_list **export, char *line, t_ints *t_int, int *pipes, t_token **tokens)
+int	exec_cmd(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int, t_token **tokens)
 {
 	int		pid;
 	char	**envp;
 
 	if (!(cmds + t_int->counter) || !(cmds[t_int->counter]))
 		return (0);
-	if ((is_builtin(cmds[t_int->counter]->cmd) && t_int->counter == t_int->cmd_count - 1) || (!ft_strcmp(cmds[t_int->counter]->cmd, "echo")))
+	if ((is_builtin(cmds[t_int->counter]->cmd) && t_int->cmd_count == 1))
 	{
-		dup_close_builtin(cmds, t_int, pipes, tokens);
-		exec_builtin(cmds[t_int->counter], lst, export, tokens, t_int, line);
+		dup_close(cmds, t_int, tokens);
+		if (!ft_strcmp(cmds[t_int->counter]->cmd, "exit"))
+			free_tokens(&tokens);
+		exec_builtin(cmds[t_int->counter], env_pack, t_int, 0);
 	}
-	else if (!is_builtin(cmds[t_int->counter]->cmd))
+	else
 	{
 		pid = fork();
 		if (pid == -1)
@@ -346,13 +235,21 @@ int	exec_cmd(t_cmd_op **cmds, t_list **lst, t_list **export, char *line, t_ints 
 			signal(SIGQUIT, SIG_DFL);
 			close(t_int->RLSTDIN);
 			close(t_int->RLSTDOUT);
-			dup_close(cmds, t_int, pipes, tokens);
-			envp = construct_envp(lst);
+			dup_close(cmds, t_int, tokens);
+			if (is_builtin(cmds[t_int->counter]->cmd))
+			{
+				exec_builtin(cmds[t_int->counter], env_pack, t_int, 1);
+				exit(exit_status);
+			}
+			envp = construct_envp(env_pack + 0);
 			execve(cmds[t_int->counter]->cmd, cmds[t_int->counter]->cmd_args, envp);
 			ex_fail_msg(cmds[t_int->counter]->cmd_args);
 			free_arr(envp);
 			free_tokens(&tokens);
 			free_cmd_params(cmds);
+			ft_lstclear_dict(env_pack + 0, free);
+			ft_lstclear_dict(env_pack + 1, free);
+			free(t_int->pipes);
 			exit(exit_status);
 		}
 		else
@@ -381,55 +278,71 @@ int	*create_pipes(t_ints *t_int)
 	return (pipes);
 }
 
-int	count_cmds(t_cmd_op **cmds)
+int count_cmd_nums(t_token	**tokens)
 {
-	int	i;
+	int i = 0;
+	int count = 0;
 
-	i = 0;
-	while (cmds + i && cmds[i])
-		i++;
-	return (i);
-}
-
-int	count_non_builtin(t_cmd_op **cmds)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (cmds + i && cmds[i])
+	while (tokens + i && tokens[i])
 	{
-		if (!is_builtin(cmds[i]->cmd))
-			j++;
+		if (tokens[i]->type == cmd)
+			count++;
 		i++;
 	}
-	return (j);
+	return (count);
 }
 
-void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, char *line)
+void	reset_fd(t_ints *t_int)
 {
-	int		i;
-	int		*pipes;
-	t_ints	t_int;
-	int		j;
-	int		e_status;
+	dup2(t_int->RLSTDIN, STDIN_FILENO);
+	close(t_int->RLSTDIN);
+	dup2(t_int->RLSTDOUT, STDOUT_FILENO);
+	close(t_int->RLSTDOUT);	
+}
+
+void	free_env_utils(t_strs	*cmd_list)
+{
+	free(cmd_list->env_p);
+	cmd_list->env_p = 0;
+	free_arr(cmd_list->ind_p);
+	cmd_list->ind_p = 0;
+	free(cmd_list);
+	cmd_list = 0;
+}
+
+int	wait_for_cmds(t_ints *t_int)
+{
+	int	e_status;
+	int	i;
+
+	i = -1;
+	while (++i < t_int->cmd_count)
+		waitpid(-1, &e_status, 0);
+	if (WIFEXITED(e_status))
+		exit_status = WEXITSTATUS(e_status);
+	else if (WIFSIGNALED(e_status))
+		exit_status = WTERMSIG(e_status) + 128;
+	return (exit_status);
+}
+
+int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds)
+{
+	int	i;
+	t_ints t_int;
 
 	t_int.RLSTDIN = dup(STDIN_FILENO);
 	t_int.RLSTDOUT = dup(STDOUT_FILENO);
-	i = 0;
-	// e_status = 0;
+	t_int.cmd_count = count_cmd_nums(tokens);
 	t_int.counter = 0;
-	t_int.cmd_count = count_cmds(cmds);
-	t_int.exit_status = 0;
-	pipes = 0;
+	t_int.pipes = 0;
 	if (t_int.cmd_count > 1)
 	{
-		pipes = create_pipes(&t_int);
-		if (!pipes)
-			return ;
+		t_int.pipes = create_pipes(&t_int);
+		if (!t_int.pipes)
+			return (1);
 	}
 	do_heredoc(tokens);
+	i = 0;
 	while (tokens + i && tokens[i])
 	{
 		if (tokens[i]->type == cmd)
@@ -444,28 +357,51 @@ void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, 
 				i++;
 				continue ;
 			}
-			exec_cmd(cmds, lst, export, line, &t_int, pipes, tokens);
+			exec_cmd(cmds, env_pack, &t_int, tokens);
 			t_int.counter++;
 		}
 		i++;
 	}
-	j = count_non_builtin(cmds);
-	i = -1;
 	if (t_int.cmd_count > 1)
-		close_pipes(pipes, &t_int);
-	while (++i < j)
-		waitpid(-1, &e_status, 0);
-	// ft_putnbr_fd(e_status, 2);
-	if (WIFEXITED(e_status))
-		exit_status = WEXITSTATUS(e_status);
-	else if (WIFSIGNALED(e_status))
-		exit_status = WTERMSIG(e_status) + 128;
+		close_pipes(&t_int);
+	if (t_int.cmd_count > 0 && (!(t_int.cmd_count == 1) || !(is_builtin(cmds[0]->cmd))))
+		wait_for_cmds(&t_int);
+	reset_fd(&t_int);
+	rm_hd_files(tokens);
+	if (t_int.pipes)
+	{
+		free(t_int.pipes);
+		t_int.pipes = 0;
+	}
+	return (0);
+}
+
+int	executor(t_list *env_pack[2], t_token **tokens)
+{
+	t_strs		*cmd_list;
+	t_cmd_op	**cmds;
+
+	cmd_list = init_struct();
+	cmd_list->env_p = ft_strdup(get_val(env_pack + 0, "PATH"));
+	cmd_list->ind_p = ft_split(cmd_list->env_p, ':');
+	cmd_list->cmd_len = count_cmd_nums(tokens);
+	cmds = create_cmd_list(&cmd_list, tokens);
+	free_env_utils(cmd_list);
+	if (!cmds)
+	{
+		exit_status = 1;
+		return (EXIT_FAILURE);
+	}
+	// only execute builtins in the parent proc if they are not in a pipeline.
+	// or are simple commands
+	/*
+		if there is one command and is builtin, execute the command without forking and do redirection accordingly
+	*/
+	loop_exec_cmds(env_pack, tokens, cmds);
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
-	rm_hd_files(tokens);
-	dup2(t_int.RLSTDIN, STDIN_FILENO);
-	close(t_int.RLSTDIN);
-	dup2(t_int.RLSTDOUT, STDOUT_FILENO);
-	close(t_int.RLSTDOUT);
-	printf("%d\n", exit_status);
+	free_cmd_params(cmds);
+	cmds = 0;
+	// printf("\n%d\n", exit_status);
+	return (EXIT_SUCCESS);
 }

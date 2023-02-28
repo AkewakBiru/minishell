@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 23:25:08 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 18:00:26 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,53 @@
 void handle_signal2(int sig)
 {
 	(void)sig;
-	rl_on_new_line();
-	// rl_redisplay();
-	ft_putstr_fd("    \b\b\b\b", 2);
-	write(2, ">\n", 2);
+	exit_status = 1;
+	rl_replace_line("", 0);
+	ft_putstr_fd("  \b\b\b\b", 2);
 	close(STDIN_FILENO);
+}
+
+int	create_hd_file(int num, int flag)
+{
+	int hd;
+	char *hdoc_name;
+	char *h_num;
+
+	h_num = ft_itoa(num);
+	hdoc_name = ft_strjoin(".heredoc", h_num);
+	free(h_num);
+	if (flag == 1)
+		hd = open(hdoc_name, O_CREAT | O_WRONLY | O_TRUNC, 0000644);
+	else
+		hd = open(hdoc_name, O_RDONLY, 0000644);
+	free(hdoc_name);
+	if (hd < 0)
+	{
+		perror("");
+		return (-1);
+	}
+	return (hd);
+}
+
+void	sig_ignore(int sig)
+{
+	(void)sig;
+	rl_replace_line("", 0);
+	// ft_putstr_fd("  \b\b\b\b", 2);
+	// rl_replace_line("", 0);
 }
 
 int	heredoc(int num, char *delim)
 {
-	char	*hdoc_name;
 	int		hd;
 	char	*tmp;
-	char	*hnum;
 	char	*lim;
 
-	hnum = ft_itoa(num);
-	hdoc_name = ft_strjoin(".heredoc", hnum);
-	hd = open(hdoc_name, O_CREAT | O_WRONLY | O_TRUNC, 0000644);
-	free(hnum);
-	free(hdoc_name);
+	hd = create_hd_file(num, 1);
 	if (hd < 0)
 		return (0);
 	signal(SIGINT, handle_signal2);
-	signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, sig_ignore);
 	lim = ft_strjoin(delim, "\n");
 	while (1)
 	{

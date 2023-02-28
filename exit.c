@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:50:47 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 09:54:23 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 18:00:00 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	check_digit(char *arg)
 	int	i;
 
 	i = 0;
-	if (arg + i && arg[i] == '-')
+	if (arg + i && (arg[i] == '-' || arg[i] == '+'))
 		i++;
 	while (arg + i && arg[i])
 	{
@@ -55,7 +55,7 @@ int	check_digit(char *arg)
 	return (1);
 }
 
-int exit_shell(t_list **lst, t_list **export, char **cmd_args, t_token **tokens, t_ints *t_int, char *line)
+int exit_shell(t_list *env_pack[2], char **cmd_args, t_ints *t_int, int is_child)
 {
 	unsigned long long	tmp;
 
@@ -66,18 +66,19 @@ int exit_shell(t_list **lst, t_list **export, char **cmd_args, t_token **tokens,
 		exit_status = 1;
 		return (1);
 	}
-	ft_putendl_fd("exit", 2);
+	if (!is_child)
+		ft_putendl_fd("exit", 2);
 	if (cmd_args + 1 && cmd_args[1])
 		tmp = ft_atoi(cmd_args[1]);
 	if (cmd_args + 1 && (!check_digit(cmd_args[1]) || tmp > 9223372036854775808ULL))
 		exit_status = error_msg("numeric argument required", cmd_args, 1, 255);
 	if (tmp <= 9223372036854775808ULL)
 		exit_status = tmp % 256;
-	ft_lstclear_dict(lst, free);
-	ft_lstclear_dict(export, free);
-	free(line);
+	ft_lstclear_dict(env_pack + 0, free);
+	ft_lstclear_dict(env_pack + 1, free);
 	free_arr(cmd_args);
-	free_tokens(&tokens);
+	if (t_int->pipes)
+		free(t_int->pipes);
 	close(t_int->RLSTDIN);
 	close(t_int->RLSTDOUT);
 	exit(exit_status);

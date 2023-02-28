@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:29:12 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 23:23:45 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 17:59:22 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@ int	get_arg_size(t_token **tokens, int j)
 	return (i);
 }
 
-char	*join_and_free(char *s1, char *s2)
-{
-	char *tmp;
-	char *new;
+// char	*join_and_free(char *s1, char *s2)
+// {
+// 	char *tmp;
+// 	char *new;
 
-	tmp = ft_strjoin(s1, " ");
-	free(s1);
-	new = ft_strjoin(tmp, s2);
-	free(s2);
-	return (new);
-}
+// 	tmp = ft_strjoin(s1, " ");
+// 	free(s1);
+// 	new = ft_strjoin(tmp, s2);
+// 	free(s2);
+// 	return (new);
+// }
 
 int	count_args(t_token **tokens, int *i)
 {
@@ -55,17 +55,6 @@ int	count_args(t_token **tokens, int *i)
 
 char	**get_cmd_args(t_token **tokens, int *i)
 {
-	// char *arg;
-	// int j;
-
-	// j = *i;
-	// arg = ft_strdup(tokens[j++]->token);
-	// while (tokens + j && tokens[j] && (tokens[j]->type == option || tokens[j]->type == 2))
-	// {
-	// 	char *tmp = ft_strdup(tokens[j++]->token);
-	// 	arg = join_and_free(arg, tmp);
-	// }
-	// return (arg);
 	char	**arg;
 	int		count;
 	int		j;
@@ -157,26 +146,45 @@ int find_stdout(t_token	**tokens, int i)
 	return (-2);
 }
 
-t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens, t_list **lst)
+// void	free_siblings(t_cmd_op **cmds)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (cmds && cmds + i && cmds[i])
+// 	{
+// 		free(cmds[i]);
+// 		cmds[i] = 0;
+// 		i++;
+// 	}
+// 	if (cmds)
+// 		free(cmds);
+// 	cmds = 0;
+// }
+
+t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens)
 {
 	int i = 0;
 	int j = 0;
 	t_cmd_op	**cmds;
 
-	(void)tokens;
-	(void)lst;
-	(void)cmd_list;
 	cmds = (t_cmd_op **)malloc(sizeof(t_cmd_op *) * ((*cmd_list)->cmd_len + 1));
 	if (!cmds)
+	{
+		ft_putendl_fd("Malloc error while creating command list", 2);
 		return (0);
+	}
 	while (tokens + i && tokens[i])
 	{
 		if (tokens[i]->type == cmd)
 		{
 			cmds[j] =(t_cmd_op *)malloc((sizeof(t_cmd_op)));
 			if (!cmds[j])
-				// free all of the list created above also
+			{
+				free_cmd_params(cmds);
 				return (0);
+			}
+				// free all of the list created above also
 			cmds[j]->redir_in = find_stdin(tokens, i);
 			cmds[j]->redir_out = find_stdout(tokens, i);
 			cmds[j]->cmd_args = get_cmd_args(tokens, &i);
@@ -196,4 +204,3 @@ t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens, t_list **lst)
 	cmds[j] = 0;
 	return (cmds);
 }
-

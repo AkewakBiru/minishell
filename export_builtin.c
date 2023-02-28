@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 23:24:54 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 18:00:09 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	print_env(t_list **lst)
 			((t_dict *)tmp->content)->value);
 		tmp = tmp->next;
 	}
+	exit_status = 0;
 }
 
 void	print_list(t_list **lst)
@@ -42,6 +43,7 @@ void	print_list(t_list **lst)
 			printf("declare -x %s\n", ((t_dict *)tmp->content)->key);
 		tmp = tmp->next;
 	}
+	exit_status = 0;
 }
 
 void	update_env(t_dict *cmd, t_list **env)

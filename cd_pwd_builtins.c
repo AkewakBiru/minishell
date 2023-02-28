@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 21:33:41 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 23:32:48 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 17:59:11 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	chg_dir(char **cmd_utils, t_list **lst, t_list **export)
 	if (cmd_utils + 1 && cmd_utils[1] && chdir(cmd_utils[1]) == -1)
 	{
 		perror("cd");
+		exit_status = 1;
 		return (1);
 	}
 	val = get_pwd();

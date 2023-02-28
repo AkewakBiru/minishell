@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 23:28:00 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 18:01:54 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	handle_signal(int sig)
 	rl_redisplay();
 	write(1, "  \n", 3);
 	// add whatever text is given as first argument to the char* buffer, in this case empty string
-	// rl_replace_line("", 0);
+	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }
@@ -68,20 +68,6 @@ void	free_tokens(t_token ***tokens_p)
 	free((*tokens_p));
 }
 
-int count_cmd_nums(t_token	**tokens)
-{
-	int i = 0;
-	int count = 0;
-
-	while (tokens + i && tokens[i])
-	{
-		if (tokens[i]->type == cmd)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
 void	free_cmd_params(t_cmd_op **cmds)
 {
 	int	i;
@@ -90,14 +76,16 @@ void	free_cmd_params(t_cmd_op **cmds)
 	while (cmds + i && cmds[i])
 	{
 		free(cmds[i]->cmd);
-		free(cmds[i]->cmd_args);
+		free_arr(cmds[i]->cmd_args);
 		free(cmds[i]);
 		i++;
 	}
-	free(cmds);
+	if (cmds)
+		free(cmds);
+	cmds = 0;
 }
 
-int	update_shell(t_list **lst, t_list **export)
+int	update_shell(t_list *envp[2])
 {
 	unsigned long long	n;
 	t_dict	*dict;
@@ -110,11 +98,11 @@ int	update_shell(t_list **lst, t_list **export)
 	}
 	dict->key = ft_strdup("SHLVL");
 	dict->flag = 1;
-	if (key_exists("SHLVL", lst))
+	if (key_exists("SHLVL", &(envp)[0]))
 	{
-		if (get_val(lst, "SHLVL"))
+		if (get_val(&(envp)[0], "SHLVL"))
 		{
-			n = ft_atoi(get_val(lst, "SHLVL"));
+			n = ft_atoi(get_val(&(envp)[0], "SHLVL"));
 			if (n >= 1000)
 				n = 0;
 			n++;
@@ -122,44 +110,46 @@ int	update_shell(t_list **lst, t_list **export)
 		else
 			n = 1;
 		dict->value = ft_itoa(n);
-		update_env(dict, lst);
-		update_env(dict, export);
+		update_env(dict, &(envp)[0]);
+		update_env(dict, &(envp)[1]);
 		return (0);
 	}
 	n = 1;
 	dict->value = ft_itoa(n);
-	update_env(dict, lst);
-	update_env(dict, export);
+	update_env(dict, &(envp)[0]);
+	update_env(dict, &(envp)[1]);
 	return (0);
+}
+
+void	init_env_sig(t_list *env_pack[2], char **envp)
+{
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, SIG_IGN);
+	env_pack[0] = 0;
+	env_pack[1] = 0;
+	create_env(env_pack + 0, envp);
+	create_env(env_pack + 1, envp);
+	update_shell(env_pack);
 }
 
 int	main(int ac, char **av, char **envp)
 {
 	t_token	**tokens;
-	t_list	*lst;
-	t_list	*export;
 	char	*line;
-	t_strs *cmd_list;
-	t_cmd_op	**cmds;
+	t_list	*env_pack[2];
 
-	lst = NULL;
-	export = NULL;
 	(void)av;
 	if (ac != 1)
 		return (1);
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, SIG_IGN);
-	create_env(&lst, envp);
-	create_env(&export, envp);
-	update_shell(&lst, &export);
+	init_env_sig(env_pack, envp);
 	exit_status = 0;
 	while (1)
 	{
 		line = readline("Yash$ ");
 		if (!line)
 		{
-			ft_lstclear_dict(&lst, free);
-			ft_lstclear_dict(&export, free);
+			ft_lstclear_dict(env_pack + 0, free);
+			ft_lstclear_dict(env_pack + 1, free);
 			ft_putendl_fd("exit", 2);
 			return (0);
 		}
@@ -169,7 +159,7 @@ int	main(int ac, char **av, char **envp)
 			continue;
 		}
 		add_history(line);
-		tokens = parse(line, lst);
+		tokens = parse(line, env_pack[0]);
 		if (!tokens)
 		{
 			printf("Syntax error!\n");
@@ -177,21 +167,8 @@ int	main(int ac, char **av, char **envp)
 			exit_status = 2;
 			continue;
 		}
-		cmd_list = init_struct();
-		cmd_list->env_p = ft_strdup(get_val(&lst, "PATH"));
-		cmd_list->ind_p = ft_split(cmd_list->env_p, ':');
-		cmd_list->cmd_len = count_cmd_nums(tokens);
-		cmds = create_cmd_list(&cmd_list, tokens, &lst);
-		executor(cmds, &lst, &export, tokens, line);
-		free(cmd_list->env_p);
-		cmd_list->env_p = 0;
-		free_arr(cmd_list->ind_p);
-		cmd_list->ind_p = 0;
-		free(cmd_list);
-		cmd_list = 0;
-		free_cmd_params(cmds);
-		cmds = 0;
 		free(line);
+		executor(env_pack, tokens);
 		free_tokens(&tokens);
 	}
 	return (exit_status);

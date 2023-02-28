@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 09:17:06 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 18:02:44 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ typedef struct	s_ints
 {
 	int	counter;
 	int	cmd_count;
-	int exit_status;
 	int	RLSTDIN;
 	int	RLSTDOUT;
+	int	*pipes;
 }	t_ints;
 
 // parse utils
@@ -116,21 +116,21 @@ void	ft_list_remove_if(t_list **head, char *str, int (*cmp)());
 void	echo(char **arg);
 
 // unset
-void	unset_builtin(char **cmd_utils, t_list **lst, t_list **export);
+int	unset_builtin(char **cmd_utils, t_list **lst, t_list **export);
 
 // exit
-int exit_shell(t_list **lst, t_list **export, char **cmd_args, t_token **tokens, t_ints *t_int, char *line);
+int exit_shell(t_list *env_pack[2], char **cmd_args, t_ints *t_int, int is_child);
 void	free_split(char **str);
 
 // free utils
-// void	free_exit(t_list **head);
 void	del_node(void *node);
 void	free_cmd_params(t_cmd_op **cmds);
 
-t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens, t_list **lst);
+t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens);
 
 // starts execution
-void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, char *line);
+int	executor(t_list *env_pack[2], t_token **tokens);
+int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds);
 
 // pipex utils
 char	*get_envp(char **envp);
@@ -147,6 +147,7 @@ char	*get_next_line(int fd);
 void	rm_hd_files(t_token **tokens);
 void	do_heredoc(t_token **tokens);
 int		heredoc(int num, char *delim);
+int		create_hd_file(int num, int flag);
 
 int	is_builtin(char *cmd);
 
