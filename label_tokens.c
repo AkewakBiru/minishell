@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/27 14:33:56 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/02/28 15:44:38 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ int	label_tokens(t_token ***tokens)
 		(*tokens)[i++]->type = cmd;
 	while ((*tokens)[i])
 	{
-		if (((*tokens)[i]->type == pip && (*tokens)[i - 1]->type == pip) //(is_redirection((*tokens)[i - 1]->type) || (*tokens)[i - 1]->type == pip))
+		if (((*tokens)[i]->type == pip && (*tokens)[i - 1]->type == pip)
 			|| ((*tokens)[i]->type == redirection && label_redirection((*tokens)[i]))
-			|| (is_redirection((*tokens)[i]->type) && (!(*tokens)[i + 1] || (*tokens)[i + 1]->type != unset || ((*tokens)[i]->type != here_doc && !valid_file((*tokens)[i + 1]->token))))) // is_redirection((*tokens)[i - 1]->type))
+			|| (is_redirection((*tokens)[i]->type) && (!(*tokens)[i + 1] || (*tokens)[i + 1]->type != unset || ((*tokens)[i]->type != here_doc && !valid_file((*tokens)[i + 1]->token)))))
 			return (1);
 		if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == pip)
 			(*tokens)[i]->type = cmd;
@@ -64,7 +64,11 @@ int	label_tokens(t_token ***tokens)
 		else if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == here_doc)
 			(*tokens)[i]->type = delimiter;
 		else if ((*tokens)[i]->type == unset && is_redirection((*tokens)[i - 1]->type))
+		{
 			(*tokens)[i]->type = file;
+			if ((*tokens)[i + 1] && (*tokens)[i + 1]->type == unset)
+				(*tokens)[i + 1]->type = cmd;
+		}
 		else if ((*tokens)[i]->type == unset)
 			(*tokens)[i]->type = arg;
 		i++;
