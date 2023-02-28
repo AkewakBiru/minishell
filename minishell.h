@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 23:33:20 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 09:17:06 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,4 +158,6 @@ void	handle_signal(int sig);
 // input and output redirection utils
 int	do_in_redir(t_token **tokens, int i);
 int	do_out_redir(t_token **tokens, int i);
+
+int	error_msg(char *msg, char **args, int num, int err);
 #endif

@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/27 23:24:24 by abiru            ###   ########.fr       */
+/*   Updated: 2023/02/28 09:04:02 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,15 +143,16 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, int *pipes, t_token **tokens)
 	return (0);
 }
 
-int	error_msg(char *msg, char **args, int num)
+int	error_msg(char *msg, char **args, int num, int err)
 {
-	write(2, msg, ft_strlen(msg));
+	ft_putstr_fd("bash: ", 2);
 	if (num == 0)
 		return (1);
-	write(2, ": ", 2);
 	if (num == 1)
-		write(2, args[0], ft_strlen(args[0]));
-	return (write(2, "\n", 1));
+		ft_putstr_fd(args[0], 2);
+	ft_putstr_fd(": ", 2);
+	ft_putendl_fd(msg, 2);
+	return (err);
 }
 
 void	ex_fail_msg(char **args)
@@ -161,16 +162,16 @@ void	ex_fail_msg(char **args)
 	dir = opendir(args[0]);
 	if (dir)
 	{
-		error_msg("Is a directory", args, 1);
+		exit_status = error_msg("Is a directory", args, 1, 126);
 		closedir(dir);
 	}
 	else if (ft_strchr(args[0], '/')
 		&& access(args[0], F_OK) != 0)
-		error_msg("No such file or directory", args, 1);
+		exit_status = error_msg("No such file or directory", args, 1, 127);
 	else if (access(args[0], X_OK) != 0 && access(args[0], F_OK) == 0)
-		error_msg("permission denied", args, 1);
+		exit_status = error_msg("permission denied", args, 1, 126);
 	else
-		error_msg("command not found", args, 1);
+		exit_status = error_msg("command not found", args, 1, 127);
 }
 
 /*
@@ -352,7 +353,7 @@ int	exec_cmd(t_cmd_op **cmds, t_list **lst, t_list **export, char *line, t_ints 
 			free_arr(envp);
 			free_tokens(&tokens);
 			free_cmd_params(cmds);
-			exit(1);
+			exit(exit_status);
 		}
 		else
 			signal(SIGINT, SIG_IGN);
@@ -412,10 +413,12 @@ void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, 
 	int		*pipes;
 	t_ints	t_int;
 	int		j;
+	int		e_status;
 
 	t_int.RLSTDIN = dup(STDIN_FILENO);
 	t_int.RLSTDOUT = dup(STDOUT_FILENO);
 	i = 0;
+	// e_status = 0;
 	t_int.counter = 0;
 	t_int.cmd_count = count_cmds(cmds);
 	t_int.exit_status = 0;
@@ -451,11 +454,12 @@ void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, 
 	if (t_int.cmd_count > 1)
 		close_pipes(pipes, &t_int);
 	while (++i < j)
-		waitpid(-1, &(t_int.exit_status), 0);
-	if (WIFEXITED(t_int.exit_status))
-		t_int.exit_status = WEXITSTATUS(t_int.exit_status);
-	else if (WIFSIGNALED(t_int.exit_status))
-		t_int.exit_status = WTERMSIG(t_int.exit_status) + 128;
+		waitpid(-1, &e_status, 0);
+	// ft_putnbr_fd(e_status, 2);
+	if (WIFEXITED(e_status))
+		exit_status = WEXITSTATUS(e_status);
+	else if (WIFSIGNALED(e_status))
+		exit_status = WTERMSIG(e_status) + 128;
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
 	rm_hd_files(tokens);
@@ -463,5 +467,5 @@ void	executor(t_cmd_op **cmds, t_list **lst, t_list **export, t_token **tokens, 
 	close(t_int.RLSTDIN);
 	dup2(t_int.RLSTDOUT, STDOUT_FILENO);
 	close(t_int.RLSTDOUT);
-	// printf("%d\n", t_int.exit_status);
+	printf("%d\n", exit_status);
 }
