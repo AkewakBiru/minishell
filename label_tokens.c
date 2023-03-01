@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/01 12:57:30 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/01 13:51:37 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	label_tokens(t_token ***tokens)
 		begins_w_redir = 1;
 	while ((*tokens)[i])
 	{
-		if (((*tokens)[i]->type == pip && (*tokens)[i - 1]->type == pip)
+		if (((*tokens)[i]->type == pip && ((*tokens)[i - 1]->type == pip || !(*tokens)[i + 1]))
 			|| ((*tokens)[i]->type == redirection && label_redirection((*tokens)[i]))
 			|| (is_redirection((*tokens)[i]->type) && (!(*tokens)[i + 1] || (*tokens)[i + 1]->type != unset || ((*tokens)[i]->type != here_doc && !valid_file((*tokens)[i + 1]->token)))))
 			return (1);
