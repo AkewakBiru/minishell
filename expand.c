@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/28 23:32:15 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/01 12:16:05 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ char	*get_var_name(char *line)
 	char	*var_name;
 
 	i = 1;
-	while(line[i] && !is_white_space(line[i]) && line[i] != '$' && line[i] != '<'
-			&& line[i] != '>' && line[i] != '|' && line[i] != '\'' && line[i] != '\"')
+	while(ft_isalnum(line[i]) || line[i] == '_')
 		i++;
 	var_name = malloc(sizeof(char) * (i));
 	if (!var_name)
@@ -63,10 +62,8 @@ int	should_expand(char *line)
 		check_quotes(line[i], &s_quote, &d_quote);
 		if (line[i] == '$' && !s_quote && ((line[i + 1] == '?')
 			|| (!d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
-			|| (line[i + 1] >= 'A' && line[i + 1] <= 'Z')
-			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
-			|| (line[i + 1] == '_' && line[i + 2] != '\0' && !is_white_space(line[i + 2])
-			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
+			|| ft_isalpha(line[i + 1])
+			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
 			return (1);
 	}
 	return (0);
@@ -99,11 +96,8 @@ int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
 		}
 		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			len--;
-		else if (line[i] == '$' && !s_quote
-			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
-			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
-			|| (line[i + 1] == '_' && line[i + 2] != '\0' && !is_white_space(line[i + 2])
-			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
+		else if (line[i] == '$' && !s_quote && (ft_isalpha(line[i + 1])
+			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)
@@ -148,11 +142,8 @@ char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
 		}
 		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			continue;
-		if (line[i] == '$' && !s_quote
-			&& ((line[i + 1] >= 'A' && line[i + 1] <= 'Z')
-			|| (line[i + 1] >= 'a' && line[i + 1] <= 'z')
-			|| (line[i + 1] == '_' && line[i + 2] != '\0' && !is_white_space(line[i + 2])
-			&& line[i + 2] != '\'' &&line[i + 2] != '\"')))
+		if (line[i] == '$' && !s_quote && (ft_isalpha(line[i + 1])
+			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)
