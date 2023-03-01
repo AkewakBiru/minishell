@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/21 15:07:13 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/01 13:24:54 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	get_num_tokens(char const *s)
 	d_quote = 0;
 	s_quote = 0;
 	if (!s)
-		return (0);
+		return (-1);
 	while (is_white_space(s[i]))
 		i++;
 	if (s[i] == 0)
@@ -59,7 +59,7 @@ static int	get_num_tokens(char const *s)
 		i++;
 	}
 	if (s_quote || d_quote)
-		return (0);
+		return (-1);
 	return (num);
 }
 
@@ -197,6 +197,17 @@ t_token	**split_tokens(char const *s, t_token ***res)
 	return (*res);
 }
 
+t_token	**empty_token()
+{
+	t_token	**res;
+
+	res = malloc(sizeof(t_token *));
+	if (!res)
+		return (NULL);
+	res[0] = NULL;
+	return (res);
+}
+
 t_token	**tokenize(char const *line)
 {
 	t_token	**res;
@@ -204,8 +215,10 @@ t_token	**tokenize(char const *line)
 	int		i;
 
 	count = get_num_tokens(line);
-	if (!count)
+	if (count == -1)
 		return (NULL);
+	if (!count)
+		return (empty_token());
 	res = malloc(sizeof(t_token *) * (count + 1));
 	if (!res)
 		return (NULL);

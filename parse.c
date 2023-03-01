@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/02/28 19:03:22 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/01 13:25:50 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	**empty_token()
-{
-	t_token	**res;
+// t_token	**empty_token()
+// {
+// 	t_token	**res;
 
-	res = malloc(sizeof(t_token *));
-	if (!res)
-		return (NULL);
-	res[0] = NULL;
-	return (res);
-}
+// 	res = malloc(sizeof(t_token *));
+// 	if (!res)
+// 		return (NULL);
+// 	res[0] = NULL;
+// 	return (res);
+// }
 
 t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 {
@@ -31,12 +31,6 @@ t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 	expanded_line = expand(line, lst, t_int);
 	if (expanded_line)
 	{
-		if (!ft_strcmp(expanded_line, "\0"))
-		{
-			tokens = empty_token();
-			free(expanded_line);
-			return (tokens);
-		}
 		tokens = tokenize(expanded_line);
 		free(expanded_line);
 	}
@@ -44,6 +38,8 @@ t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 		tokens = tokenize(line);
 	if (!tokens)
 		return (NULL);
+	if (!tokens[0])
+		return tokens;
 	if (label_tokens(&tokens))
 	{
 		free_tokens(&tokens);
