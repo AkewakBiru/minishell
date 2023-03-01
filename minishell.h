@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/01 21:03:14 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 00:35:08 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export, t_ints *t_int
 void	create_env(t_list **head, char **envp);
 
 // cd and pwd utils
-char	*get_pwd(void);
-void	print_pwd(void);
+char	*get_pwd(char **cmd_utils);
+void	print_pwd(char **cmd_utils);
 int	chg_dir(char **cmd_utils, t_list **lst, t_list **export, t_ints *t_int);
 
 // linked list utils

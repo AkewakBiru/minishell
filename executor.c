@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/01 22:20:52 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 00:35:27 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int, int is_chi
 	else if (!ft_strcmp(cmd_arg[0], "export"))
 		export_bltin(env_pack + 0, cmd_arg, env_pack + 1, t_int);
 	else if (!ft_strcmp(cmd_arg[0], "pwd"))
-		print_pwd();
+		print_pwd(cmd_arg);
 	else if (!ft_strcmp(cmd_arg[0], "cd"))
 	// if it has multiple args, it should go the first args directory
 		chg_dir(cmd_arg, env_pack + 0, env_pack + 1, t_int);
@@ -130,8 +130,8 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, t_token **tokens)
 int	error_msg(char *msg, char **args, int num, int err)
 {
 	ft_putstr_fd("bash: ", 2);
-	if (num == 0)
-		return (1);
+	// if (num == 0)
+	// 	return (1);
 	if (num == 1)
 		ft_putstr_fd(args[0], 2);
 	ft_putstr_fd(": ", 2);

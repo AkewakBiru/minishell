@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 15:27:50 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/01 00:24:51 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 00:53:30 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int	is_n(char *str)
 		return (0);
 	if (str + i && str[i] && str[i] == '-')
 		i++;
+	else
+		return (0);
 	while (str + i && str[i])
 	{
 		if (str[i] != 'n')
@@ -43,7 +45,6 @@ int	echo(char **arg)
 	}
 	while (arg + i && arg[i] && !ft_strncmp(arg[i], "-n", 2) && is_n(arg[i]))
 		i++;
-	// printf("%d\n", i);
 	while (arg + i && arg[i])
 	{
 		printf("%s", arg[i]);
