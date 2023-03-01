@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 23:58:26 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/01 18:56:17 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,11 @@ int	update_shell(t_list *envp[2])
 		if (get_val(&(envp)[0], "SHLVL"))
 		{
 			n = ft_atoi(get_val(&(envp)[0], "SHLVL"));
-			if (n >= 1000)
+			if (n >= 10000)
+			{
 				n = 0;
+				ft_putendl_fd("bash: warning: shell level too high, resetting to 1", 2);
+			}
 			n++;
 		}
 		else

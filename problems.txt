@@ -14,3 +14,23 @@ echo'' <$asddsaf< 8 -> opening heredoc, because expansion expands to nothing and
 (when an env var gets expanded to nothing and used as a redirection operand) -> i don't know if we need to handle it
 
 << $sdp -> syntax error
+<< a cat > test - doesn't work
+
+for ambiguous redirection: if there is a redirection sign (< or >>  or >) to the left of an expansion and the expansion results
+in nothing, that is an ambiguous redirection.
+
+< a < b < c cat - we are treating cat as an argument when it is a command
+
+$_ -> doesn't work. should we handle it?
+
+<< $sdf -> shouldn't expand if it is not in env and should be taken as it is.
+
+< $adf -> ambiguous redirect
+
+< $adf | ls -> ambiguous but execution continues after the pipe.
+
+$PWD/minishell
+
+export PATH="$PATH:." - not working.
+
+i have to look into how the command is formed -> if / is found in the command, i am not joining env to the command.

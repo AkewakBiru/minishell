@@ -6,15 +6,13 @@
 #    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/02/28 23:12:52 by abiru            ###   ########.fr        #
+#    Updated: 2023/03/01 18:32:27 by abiru            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = gcc -g 
-
-#-O0 -fsanitize=address
+CC = gcc -g -O0 -fsanitize=address
 
 CFLAGS = -Wextra -Werror -Wall
 

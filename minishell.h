@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/01 15:24:35 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/01 21:03:14 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,12 @@ typedef struct	s_ints
 {
 	int	counter;
 	int	cmd_count;
+	int	pip_count;
 	int	RLSTDIN;
 	int	RLSTDOUT;
 	int	*pipes;
 	int	e_status;
+	int	child_id;
 }	t_ints;
 
 // parse utils
@@ -159,8 +161,10 @@ int	check_key_names(char *cmd, char **cmd_utils);
 void	handle_signal(int sig);
 
 // input and output redirection utils
-int	do_in_redir(t_token **tokens, int i);
-int	do_out_redir(t_token **tokens, int i);
+int	do_in_redir(t_token **tokens, int i, int flag, t_ints *t_int);
+int	do_out_redir(t_token **tokens, int i, int flag, t_ints *t_int);
+
+int redir(t_token **tokens, t_ints *t_int);
 
 int	error_msg(char *msg, char **args, int num, int err);
 #endif
