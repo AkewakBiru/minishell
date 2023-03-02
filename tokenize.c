@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/01 15:49:21 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/02 12:58:36 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ t_token	**split_tokens(char const *s, t_token ***res)
 			j = handle_quotes(j, num, s, (&(*res)[i]));
 			if (!j)
 				return (malloc_fail(*res, i));
-			if ((*res)[i - 1] && (*res)[i - 1]->type == redirection)
+			if (i > 0 && (*res)[i - 1] && (*res)[i - 1]->type == redirection)
 				(*res)[i]->type = delimiter_q;
 			i++;
 			continue;
