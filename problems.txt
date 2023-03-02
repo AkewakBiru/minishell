@@ -34,3 +34,5 @@ $PWD/minishell
 export PATH="$PATH:." - not working.
 
 i have to look into how the command is formed -> if / is found in the command, i am not joining env to the command.
+
+./minishell in a pipeline works but shows strange output -> ./minishell | ./minishell ./minishell

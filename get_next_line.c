@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 16:31:31 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 09:50:12 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 11:12:57 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char	*read_line(int fd, char *fd_table)
 		if (char_read < 0)
 		{
 			free(buffer);
-			return (0);
+			return (fd_table);
 		}
 		buffer[char_read] = 0;
 		fd_table = join_free(fd_table, buffer);

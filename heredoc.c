@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 18:00:26 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:07:10 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,11 @@ int	heredoc(int num, char *delim, t_ints *t_int)
 	return (0);
 }
 
-void	do_heredoc(t_token **tokens, t_ints *t_int)
+void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 {
 	int	i;
 	int	j;
+	char	*lim;
 
 	i = 0;
 	j = 0;
@@ -97,7 +98,10 @@ void	do_heredoc(t_token **tokens, t_ints *t_int)
 	{
 		if (tokens[i]->type == here_doc)
 		{
-			heredoc(i, tokens[i + 1]->token, t_int);
+			lim = expand(tokens[i + 1]->token, env_pack[0], t_int);
+			if (!lim || lim[0] == 0)
+				lim = tokens[i + 1]->token;
+			heredoc(i, lim, t_int);
 			j++;
 		}
 		i++;

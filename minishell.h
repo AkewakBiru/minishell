@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 09:44:07 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 13:32:09 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int	unset_builtin(char **cmd_utils, t_list **lst, t_list **export);
 // exit
 int exit_shell(t_list *env_pack[2], t_cmd_op **cmd, t_ints *t_int, int is_child);
 void	free_split(char **str);
+int	count_arg(char **args);
 
 // free utils
 void	del_node(void *node);
@@ -149,7 +150,7 @@ char	*get_next_line(int fd);
 
 //heredoc utils
 void	rm_hd_files(t_token **tokens);
-void	do_heredoc(t_token **tokens, t_ints *t_int);
+void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int);
 int		heredoc(int num, char *delim, t_ints *t_int);
 int		create_hd_file(int num, int flag);
 
