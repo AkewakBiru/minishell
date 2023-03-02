@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:29:12 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/01 20:16:11 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:32:18 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ int	get_arg_size(t_token **tokens, int j)
 	int	i;
 
 	i = 0;
-	while (tokens + j && tokens[j] && (tokens[j]->type == option || tokens[j]->type == arg))
+	while (tokens + j && tokens[j] && (tokens[j]->type == option
+			|| tokens[j]->type == arg))
 	{
 		i++;
 		j++;
@@ -25,21 +26,9 @@ int	get_arg_size(t_token **tokens, int j)
 	return (i);
 }
 
-// char	*join_and_free(char *s1, char *s2)
-// {
-// 	char *tmp;
-// 	char *new;
-
-// 	tmp = ft_strjoin(s1, " ");
-// 	free(s1);
-// 	new = ft_strjoin(tmp, s2);
-// 	free(s2);
-// 	return (new);
-// }
-
 int	count_args(t_token **tokens, int *i)
 {
-	int j;
+	int	j;
 	int	count;
 
 	j = *i;
@@ -78,16 +67,17 @@ char	**get_cmd_args(t_token **tokens, int *i)
 }
 
 /*
-	returns 0 if the stdin is default, positive num if the stdin is redirection, and negative num
-	if the stdin is a pipe.
+	returns 0 if the stdin is default, positive num if the stdin is redirection, 
+	and negative num if the stdin is a pipe.
 */
 
-int get_nearest_pip_cmd(t_token **tokens, int i)
+int	get_nearest_pip_cmd(t_token **tokens, int i)
 {
 	int	j;
 
 	j = ++i;
-	while (tokens + j && tokens[j] && tokens[j]->type != pip && tokens[j]->type != cmd)
+	while (tokens + j && tokens[j] && tokens[j]->type != pip
+		&& tokens[j]->type != cmd)
 		j++;
 	return (j);
 }
@@ -96,7 +86,7 @@ int get_nearest_pip_cmd(t_token **tokens, int i)
 < a < b < c ls < e < f < g - should use g as its stdin.
 */
 
-int check_file(char *file, int j)
+int	check_file(char *file, int j)
 {
 	int	fd;
 
@@ -140,7 +130,7 @@ int	find_stdin(t_token	**tokens, int i)
 	return (-2);
 }
 
-int find_stdout(t_token	**tokens, int i)
+int	find_stdout(t_token	**tokens, int i)
 {
 	int	j;
 
@@ -154,7 +144,8 @@ int find_stdout(t_token	**tokens, int i)
 		j--;
 	}
 	j = i - 1;
-	while (j >= 0 && tokens + j && tokens[j] && tokens[j]->type != cmd && tokens[j]->type != pip)
+	while (j >= 0 && tokens + j && tokens[j] && tokens[j]->type != cmd
+		&& tokens[j]->type != pip)
 	{
 		if (tokens[j]->type == redir_out || tokens[j]->type == redir_out_append)
 			return (j);
@@ -166,28 +157,14 @@ int find_stdout(t_token	**tokens, int i)
 	return (-2);
 }
 
-// void	free_siblings(t_cmd_op **cmds)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (cmds && cmds + i && cmds[i])
-// 	{
-// 		free(cmds[i]);
-// 		cmds[i] = 0;
-// 		i++;
-// 	}
-// 	if (cmds)
-// 		free(cmds);
-// 	cmds = 0;
-// }
-
 t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens)
 {
-	int i = 0;
-	int j = 0;
+	int			i;
+	int			j;
 	t_cmd_op	**cmds;
 
+	i = 0;
+	j = 0;
 	cmds = (t_cmd_op **)malloc(sizeof(t_cmd_op *) * ((*cmd_list)->cmd_len + 1));
 	if (!cmds)
 	{
@@ -198,13 +175,12 @@ t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens)
 	{
 		if (tokens[i]->type == cmd)
 		{
-			cmds[j] =(t_cmd_op *)malloc((sizeof(t_cmd_op)));
+			cmds[j] = (t_cmd_op *)malloc((sizeof(t_cmd_op)));
 			if (!cmds[j])
 			{
 				free_cmd_params(cmds);
 				return (0);
 			}
-				// free all of the list created above also
 			cmds[j]->redir_in = find_stdin(tokens, i);
 			cmds[j]->redir_out = find_stdout(tokens, i);
 			cmds[j]->cmd_args = get_cmd_args(tokens, &i);
@@ -213,10 +189,11 @@ t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens)
 			else if (cmds[j]->cmd_args[0] == 0)
 				cmds[j]->cmd = ft_strdup("");
 			else if ((ft_strchr(cmds[j]->cmd_args[0], '/'))
-			|| (cmds[j]->cmd_args[0] && !(*cmd_list)->env_p))
+				|| (cmds[j]->cmd_args[0] && !(*cmd_list)->env_p))
 				cmds[j]->cmd = ft_strdup(cmds[j]->cmd_args[0]);
 			else if ((*cmd_list)->env_p)
-				cmds[j]->cmd = get_cmd_path((*cmd_list)->ind_p, tokens[i]->token);
+				cmds[j]->cmd = get_cmd_path((*cmd_list)->ind_p,
+						tokens[i]->token);
 			j++;
 		}
 		i++;

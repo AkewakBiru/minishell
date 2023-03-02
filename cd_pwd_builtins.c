@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 21:33:41 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 09:39:25 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 13:01:10 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int	chg_dir(char **cmd_utils, t_list **lst, t_list **export, t_ints *t_int)
 		return (0);
 	else if (cmd_utils + 1 && cmd_utils[1] && chdir(cmd_utils[1]) == -1)
 	{
-		t_int->e_status = error_msg(strerror(errno), cmd_utils + 1, 1, 1);
+		t_int->e_status = error_msg(strerror(errno), cmd_utils, 1, 1);
 		return (1);
 	}
 	val = get_pwd(cmd_utils);

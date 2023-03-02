@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:30:07 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:31:27 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:42:08 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ char	*get_cmd_path(char **env, char *cmd)
 			return (cmd_path);
 		free(cmd_path);
 	}
-	// printf("get here\n");
 	return (ft_strdup(cmd));
 }
 

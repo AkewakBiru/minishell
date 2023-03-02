@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 01:32:13 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:37:21 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-void	exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int, int is_child)
+void	exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int,
+		int is_child)
 {
 	char	**cmd_arg;
 
@@ -34,7 +35,6 @@ void	exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int, int is_chi
 	else if (!ft_strcmp(cmd_arg[0], "pwd"))
 		print_pwd(cmd_arg);
 	else if (!ft_strcmp(cmd_arg[0], "cd"))
-	// if it has multiple args, it should go the first args directory
 		chg_dir(cmd_arg, env_pack + 0, env_pack + 1, t_int);
 	else if (!ft_strcmp(cmd_arg[0], "unset"))
 		t_int->e_status = unset_builtin(cmd_arg, env_pack + 0, env_pack + 1);
@@ -60,7 +60,6 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, t_token **tokens)
 
 	infile = 0;
 	outfile = 0;
-	// printf("%d\n", cmds[t_int->counter]->redir_in);
 	if (cmds[t_int->counter]->redir_in != -2 && cmds[t_int->counter]->redir_in != -1)
 	{
 		if (tokens[cmds[t_int->counter]->redir_in]->type == redir_in)
@@ -131,10 +130,13 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, t_token **tokens)
 int	error_msg(char *msg, char **args, int num, int err)
 {
 	ft_putstr_fd("bash: ", 2);
-	// if (num == 0)
-	// 	return (1);
-	if (num == 1)
+	if ((num == 1 || num == 2) && args + 0 && args[0])
 		ft_putstr_fd(args[0], 2);
+	if (args + 1 && args[1] && num != 2)
+	{
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(args[1], 2);
+	}
 	ft_putstr_fd(": ", 2);
 	ft_putendl_fd(msg, 2);
 	return (err);
@@ -147,22 +149,23 @@ void	ex_fail_msg(t_cmd_op *cmd, char **args, t_ints *t_int)
 	dir = opendir(cmd->cmd);
 	if (dir)
 	{
-		t_int->e_status = error_msg("Is a directory", args, 1, 126);
+		t_int->e_status = error_msg("Is a directory", args, 2, 126);
 		closedir(dir);
 	}
 	else if (ft_strchr(cmd->cmd, '/')
 		&& access(cmd->cmd, F_OK) != 0)
-		t_int->e_status = error_msg("No such file or directory", args, 1, 127);
+		t_int->e_status = error_msg("No such file or directory", args, 2, 127);
 	else if (ft_strchr(cmd->cmd, '/') && access(cmd->cmd, X_OK) != 0 && access(cmd->cmd, F_OK) == 0)
-		t_int->e_status = error_msg("permission denied", args, 1, 126);
+		t_int->e_status = error_msg("permission denied", args, 2, 126);
 	else
-		t_int->e_status = error_msg("command not found", args, 1, 127);
+		t_int->e_status = error_msg("command not found", args, 2, 127);
 }
 
 /*
 
 if it has '/' -> and file is not found (NO such file or dir)
-if file is found and is in path or has '/', but no exec permissions, permission denied
+if file is found and is in path or has '/', but no exec permissions, 
+permission denied
 if file is found or not, if it doesn't have '/': command not found
 DIFFERENT ERROR MESSAGES
 command not found
@@ -171,7 +174,7 @@ no such file or directory
 is a directory -> i can use opendir to check if sth is a directory or not
 */
 
-char *ft_join_free(t_dict *dict)
+char	*ft_join_free(t_dict *dict)
 {
 	char	*new;
 	char	*tmp;
@@ -209,8 +212,8 @@ char	**construct_envp(t_list **lst)
 
 /*
 	if executable is a builtin, it should be the last command to be executed
-	@signal is reset to default in child process, but if the child is minishell it will be restored
-	in main exec func
+	@signal is reset to default in child process, but if the child is minishell 
+	it will be restored in main exec func
 */
 int	exec_cmd(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int, t_token **tokens)
 {
@@ -222,7 +225,7 @@ int	exec_cmd(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int, t_token **toke
 	if ((is_builtin(cmds[t_int->counter]->cmd) && t_int->cmd_count == 1))
 	{
 		dup_close(cmds, t_int, tokens);
-		if (!ft_strcmp(cmds[t_int->counter]->cmd, "exit"))
+		if (!ft_strcmp(cmds[t_int->counter]->cmd, "exit") && count_arg(cmds[t_int->counter]->cmd_args) <= 2)
 			free_tokens(&tokens);
 		exec_builtin(cmds, env_pack, t_int, 0);
 	}
@@ -239,8 +242,8 @@ int	exec_cmd(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int, t_token **toke
 		{
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
-			close(t_int->RLSTDIN);
-			close(t_int->RLSTDOUT);
+			close(t_int->rlstdin);
+			close(t_int->rlstdout);
 			dup_close(cmds, t_int, tokens);
 			if (is_builtin(cmds[t_int->counter]->cmd))
 			{
@@ -248,7 +251,6 @@ int	exec_cmd(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int, t_token **toke
 				exit(t_int->e_status);
 			}
 			envp = construct_envp(env_pack + 0);
-			// printf("%s\n",cmds[t_int->counter]->cmd);
 			if (ft_strchr(cmds[t_int->counter]->cmd, '/'))
 				execve(cmds[t_int->counter]->cmd, cmds[t_int->counter]->cmd_args, envp);
 			ex_fail_msg(cmds[t_int->counter], cmds[t_int->counter]->cmd_args, t_int);
@@ -286,10 +288,10 @@ int	*create_pipes(t_ints *t_int)
 	return (pipes);
 }
 
-int count_pipes(t_token	**tokens)
+int	count_pipes(t_token	**tokens)
 {
 	int	i;
-	int count;
+	int	count;
 
 	i = 0;
 	count = 0;
@@ -302,11 +304,13 @@ int count_pipes(t_token	**tokens)
 	return (count);
 }
 
-int count_cmd_nums(t_token	**tokens)
+int	count_cmd_nums(t_token	**tokens)
 {
-	int i = 0;
-	int count = 0;
+	int	i;
+	int	count;
 
+	count = 0;
+	i = 0;
 	while (tokens + i && tokens[i])
 	{
 		if (tokens[i]->type == cmd)
@@ -318,10 +322,10 @@ int count_cmd_nums(t_token	**tokens)
 
 void	reset_fd(t_ints *t_int)
 {
-	dup2(t_int->RLSTDIN, STDIN_FILENO);
-	close(t_int->RLSTDIN);
-	dup2(t_int->RLSTDOUT, STDOUT_FILENO);
-	close(t_int->RLSTDOUT);	
+	dup2(t_int->rlstdin, STDIN_FILENO);
+	close(t_int->rlstdin);
+	dup2(t_int->rlstdout, STDOUT_FILENO);
+	close(t_int->rlstdout);
 }
 
 void	free_env_utils(t_strs	*cmd_list)
@@ -337,8 +341,8 @@ void	free_env_utils(t_strs	*cmd_list)
 int	wait_for_cmds(t_ints *t_int)
 {
 	int	e_status;
-	(void)e_status;
 
+	(void)e_status;
 	if (waitpid(t_int->child_id, &e_status, 0) == -1)
 		return (0);
 	if (WIFEXITED(e_status))
@@ -350,7 +354,7 @@ int	wait_for_cmds(t_ints *t_int)
 	return (t_int->e_status);
 }
 
-int check_file_existence(t_token **tokens, int i, t_ints *t_int)
+int	check_file_existence(t_token **tokens, int i, t_ints *t_int)
 {
 	if (do_in_redir(tokens, i, 1, t_int) == -1)
 		return (-1);
@@ -363,8 +367,8 @@ int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds, t_int
 {
 	int	i;
 
-	t_int->RLSTDIN = dup(STDIN_FILENO);
-	t_int->RLSTDOUT = dup(STDOUT_FILENO);
+	t_int->rlstdin = dup(STDIN_FILENO);
+	t_int->rlstdout = dup(STDOUT_FILENO);
 	t_int->cmd_count = count_cmd_nums(tokens);
 	t_int->pip_count = count_pipes(tokens);
 	t_int->counter = 0;
@@ -376,14 +380,13 @@ int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds, t_int
 		if (!t_int->pipes)
 			return (1);
 	}
-	do_heredoc(tokens, t_int);
+	do_heredoc(tokens, env_pack, t_int);
 	redir(tokens, t_int);
 	i = 0;
 	while (tokens + i && tokens[i])
 	{
 		if (tokens[i]->type == cmd)
 		{
-			// printf("here %d\n", cmds[t_int->counter]->redir_in);
 			if (check_file_existence(tokens, i, t_int) == -1 || cmds[t_int->counter]->redir_in == -5)
 			{
 				if (cmds[t_int->counter]->redir_in == -5)
@@ -398,7 +401,6 @@ int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds, t_int
 	}
 	if (t_int->cmd_count > 1)
 		close_pipes(t_int);
-	// printf("%d\n", t_int->e_status);
 	if (t_int->cmd_count > 0 && (!(t_int->cmd_count == 1) || !(is_builtin(cmds[0]->cmd))))
 		wait_for_cmds(t_int);
 	reset_fd(t_int);
@@ -422,33 +424,16 @@ int	executor(t_list *env_pack[2], t_token **tokens, t_ints *t_int)
 	cmd_list->cmd_len = count_cmd_nums(tokens);
 	cmds = create_cmd_list(&cmd_list, tokens);
 	free_env_utils(cmd_list);
-	// int i = 0;
-	// while (cmds[i])
-	// {
-	// 	printf("%s\t%d\n", cmds[i]->cmd, cmds[i]->redir_in);
-	// 	i++;
-	// }
-	// while (tokens + i && tokens[i])
-	// {
-	// 	printf("%s %d\t", tokens[i]->token, tokens[i]->type);
-	// 	i++;
-	// }
 	if (!cmds)
 	{
 		t_int->e_status = 1;
 		return (EXIT_FAILURE);
 	}
 	t_int->e_status = 0;
-	// only execute builtins in the parent proc if they are not in a pipeline.
-	// or are simple commands
-	/*
-		if there is one command and is builtin, execute the command without forking and do redirection accordingly
-	*/
 	loop_exec_cmds(env_pack, tokens, cmds, t_int);
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
 	free_cmd_params(cmds);
 	cmds = 0;
-	// printf("\n%d\n", t_int->e_status);
 	return (EXIT_SUCCESS);
 }

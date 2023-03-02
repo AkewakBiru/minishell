@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 09:08:17 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 09:09:58 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:41:24 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	check_shl_val(t_list *envp[2], t_dict *dict, unsigned long long n)
 int	update_shell(t_list *envp[2])
 {
 	unsigned long long	n;
-	t_dict	*dict;
+	t_dict				*dict;
 
 	dict = (t_dict *)malloc(sizeof(t_dict));
 	if (!dict)

@@ -6,16 +6,15 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 18:00:26 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:41:06 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void handle_signal2(int sig)
+void	handle_signal2(int sig)
 {
 	(void)sig;
-	// t_int->e_status = 1;
 	rl_replace_line("", 0);
 	ft_putstr_fd("  \b\b\b\b", 2);
 	close(STDIN_FILENO);
@@ -23,9 +22,9 @@ void handle_signal2(int sig)
 
 int	create_hd_file(int num, int flag)
 {
-	int hd;
-	char *hdoc_name;
-	char *h_num;
+	int		hd;
+	char	*hdoc_name;
+	char	*h_num;
 
 	h_num = ft_itoa(num);
 	hdoc_name = ft_strjoin(".heredoc", h_num);
@@ -47,8 +46,6 @@ void	sig_ignore(int sig)
 {
 	(void)sig;
 	rl_replace_line("", 0);
-	// ft_putstr_fd("  \b\b\b\b", 2);
-	// rl_replace_line("", 0);
 }
 
 int	heredoc(int num, char *delim, t_ints *t_int)
@@ -86,10 +83,11 @@ int	heredoc(int num, char *delim, t_ints *t_int)
 	return (0);
 }
 
-void	do_heredoc(t_token **tokens, t_ints *t_int)
+void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
+	char	*lim;
 
 	i = 0;
 	j = 0;
@@ -97,7 +95,10 @@ void	do_heredoc(t_token **tokens, t_ints *t_int)
 	{
 		if (tokens[i]->type == here_doc)
 		{
-			heredoc(i, tokens[i + 1]->token, t_int);
+			lim = expand(tokens[i + 1]->token, env_pack[0], t_int);
+			if (!lim || lim[0] == 0)
+				lim = tokens[i + 1]->token;
+			heredoc(i, lim, t_int);
 			j++;
 		}
 		i++;
@@ -106,8 +107,8 @@ void	do_heredoc(t_token **tokens, t_ints *t_int)
 
 void	rm_hd_files(t_token **tokens)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	char	*fname;
 	char	*num;
 
