@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:29:12 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 17:59:22 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/01 20:16:11 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,18 @@ int get_nearest_pip_cmd(t_token **tokens, int i)
 /*
 < a < b < c ls < e < f < g - should use g as its stdin.
 */
+
+int check_file(char *file, int j)
+{
+	int	fd;
+
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		return (-5);
+	close(fd);
+	return (j);
+}
+
 int	find_stdin(t_token	**tokens, int i)
 {
 	int	j;
@@ -105,14 +117,22 @@ int	find_stdin(t_token	**tokens, int i)
 	while (j > i)
 	{
 		if (tokens[j]->type == redir_in || tokens[j]->type == here_doc)
+		{
+			if (tokens[j]->type == redir_in)
+				return (check_file(tokens[j + 1]->token, j));
 			return (j);
+		}
 		j--;
 	}
 	j = --i;
 	while (j >= 0 && tokens + j && tokens[j] && tokens[j]->type != cmd)
 	{
 		if (tokens[j]->type == redir_in || tokens[j]->type == here_doc)
+		{
+			if (tokens[j]->type == redir_in)
+				return (check_file(tokens[j + 1]->token, j));
 			return (j);
+		}
 		else if (tokens[j]->type == pip)
 			return (-1);
 		j--;

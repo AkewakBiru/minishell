@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 16:31:31 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/28 18:00:18 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 09:50:12 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	line = NULL;
-	if (fd < 0 || fd > MAX_FD || BUFFER_SIZE <= 0 || BUFFER_SIZE > 2147483647 || read(fd, 0, 0) == -1)
+	if (fd < 0 || fd > MAX_FD || BUFFER_SIZE <= 0 || BUFFER_SIZE > 2147483647
+		|| read(fd, 0, 0) == -1)
 		return (NULL);
 	if (!fd_table)
 		fd_table = ft_strdup("");

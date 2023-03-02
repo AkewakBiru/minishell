@@ -6,20 +6,18 @@
 #    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/02/28 23:12:52 by abiru            ###   ########.fr        #
+#    Updated: 2023/03/02 09:13:02 by abiru            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = gcc -g 
-
-#-O0 -fsanitize=address
+CC = gcc -g -O0 -fsanitize=address
 
 CFLAGS = -Wextra -Werror -Wall
 
 SRCS = main.c dict_utils.c export_builtin.c list_utils.c parse.c tokenize.c cd_pwd_builtins.c unset.c echo.c exit.c label_tokens.c expand.c parse_utils.c \
-		cmd_list.c pipex_utils.c executor.c get_next_line.c heredoc.c error_utils.c redir_in_out.c
+		cmd_list.c pipex_utils.c executor.c get_next_line.c heredoc.c error_utils.c redir_in_out.c init_env.c free_utils.c
 
 LIBFT = ./libft/libft.a
 

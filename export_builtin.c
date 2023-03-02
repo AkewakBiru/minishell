@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/01 01:02:46 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 01:04:18 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,20 @@ void	print_list(t_list **lst, t_ints *t_int)
 	t_int->e_status = 0;
 }
 
+
 void	update_env(t_dict *cmd, t_list **env)
 {
 	t_dict	*new;
 	t_list	*node;
+	char	*key;
+	char	*value;
 
-	char *key = ft_strdup(cmd->key);
-	char *value = ft_strdup(cmd->value);
+	key = ft_strdup(cmd->key);
+	value = ft_strdup(cmd->value);
 	if (key_exists(key, env) == 1)
 	{
 		if (cmd->flag == 1)
 			update_dict(key, value, env);
-		// key already present so should be freed
 		free(key);
 		return ;
 	}
@@ -73,7 +75,6 @@ void	update_env(t_dict *cmd, t_list **env)
 	free(value);
 	node->next = 0;
 	ft_lstadd_back(env, node);
-	// printf("INSIDE update end");
 }
 
 int	check_alphanumeric(char *cmd)
