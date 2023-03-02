@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/01 16:02:17 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/02 12:53:43 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,13 @@ int	label_tokens(t_token ***tokens)
 			(*tokens)[i]->type = cmd;
 		else if ((*tokens)[i]->token[0] == '-')
 			(*tokens)[i]->type = option;
-		else if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == here_doc)
-			(*tokens)[i]->type = delimiter;
+		else if (i > 0 && (*tokens)[i - 1]->type == here_doc)
+		{
+			if ((*tokens)[i]->type == unset)
+				(*tokens)[i]->type = delimiter;
+			if (begins_w_redir && (*tokens)[i + 1] && (*tokens)[i + 1]->type == unset)
+				(*tokens)[i + 1]->type = cmd;
+		}
 		else if (((*tokens)[i]->type == unset || (*tokens)[i]->type == delimiter_q) && is_redirection((*tokens)[i - 1]->type) && (*tokens)[i - 1]->type != here_doc)
 		{
 			(*tokens)[i]->type = file;
