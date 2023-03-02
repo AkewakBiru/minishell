@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/02 17:18:50 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 03:02:27 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,29 +60,29 @@ t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 		free_tokens(&tokens);
 		return (NULL);
 	}
-	i = 0;
-	while (tokens && tokens[i])
-	{
-		printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
-		i++;
-	}
+	// i = 0;
+	// while (tokens && tokens[i])
+	// {
+	// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
+	// 	i++;
+	// }
 	i = 0;
 	while(tokens[i])
 	{
-		if (should_expand(&tokens, i, tokens[i]->token))
-		{
+		// if (should_expand(&tokens, i, tokens[i]->token))
+		// {
 			temp = tokens[i]->token;
-			tokens[i]->token = expand(tokens[i]->token, lst, t_int);
+			tokens[i]->token = expand(tokens[i], lst, t_int);
 			free(temp);
-		}
+		// }
 		i++;
 	}
-	i = 0;
-	while (tokens && tokens[i])
-	{
-		printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
-		i++;
-	}
+	// i = 0;
+	// while (tokens && tokens[i])
+	// {
+	// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
+	// 	i++;
+	// }
 	return (tokens);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/02 17:17:52 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 03:20:08 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ int	should_expand(t_token ***tokens, int index, char *line)
 			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
 			return (1);
 	}
-	printf("doesnt should_expand()\n");
+	// printf("doesnt should_expand()\n");
 	return (0);
 }
 
-int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
+int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 {
 	int		i;
 	int		s_quote;
@@ -105,9 +105,11 @@ int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
+		if ((line[i] == '\'' && !d_quote) || (line[i] == '\"' && !s_quote))
+			len--;
 		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
 		// 	continue;
-		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
+		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && type != delimiter)
 		{
 			var_name = ft_itoa(t_int->e_status);
 			if (!var_name)
@@ -118,7 +120,7 @@ int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
 		}
 		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			len--;
-		else if (line[i] == '$' && !s_quote && (ft_isalpha(line[i + 1])
+		else if (line[i] == '$' && !s_quote && type != delimiter && (ft_isalpha(line[i + 1])
 			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
 		{
 			var_name = get_var_name(&line[i]);
@@ -132,7 +134,7 @@ int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
 	return (len);
 }
 
-char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
+char	*expand_line(char *line, int type, int len, t_list *lst, t_ints *t_int)
 {
 	char	*new_line;
 	int		s_quote;
@@ -151,9 +153,11 @@ char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
+		if ((line[i] == '\'' && !d_quote) || (line[i] == '\"' && !s_quote))
+			continue;
 		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
 		// 	continue;
-		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
+		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && type != delimiter)
 		{
 			var_name = ft_itoa(t_int->e_status);
 			if (!var_name)
@@ -166,7 +170,7 @@ char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
 		}
 		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			continue;
-		if (line[i] == '$' && !s_quote && (ft_isalpha(line[i + 1])
+		if (line[i] == '$' && !s_quote && type != delimiter && (ft_isalpha(line[i + 1])
 			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
 		{
 			var_name = get_var_name(&line[i]);
@@ -185,17 +189,17 @@ char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
 	return (new_line);
 }
 
-char	*expand(char *line, t_list *lst, t_ints *t_int)
+char	*expand(t_token *token, t_list *lst, t_ints *t_int)
 {
 	char	*new_line;
 	int		len;
 
 	// if (!should_expand(line))
 	// 	return (0);
-	len = get_expanded_len(line, lst, t_int);
+	len = get_expanded_len(token->token, token->type, lst, t_int);
 	if (len == -1)
 		return (0);
-	new_line = expand_line(line, len, lst, t_int);
+	new_line = expand_line(token->token, token->type, len, lst, t_int);
 	if (!new_line)
 		return (0);
 	return (new_line);

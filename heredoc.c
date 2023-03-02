@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 22:03:01 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 03:13:30 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	sig_ignore(int sig)
 	rl_replace_line("", 0);
 }
 
-int	heredoc(int num, char *lim, t_list *lst, t_ints *t_int)
+int	heredoc(int num, t_token *token, t_list *lst, t_ints *t_int)
 {
 	int		hd;
 	char	*tmp;
@@ -67,12 +67,12 @@ int	heredoc(int num, char *lim, t_list *lst, t_ints *t_int)
 		tmp = get_next_line(0);
 		if (!tmp)
 			return (0);
-		if (ft_strncmp(tmp, lim, ft_strlen(tmp)) == 0)
+		if (ft_strncmp(tmp, token->token, ft_strlen(tmp)) == 0)
 		{
 			free(tmp);
 			break ;
 		}
-		expanded = expand(tmp, lst, t_int);
+		expanded = expand(token, lst, t_int);
 		if (expanded)
 		{
 			write(hd, expanded, ft_strlen(expanded));
@@ -98,9 +98,10 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 	{
 		if (tokens[i]->type == here_doc)
 		{
-			lim = ft_strjoin(tokens[i+1]->token, "\n");
-			heredoc(i, lim, env_pack[0], t_int);
+			lim = tokens[i+1]->token;
+			tokens[i+1]->token = ft_strjoin(tokens[i+1]->token, "\n");
 			free(lim);
+			heredoc(i, tokens[i+1], env_pack[0], t_int);
 			j++;
 		}
 		i++;
