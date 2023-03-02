@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 02:11:41 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 02:39:18 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 	while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))
 	{
 		num = 0;
-		while (s[j] && (s_quote || (s[j] != '\"' && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))))
+		while (s[j] && (s_quote || d_quote || (!is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))))
 		{
 			num++;
 			check_quotes(s[j++], &s_quote, &d_quote);
@@ -119,17 +119,17 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 				return (0);
 			continue;
 		}
-		if (s[j] == '\"')// || s[j] == '\'')
-			check_quotes(s[j++], &s_quote, &d_quote);
-		while (s[j] && ((d_quote && s[j] != '\"')))// || (s_quote && s[j] != '\'')))
-		{
-			check_quotes(s[j++], &s_quote, &d_quote);
-			num++;
-		}
-		check_quotes(s[j], &s_quote, &d_quote);
-		res = combine_strs(res, ft_substr(s, j - num, num));
-		if (!res)
-			return (0);
+		// if (s[j] == '\"')// || s[j] == '\'')
+		// 	check_quotes(s[j++], &s_quote, &d_quote);
+		// while (s[j] && ((d_quote && s[j] != '\"')))// || (s_quote && s[j] != '\'')))
+		// {
+		// 	check_quotes(s[j++], &s_quote, &d_quote);
+		// 	num++;
+		// }
+		// check_quotes(s[j], &s_quote, &d_quote);
+		// res = combine_strs(res, ft_substr(s, j - num, num));
+		// if (!res)
+		// 	return (0);
 		j++;
 	}
 	(*token)->token = res;
