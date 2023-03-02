@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 21:33:41 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 00:58:41 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 09:39:25 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void	print_pwd(char **cmd_utils)
 /* 
 	needs double check after finishing mkdir functionality
 	expecially PWD and OLDPWD
-	@changes dir using the first arg it receives, if it receives more, uses the first only.
+	@changes dir using the first arg it receives, if it receives 
+	more, uses the first only.
 	with out no arg goes to home dir.
 */
 
@@ -88,7 +89,6 @@ void	update_env_free(t_dict *dict, t_list **lst, t_list **export, int flag)
 	if (dict->value)
 		free(dict->value);
 }
-
 
 int	chg_dir(char **cmd_utils, t_list **lst, t_list **export, t_ints *t_int)
 {

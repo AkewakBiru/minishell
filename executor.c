@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 00:35:27 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 01:32:13 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int	dup_close(t_cmd_op **cmds, t_ints *t_int, t_token **tokens)
 
 	infile = 0;
 	outfile = 0;
+	// printf("%d\n", cmds[t_int->counter]->redir_in);
 	if (cmds[t_int->counter]->redir_in != -2 && cmds[t_int->counter]->redir_in != -1)
 	{
 		if (tokens[cmds[t_int->counter]->redir_in]->type == redir_in)
@@ -382,6 +383,7 @@ int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens, t_cmd_op **cmds, t_int
 	{
 		if (tokens[i]->type == cmd)
 		{
+			// printf("here %d\n", cmds[t_int->counter]->redir_in);
 			if (check_file_existence(tokens, i, t_int) == -1 || cmds[t_int->counter]->redir_in == -5)
 			{
 				if (cmds[t_int->counter]->redir_in == -5)

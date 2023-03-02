@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 00:35:08 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 09:44:07 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,4 +167,11 @@ int	do_out_redir(t_token **tokens, int i, int flag, t_ints *t_int);
 int redir(t_token **tokens, t_ints *t_int);
 
 int	error_msg(char *msg, char **args, int num, int err);
+
+int	update_shell(t_list *envp[2]);
+
+// free utils
+void	free_tokens(t_token ***tokens_p);
+void	free_cmd_params(t_cmd_op **cmds);
+void	free_split(char **str);
 #endif

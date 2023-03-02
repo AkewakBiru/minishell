@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:03:50 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/26 21:36:59 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 08:40:44 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	*ft_memchr(const void *s, int c, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 char	*ft_strnstr(const char *haystack, const char *needle, size_t n);
 unsigned long long	ft_atoi(const char *str);
+int					custom_atoi(const char *str);
 void	*ft_calloc(size_t, size_t);
 char	*ft_strdup(const char *s1);
 char	*ft_strndup(const char *s1, char c);

@@ -14,7 +14,7 @@ echo'' <$asddsaf< 8 -> opening heredoc, because expansion expands to nothing and
 (when an env var gets expanded to nothing and used as a redirection operand) -> i don't know if we need to handle it
 
 << $sdp -> syntax error
-<< a cat > test - doesn't work
+<< a cat > test - doesn't work because cat is treated as an arg when it is a command
 
 for ambiguous redirection: if there is a redirection sign (< or >>  or >) to the left of an expansion and the expansion results
 in nothing, that is an ambiguous redirection.
