@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 14:41:06 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 22:03:01 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	handle_signal2(int sig)
 {
 	(void)sig;
 	rl_replace_line("", 0);
-	ft_putstr_fd("  \b\b\b\b", 2);
+	write(2, "\n", 1);
 	close(STDIN_FILENO);
 }
 
@@ -48,38 +48,41 @@ void	sig_ignore(int sig)
 	rl_replace_line("", 0);
 }
 
-int	heredoc(int num, char *delim, t_ints *t_int)
+int	heredoc(int num, char *lim, t_list *lst, t_ints *t_int)
 {
 	int		hd;
 	char	*tmp;
-	char	*lim;
+	char	*expanded;
 
 	hd = create_hd_file(num, 1);
 	if (hd < 0)
 		return (0);
 	if (signal(SIGINT, handle_signal2) != SIG_ERR)
 		t_int->e_status = 1;
-	signal(SIGQUIT, sig_ignore);
-	lim = ft_strjoin(delim, "\n");
+	if (signal(SIGQUIT, SIG_IGN) != SIG_ERR)
+		t_int->e_status = 0;
 	while (1)
 	{
 		write(1, "> ", 2);
 		tmp = get_next_line(0);
 		if (!tmp)
-		{
-			free(lim);
 			return (0);
-		}
 		if (ft_strncmp(tmp, lim, ft_strlen(tmp)) == 0)
 		{
 			free(tmp);
 			break ;
 		}
-		write(hd, tmp, ft_strlen(tmp));
+		expanded = expand(tmp, lst, t_int);
+		if (expanded)
+		{
+			write(hd, expanded, ft_strlen(expanded));
+			free(expanded);
+		}
+		else
+			write(hd, tmp, ft_strlen(tmp));
 		free(tmp);
 	}
 	close(hd);
-	free(lim);
 	return (0);
 }
 
@@ -95,10 +98,9 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 	{
 		if (tokens[i]->type == here_doc)
 		{
-			lim = expand(tokens[i + 1]->token, env_pack[0], t_int);
-			if (!lim || lim[0] == 0)
-				lim = tokens[i + 1]->token;
-			heredoc(i, lim, t_int);
+			lim = ft_strjoin(tokens[i+1]->token, "\n");
+			heredoc(i, lim, env_pack[0], t_int);
+			free(lim);
 			j++;
 		}
 		i++;

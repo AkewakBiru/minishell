@@ -6,12 +6,17 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:57:09 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/17 22:19:17 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 22:03:17 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "./libft/libft.h"
+
+// static void	ft_swap(t_dict *dict, t_dict *dict2)
+// {
+
+// }
 
 void	sort_list(t_list **head)
 {

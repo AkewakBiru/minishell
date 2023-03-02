@@ -6,15 +6,15 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 21:34:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 13:52:13 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 22:05:53 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int get_left_pipe(t_token **tokens, int i)
+int	get_left_pipe(t_token **tokens, int i)
 {
-	int j;
+	int	j;
 
 	j = i - 1;
 	while (j > 0 && tokens + j && tokens[j] && tokens[j]->type != pip)
@@ -24,7 +24,7 @@ int get_left_pipe(t_token **tokens, int i)
 
 int	get_right_pipe(t_token **tokens, int i)
 {
-	int j;
+	int	j;
 
 	j = i;
 	if (tokens + i == 0)
@@ -46,74 +46,7 @@ int	redir_error(char *msg, char *file, int err)
 	return (err);
 }
 
-int	do_in_redir(t_token **tokens, int i, int flag, t_ints *t_int)
-{
-	int	j;
-	int	k;
-
-	j = 0;
-	if (i > 0)
-		j = get_left_pipe(tokens, i);
-	if (tokens + j && tokens[j] && (tokens[j]->type == pip || tokens[j]->type == cmd))
-		j++;
-	while (tokens + j && tokens[j] && tokens[j]->type != pip)
-	{
-		if (tokens + j && tokens[j] && tokens[j]->type == redir_in)
-		{
-			k = open(tokens[j + 1]->token, O_RDONLY);
-			if (k < 0)
-			{
-				if (!flag)
-					t_int->e_status = redir_error(strerror(errno), tokens[j + 1]->token, 1);
-				return (-1);
-			}
-			close(k);
-		}
-		j++;
-	}
-	return (0);
-}
-
-int	do_out_redir(t_token **tokens, int i, int flag, t_ints *t_int)
-{
-	int	j;
-	int	k;
-
-	j = 0;
-	if (i > 0)
-		j = get_left_pipe(tokens, i);
-	if (tokens + j && tokens[j] && (tokens[j]->type == pip || tokens[j]->type == cmd))
-		j++;
-	while (tokens + j && tokens[j] && tokens[j]->type != pip)
-	{
-		if (tokens + j && tokens[j] && tokens[j]->type == redir_out)
-		{
-			k = open(tokens[j + 1]->token, O_RDWR | O_CREAT | O_TRUNC, 0000644);
-			if (k < 0)
-			{
-				if (!flag)
-					t_int->e_status = redir_error(strerror(errno), tokens[j + 1]->token, 1);
-				return (-1);
-			}
-			close(k);
-		}
-		else if (tokens + j && tokens[j] && tokens[j]->type == redir_out_append)
-		{
-			k = open(tokens[j + 1]->token, O_RDWR | O_CREAT | O_APPEND, 0000644);
-			if (k < 0)
-			{
-				if (!flag)
-					t_int->e_status = redir_error(strerror(errno), tokens[j + 1]->token, 1);
-				return (-1);
-			}
-			close(k);
-		}
-		j++;
-	}
-	return (0);
-}
-
-int redir(t_token **tokens, t_ints *t_int)
+int	redir(t_token **tokens, t_ints *t_int)
 {
 	int	i;
 

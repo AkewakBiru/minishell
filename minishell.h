@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 17:25:55 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/02 22:04:10 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,23 +153,49 @@ char		*get_next_line(int fd);
 //heredoc utils
 void		rm_hd_files(t_token **tokens);
 void		do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int);
-int			heredoc(int num, char *delim, t_ints *t_int);
+int			heredoc(int num, char *delim, t_list *lst, t_ints *t_int);
 int			create_hd_file(int num, int flag);
 
+// builtin utils
 int			is_builtin(char *cmd);
+void		exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int,
+		int is_child);
 
-void		custom_err_msg(char *cmd, char *arg);
 int			check_key_names(char *cmd, char **cmd_utils);
-
 void		handle_signal(int sig);
 
+char		**construct_envp(t_list **lst);
+
 // input and output redirection utils
+int			redir(t_token **tokens, t_ints *t_int);
 int			do_in_redir(t_token **tokens, int i, int flag, t_ints *t_int);
 int			do_out_redir(t_token **tokens, int i, int flag, t_ints *t_int);
+int			get_right_pipe(t_token **tokens, int i);
+int			get_left_pipe(t_token **tokens, int i);
+int			redir_error(char *msg, char *file, int err);
 
-int			redir(t_token **tokens, t_ints *t_int);
+// cmd tools: cmd_count, wait
+int			count_cmd_nums(t_token	**tokens);
+void		reset_fd(t_ints *t_int);
+int			wait_for_cmds(t_ints *t_int);
+int			check_file_existence(t_token **tokens, int i, t_ints *t_int);
+int			init_utils(t_token **tokens, t_ints *t_int);
+
+// cmdlist utils
+int			get_arg_size(t_token **tokens, int j);
+int			count_args(t_token **tokens, int *i);
+char		**get_cmd_args(t_token **tokens, int *i);
+int			get_nearest_pip_cmd(t_token **tokens, int i);
+int			check_file(char *file, int j);
+
+// pipe utils
+int			*create_pipes(t_ints *t_int);
+int			count_pipes(t_token	**tokens);
+void		close_pipes(t_ints *t_int);
 
 int			error_msg(char *msg, char **args, int num, int err);
+void		custom_err_msg(char *cmd, char *arg);
+void		ex_fail_msg(t_cmd_op *cmd, char **args, t_ints *t_int);
 
 int			update_shell(t_list *envp[2]);
 
@@ -177,4 +203,15 @@ int			update_shell(t_list *envp[2]);
 void		free_tokens(t_token ***tokens_p);
 void		free_cmd_params(t_cmd_op **cmds);
 void		free_split(char **str);
+void		free_env_utils(t_strs	*cmd_list);
+
+// file utils
+int			open_infile(t_cmd_op **cmds, t_ints *t_int, t_token **tokens);
+int			open_outfile(t_cmd_op **cmds, t_ints *t_int, t_token **tokens);
+int			dup_close(t_cmd_op **cmds, t_ints *t_int, t_token **tokens);
+
+// input redirection utils
+// int	check_hd_err(t_token **tokens, int j, int flag, t_ints *t_int);
+// int	check_rin_err(t_token **tokens, int j, int flag, t_ints *t_int);
+// int	do_in_redir(t_token **tokens, int i, int flag, t_ints *t_int);
 #endif

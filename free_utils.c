@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 09:12:41 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 09:47:34 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 22:02:48 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,14 @@ void	free_cmd_params(t_cmd_op **cmds)
 	if (cmds)
 		free(cmds);
 	cmds = 0;
+}
+
+void	free_env_utils(t_strs	*cmd_list)
+{
+	free(cmd_list->env_p);
+	cmd_list->env_p = 0;
+	free_arr(cmd_list->ind_p);
+	cmd_list->ind_p = 0;
+	free(cmd_list);
+	cmd_list = 0;
 }

@@ -6,94 +6,21 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:29:12 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 14:32:18 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 22:00:48 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	get_arg_size(t_token **tokens, int j)
-{
-	int	i;
-
-	i = 0;
-	while (tokens + j && tokens[j] && (tokens[j]->type == option
-			|| tokens[j]->type == arg))
-	{
-		i++;
-		j++;
-	}
-	return (i);
-}
-
-int	count_args(t_token **tokens, int *i)
-{
-	int	j;
-	int	count;
-
-	j = *i;
-	count = 0;
-	while (tokens + j && tokens[j] && tokens[j]->type != pip)
-	{
-		if (tokens[j]->type == option || tokens[j]->type == 2)
-			count++;
-		j++;
-	}
-	return (count);
-}
-
-char	**get_cmd_args(t_token **tokens, int *i)
-{
-	char	**arg;
-	int		count;
-	int		j;
-	int		k;
-
-	count = count_args(tokens, i);
-	arg = (char **)malloc(sizeof(char *) * (count + 2));
-	if (!arg)
-		return (0);
-	j = *i;
-	k = 0;
-	arg[k++] = ft_strdup(tokens[j++]->token);
-	while (tokens + j && tokens[j] && tokens[j]->type != pip)
-	{
-		if (tokens[j]->type == option || tokens[j]->type == 2)
-			arg[k++] = ft_strdup(tokens[j]->token);
-		j++;
-	}
-	arg[k] = 0;
-	return (arg);
-}
 
 /*
 	returns 0 if the stdin is default, positive num if the stdin is redirection, 
 	and negative num if the stdin is a pipe.
 */
 
-int	get_nearest_pip_cmd(t_token **tokens, int i)
+int	find_stdin2(t_token	**tokens, int j)
 {
-	int	j;
-
-	j = ++i;
-	while (tokens + j && tokens[j] && tokens[j]->type != pip
-		&& tokens[j]->type != cmd)
-		j++;
-	return (j);
-}
-
-/*
-< a < b < c ls < e < f < g - should use g as its stdin.
-*/
-
-int	check_file(char *file, int j)
-{
-	int	fd;
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return (-5);
-	close(fd);
+	if (tokens[j]->type == redir_in)
+		return (check_file(tokens[j + 1]->token, j));
 	return (j);
 }
 
@@ -107,22 +34,14 @@ int	find_stdin(t_token	**tokens, int i)
 	while (j > i)
 	{
 		if (tokens[j]->type == redir_in || tokens[j]->type == here_doc)
-		{
-			if (tokens[j]->type == redir_in)
-				return (check_file(tokens[j + 1]->token, j));
-			return (j);
-		}
+			return (find_stdin2(tokens, j));
 		j--;
 	}
 	j = --i;
 	while (j >= 0 && tokens + j && tokens[j] && tokens[j]->type != cmd)
 	{
 		if (tokens[j]->type == redir_in || tokens[j]->type == here_doc)
-		{
-			if (tokens[j]->type == redir_in)
-				return (check_file(tokens[j + 1]->token, j));
-			return (j);
-		}
+			return (find_stdin2(tokens, j));
 		else if (tokens[j]->type == pip)
 			return (-1);
 		j--;
@@ -157,6 +76,34 @@ int	find_stdout(t_token	**tokens, int i)
 	return (-2);
 }
 
+t_cmd_op	*create_cmd(t_strs **cmd_list, t_token **tokens,
+	t_cmd_op **cmds, int i)
+{
+	t_cmd_op	*command;
+
+	command = (t_cmd_op *)malloc((sizeof(t_cmd_op)));
+	if (!command)
+	{
+		ft_putendl_fd("Malloc error while creating command in command list", 2);
+		free_cmd_params(cmds);
+		return (0);
+	}
+	command->redir_in = find_stdin(tokens, i);
+	command->redir_out = find_stdout(tokens, i);
+	command->cmd_args = get_cmd_args(tokens, &i);
+	if (command->cmd_args + 0 && is_builtin(command->cmd_args[0]))
+		command->cmd = ft_strdup(command->cmd_args[0]);
+	else if (command->cmd_args[0] == 0)
+		command->cmd = ft_strdup("");
+	else if ((ft_strchr(command->cmd_args[0], '/'))
+		|| (command->cmd_args[0] && !(*cmd_list)->env_p))
+		command->cmd = ft_strdup(command->cmd_args[0]);
+	else if ((*cmd_list)->env_p)
+		command->cmd = get_cmd_path((*cmd_list)->ind_p,
+				tokens[i]->token);
+	return (command);
+}
+
 t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens)
 {
 	int			i;
@@ -175,26 +122,9 @@ t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens)
 	{
 		if (tokens[i]->type == cmd)
 		{
-			cmds[j] = (t_cmd_op *)malloc((sizeof(t_cmd_op)));
-			if (!cmds[j])
-			{
-				free_cmd_params(cmds);
+			cmds[j] = create_cmd(cmd_list, tokens, cmds, i);
+			if (!cmds[j++])
 				return (0);
-			}
-			cmds[j]->redir_in = find_stdin(tokens, i);
-			cmds[j]->redir_out = find_stdout(tokens, i);
-			cmds[j]->cmd_args = get_cmd_args(tokens, &i);
-			if (cmds[j]->cmd_args + 0 && is_builtin(cmds[j]->cmd_args[0]))
-				cmds[j]->cmd = ft_strdup(cmds[j]->cmd_args[0]);
-			else if (cmds[j]->cmd_args[0] == 0)
-				cmds[j]->cmd = ft_strdup("");
-			else if ((ft_strchr(cmds[j]->cmd_args[0], '/'))
-				|| (cmds[j]->cmd_args[0] && !(*cmd_list)->env_p))
-				cmds[j]->cmd = ft_strdup(cmds[j]->cmd_args[0]);
-			else if ((*cmd_list)->env_p)
-				cmds[j]->cmd = get_cmd_path((*cmd_list)->ind_p,
-						tokens[i]->token);
-			j++;
 		}
 		i++;
 	}
