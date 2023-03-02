@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 03:20:08 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 03:22:18 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*get_value(char *var_name, t_list *lst)
 {
 	while(lst)
 	{
-		if (!ft_strncmp(var_name, ((t_dict *)lst->content)->key, ft_strlen(((t_dict *)lst->content)->key)))
+		if (!ft_strcmp(var_name, ((t_dict *)lst->content)->key))
 			return (((t_dict *)lst->content)->value);
 		lst = lst->next;
 	}
