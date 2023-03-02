@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/02 14:39:12 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 02:11:41 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,13 +102,15 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 	res = ft_substr(s, j - num, num);
 	if (!res)
 		return (0);
+	// printf("j: %d, num: %d,res: %s\n", j, num, res);
 	while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))
 	{
 		num = 0;
-		while (s[j] && s[j] != '\'' && s[j] != '\"' && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))
+		while (s[j] && (s_quote || (s[j] != '\"' && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))))
 		{
 			num++;
-			j++;
+			check_quotes(s[j++], &s_quote, &d_quote);
+			// j++;
 		}
 		if (num)
 		{
@@ -117,9 +119,9 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 				return (0);
 			continue;
 		}
-		if (s[j] == '\'' || s[j] == '\"')
+		if (s[j] == '\"')// || s[j] == '\'')
 			check_quotes(s[j++], &s_quote, &d_quote);
-		while (s[j] && ((s_quote && s[j] != '\'') || (d_quote && s[j] != '\"')))
+		while (s[j] && ((d_quote && s[j] != '\"')))// || (s_quote && s[j] != '\'')))
 		{
 			check_quotes(s[j++], &s_quote, &d_quote);
 			num++;
