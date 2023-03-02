@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:50:47 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 13:23:19 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:27:29 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ void	ultimate_free(t_list *env_pack[2], t_cmd_op **cmd, t_ints *t_int)
 	free_cmd_params(cmd);
 	if (t_int->pipes)
 		free(t_int->pipes);
-	close(t_int->RLSTDIN);
-	close(t_int->RLSTDOUT);
+	close(t_int->rlstdin);
+	close(t_int->rlstdout);
 }
 
 int	exit_shell(t_list *env_pack[2], t_cmd_op **cmd, t_ints *t_int, int is_child)
@@ -63,8 +63,6 @@ int	exit_shell(t_list *env_pack[2], t_cmd_op **cmd, t_ints *t_int, int is_child)
 	{
 		t_int->e_status = error_msg("too many arguments",
 				cmd[t_int->counter]->cmd_args, 2, 1);
-		// ft_putendl_fd("bash: exit: too many arguments", 2);
-		// t_int->e_status = 1;
 		return (1);
 	}
 	if (cmd[t_int->counter]->cmd_args + 1 && cmd[t_int->counter]->cmd_args[1])

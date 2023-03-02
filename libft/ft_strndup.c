@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:57:54 by abiru             #+#    #+#             */
-/*   Updated: 2023/02/01 15:17:34 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:25:55 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ char	*ft_strndup(const char *s1, char c)
 	size_t	i;
 
 	i = 0;
-	// printf("%c\n", c);
 	dest = (char *)malloc(sizeof(*s1) * (ft_cstrlen(s1, c) + 1));
 	if (!dest)
 		return (NULL);

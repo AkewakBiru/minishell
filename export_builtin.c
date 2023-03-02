@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 01:04:18 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 14:39:41 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	print_list(t_list **lst, t_ints *t_int)
 	t_int->e_status = 0;
 }
 
-
 void	update_env(t_dict *cmd, t_list **env)
 {
 	t_dict	*new;
@@ -79,7 +78,7 @@ void	update_env(t_dict *cmd, t_list **env)
 
 int	check_alphanumeric(char *cmd)
 {
-	int	i;
+	int		i;
 	char	**tmp;
 
 	i = 0;
@@ -111,7 +110,8 @@ int	check_key_names(char *cmd, char **cmd_utils)
 		flag = 1;
 		if (cmd_utils[i] + 0 && cmd_utils[i][0] == '\0')
 			flag = 0;
-		if (cmd_utils[i] + 0 && (ft_isdigit(cmd_utils[i][0]) || cmd_utils[i][0] == '='))
+		if (cmd_utils[i] + 0 && (ft_isdigit(cmd_utils[i][0])
+			|| cmd_utils[i][0] == '='))
 			flag = 0;
 		if (cmd_utils[i] + 0 && !check_alphanumeric(cmd_utils[i]))
 			flag = 0;
@@ -138,9 +138,10 @@ void	create_key_val(t_dict **dict, char *cmd_utils)
 		tmp->value = ft_strdup("");
 }
 
-void	export_bltin(t_list **lst, char **cmd_utils, t_list **export, t_ints *t_int)
+void	export_bltin(t_list **lst, char **cmd_utils, t_list **export,
+		t_ints *t_int)
 {
-	int	i;
+	int		i;
 	t_dict	*dict;
 
 	i = 1;
@@ -160,15 +161,6 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export, t_ints *t_int
 	while (cmd_utils + i && cmd_utils[i])
 	{
 		create_key_val(&dict, cmd_utils[i]);
-		// if (ft_strchr(cmd_utils[i], '='))
-		// 	dict->flag = 1;
-		// else
-		// 	dict->flag = 0;
-		// dict->key = ft_strndup(cmd_utils[i], '=');
-		// if (ft_strchr(cmd_utils[i], '='))
-		// 	dict->value = ft_strdup(ft_strchr(cmd_utils[i], '=') + 1);
-		// else
-		// 	dict->value = ft_strdup("");
 		if (ft_strchr(cmd_utils[i], '='))
 			update_env(dict, lst);
 		update_env(dict, export);
