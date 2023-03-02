@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 09:44:07 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/02 17:17:27 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ enum e_input_type
 	file,
 	delimiter,
 	delimiter_q,
+	empty_expansion,
 	unset,
 	redirection
 };
@@ -85,6 +86,7 @@ typedef struct	s_ints
 
 // parse utils
 int	is_white_space(char c);
+int	should_expand(t_token ***tokens, int index, char *line);
 
 char	*expand(char *line, t_list *lst, t_ints *t_int);
 void	check_quotes(char c, int *s_quote, int *d_quote);

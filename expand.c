@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/01 12:20:33 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/02 17:17:52 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,22 @@
 // int	is_special(char c)
 // {
 // 	if (c == '|' || c == '>' || c == '<' || c == ';' || c == '\\')
+// 		return (1);
+// 	return (0);
+// }
+
+// int	check_if_heredoc(char *line, int i)
+// {
+// 	while(i >= 0 && is_white_space(line[i]))
+// 		i--;
+// 	if (i > 1 && line[i] == '<' && line[--i] == '<')
+// 		return (1);
+// 	return (0);
+// }
+
+// int	check_heredoc(char *line, int i)
+// {
+// 	if(i > 0 && line[i] == '<' && line[i - 1] == '<')
 // 		return (1);
 // 	return (0);
 // }
@@ -48,24 +64,28 @@ char	*get_value(char *var_name, t_list *lst)
 	return (0);
 }
 
-int	should_expand(char *line)
+int	should_expand(t_token ***tokens, int index, char *line)
 {
 	int	i;
+	// int	here_doc;
 	int	s_quote;
 	int	d_quote;
 
 	i = -1;
 	s_quote = 0;
 	d_quote = 0;
+	// here_doc = 0;
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
-		if (line[i] == '$' && !s_quote && ((line[i + 1] == '?')
+		// here_doc = check_heredoc(line, i);
+		if (line[i] == '$' && !s_quote && (*tokens)[index]->type != delimiter && (*tokens)[index]->type != delimiter_q &&((line[i + 1] == '?')
 			|| (!d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			|| ft_isalpha(line[i + 1])
 			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
 			return (1);
 	}
+	printf("doesnt should_expand()\n");
 	return (0);
 }
 
@@ -85,6 +105,8 @@ int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
+		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
+		// 	continue;
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
 		{
 			var_name = ft_itoa(t_int->e_status);
@@ -112,7 +134,7 @@ int	get_expanded_len(char *line, t_list *lst, t_ints *t_int)
 
 char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
 {
-	char *new_line;
+	char	*new_line;
 	int		s_quote;
 	int		d_quote;
 	int		i;
@@ -129,6 +151,8 @@ char	*expand_line(char *line, int len, t_list *lst, t_ints *t_int)
 	while(line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
+		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
+		// 	continue;
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?')
 		{
 			var_name = ft_itoa(t_int->e_status);
@@ -166,8 +190,8 @@ char	*expand(char *line, t_list *lst, t_ints *t_int)
 	char	*new_line;
 	int		len;
 
-	if (!should_expand(line))
-		return (0);
+	// if (!should_expand(line))
+	// 	return (0);
 	len = get_expanded_len(line, lst, t_int);
 	if (len == -1)
 		return (0);

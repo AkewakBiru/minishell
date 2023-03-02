@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/02 12:58:36 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/02 14:39:12 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,15 +139,9 @@ t_token	**split_tokens(char const *s, t_token ***res)
 	int	i;
 	int	j;
 	int	num;
-	int	d_quote;
-	int	s_quote;
 
 	i = 0;
 	j = 0;
-	(void)d_quote;
-	(void)s_quote;
-	d_quote = 0;
-	s_quote = 0;
 	while (i < get_num_tokens(s))
 	{
 		num = 0;
