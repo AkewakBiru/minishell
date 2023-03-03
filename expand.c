@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 15:38:07 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 18:42:40 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_i
 			ft_memcpy(&new_line[j], get_value(var_name, lst), ft_strlen(get_value(var_name, lst)));
 			i += ft_strlen(var_name);
 			j += ft_strlen(get_value(var_name, lst));
-			if (!ft_strlen(get_value(var_name, lst)) && (*token)->type == cmd)
+			if (!ft_strlen(get_value(var_name, lst)) && (*token)->type == cmd && d_quote)
 				(*token)->type = empty_expansion;
 			free(var_name);
 			continue;
