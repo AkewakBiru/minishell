@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:43 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 19:39:48 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 20:13:27 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ex_fail_msg(t_cmd_op *cmd, char **args, t_ints *t_int)
 	else if (ft_strchr(cmd->cmd, '/') && access(cmd->cmd, X_OK) != 0
 		&& access(cmd->cmd, F_OK) == 0)
 		t_int->e_status = error_msg("permission denied", args, 2, 126);
-	else if (access(cmd->cmd, X_OK) == 0)
+	else if (access(cmd->cmd, X_OK) == 0 && ft_strchr(cmd->cmd, '/'))
 		return ;
 	else
 		t_int->e_status = error_msg("command not found", args, 2, 127);
