@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 19:55:46 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 20:30:24 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,13 @@ int			is_redir(char c);
 int			should_expand(t_token ***tokens, int index, char *line);
 
 //tokenize utils
+void		increment(int *num1, int *num2);
+char		*combine_strs(char *s1, char *s2);
 t_token		**malloc_fail(t_token **res, int i);
 t_token		**empty_token(void);
-char		*combine_strs(char *s1, char *s2);
+void		read_one_token(int *j, int *num, const char *s);
+void		read_until_seperator(int *index, int *num, char const *s, t_token **res);
+void		label_special(int *index, int *num, char const *s, t_token **res);
 
 char		*expand(t_token **token, t_list *lst, t_ints *t_int);
 void		check_quotes(char c, int *s_quote, int *d_quote);

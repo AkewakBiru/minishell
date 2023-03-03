@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 20:04:45 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 20:31:01 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,28 +53,17 @@ static int	get_num_tokens(char const *s)
 	return (num);
 }
 
-// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
-
 int	handle_quotes(int *j, int num, const char *s, t_token **token)
 {
-	int		d_quote;
-	int		s_quote;
 	char	*res;
 
-	s_quote = 0;
-	d_quote = 0;
 	res = ft_substr(s, *j - num, num);
 	if (!res)
 		return (0);
 	while (s[*j] && !is_white_space(s[*j]) && s[*j] != '|' && !is_redir(s[*j]))
 	{
 		num = 0;
-		while (s[*j] && (s_quote || d_quote || (!is_white_space(s[*j]) && s[*j] != '|' && !is_redir(s[*j]))))
-		{
-			check_quotes(s[*j], &s_quote, &d_quote);
-			*j += 1;
-			num++;
-		}
+		read_one_token(j, &num, s);
 		if (num)
 		{
 			res = combine_strs(res, ft_substr(s, *j - num, num));
@@ -86,38 +75,6 @@ int	handle_quotes(int *j, int num, const char *s, t_token **token)
 	}
 	(*token)->token = res;
 	return (*j);
-}
-
-void	increment(int *num1, int *num2)
-{
-	*num1 += 1;
-	*num2 += 1;
-}
-
-void	read_until_seperator(int *index, int *num, char const *s, t_token **res)
-{
-	*num = 0;
-	(*res)->type = unset;
-	while (s[*index] && is_white_space(s[*index]))
-		*index += 1;
-	while (s[*index] && !is_white_space(s[*index]) && s[*index] != '|'
-		&& !is_redir(s[*index]) && s[*index] != '\'' && s[*index] != '\"')
-		increment(index, num);
-}
-
-void	label_special(int *index, int *num, char const *s, t_token **res)
-{
-	if (s[*index] == '|')
-	{
-		increment(index, num);
-		(*res)->type = pip;
-	}
-	else
-	{
-		while (is_redir(s[*index]))
-			increment(index, num);
-		(*res)->type = redirection;
-	}
 }
 
 t_token	**split_tokens(char const *s, t_token ***res)
