@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:30:07 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 14:42:08 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 18:22:55 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*get_cmd_path(char **env, char *cmd)
 		tmp = ft_strjoin(env[i], "/");
 		cmd_path = ft_strjoin(tmp, cmd);
 		free(tmp);
-		if (access(cmd_path, F_OK) == 0)
+		if (access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		free(cmd_path);
 	}
