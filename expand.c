@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 03:22:18 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 12:47:20 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 			len--;
 		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
 		// 	continue;
-		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && type != delimiter)
+		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && type != delimiter && type != delimiter_q)
 		{
 			var_name = ft_itoa(t_int->e_status);
 			if (!var_name)
@@ -120,8 +120,8 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 		}
 		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			len--;
-		else if (line[i] == '$' && !s_quote && type != delimiter && (ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
+		else if (line[i] == '$' && !s_quote && type != delimiter && type != delimiter_q && (ft_isalpha(line[i + 1])
+			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2])))) //|| is_white_space(line[i + 2]) || !line[i + 2]))))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)
@@ -134,7 +134,7 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 	return (len);
 }
 
-char	*expand_line(char *line, int type, int len, t_list *lst, t_ints *t_int)
+char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_int)
 {
 	char	*new_line;
 	int		s_quote;
@@ -157,7 +157,7 @@ char	*expand_line(char *line, int type, int len, t_list *lst, t_ints *t_int)
 			continue;
 		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
 		// 	continue;
-		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && type != delimiter)
+		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && (*token)->type != delimiter && (*token)->type != delimiter_q)
 		{
 			var_name = ft_itoa(t_int->e_status);
 			if (!var_name)
@@ -170,8 +170,8 @@ char	*expand_line(char *line, int type, int len, t_list *lst, t_ints *t_int)
 		}
 		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			continue;
-		if (line[i] == '$' && !s_quote && type != delimiter && (ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
+		if (line[i] == '$' && !s_quote && (*token)->type != delimiter && (*token)->type != delimiter_q && (ft_isalpha(line[i + 1])
+			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))// || is_white_space(line[i + 2]) || !line[i + 2]))))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)
@@ -179,6 +179,8 @@ char	*expand_line(char *line, int type, int len, t_list *lst, t_ints *t_int)
 			ft_memcpy(&new_line[j], get_value(var_name, lst), ft_strlen(get_value(var_name, lst)));
 			i += ft_strlen(var_name);
 			j += ft_strlen(get_value(var_name, lst));
+			if (!ft_strlen(get_value(var_name, lst)))
+				(*token)->type = empty_expansion;
 			free(var_name);
 			continue;
 		}
@@ -189,17 +191,17 @@ char	*expand_line(char *line, int type, int len, t_list *lst, t_ints *t_int)
 	return (new_line);
 }
 
-char	*expand(t_token *token, t_list *lst, t_ints *t_int)
+char	*expand(t_token **token, t_list *lst, t_ints *t_int)
 {
 	char	*new_line;
 	int		len;
 
 	// if (!should_expand(line))
 	// 	return (0);
-	len = get_expanded_len(token->token, token->type, lst, t_int);
+	len = get_expanded_len((*token)->token, (*token)->type, lst, t_int);
 	if (len == -1)
 		return (0);
-	new_line = expand_line(token->token, token->type, len, lst, t_int);
+	new_line = expand_line((*token)->token, token, len, lst, t_int);
 	if (!new_line)
 		return (0);
 	return (new_line);

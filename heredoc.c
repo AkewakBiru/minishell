@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 09:55:36 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 12:35:56 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ int	init_hd(t_ints	*t_int, int num)
 	return (hd);
 }
 
-void	write_to_file(t_token *token, t_list *lst, t_ints *t_int, char *tmp)
+void	write_to_file(t_token **token, t_list *lst, t_ints *t_int, char *tmp)
 {
 	char	*expanded;
 
-	token->token = ft_strdup(tmp);
+	(*token)->token = ft_strdup(tmp);
 	expanded = expand(token, lst, t_int);
 	if (expanded)
 	{
@@ -81,7 +81,7 @@ void	write_to_file(t_token *token, t_list *lst, t_ints *t_int, char *tmp)
 /*
 	needs to be checked for leaks
 */
-int	heredoc(int num, t_token *token, t_list *lst, t_ints *t_int)
+int	heredoc(int num, t_token **token, t_list *lst, t_ints *t_int)
 {
 	char	*tmp;
 	char	*lim;
@@ -89,7 +89,7 @@ int	heredoc(int num, t_token *token, t_list *lst, t_ints *t_int)
 	t_int->hd = init_hd(t_int, num);
 	if (t_int->hd == -1)
 		return (0);
-	lim = ft_strdup(token->token);
+	lim = ft_strdup((*token)->token);
 	while (1)
 	{
 		write(1, "> ", 2);
@@ -103,7 +103,7 @@ int	heredoc(int num, t_token *token, t_list *lst, t_ints *t_int)
 		}
 		write_to_file(token, lst, t_int, tmp);
 	}
-	token->token = ft_strdup("");
+	(*token)->token = ft_strdup("");
 	return (close(t_int->hd), free(lim), 0);
 }
 
@@ -122,7 +122,7 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 			lim = tokens[i + 1]->token;
 			tokens[i + 1]->token = ft_strjoin(tokens[i + 1]->token, "\n");
 			free(lim);
-			heredoc(i, tokens[i + 1], env_pack[0], t_int);
+			heredoc(i, &tokens[i + 1], env_pack[0], t_int);
 			j++;
 		}
 		i++;
