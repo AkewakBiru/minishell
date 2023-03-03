@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 12:35:56 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 13:52:18 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	write_to_file(t_token **token, t_list *lst, t_ints *t_int, char *tmp)
 	else
 		write(t_int->hd, tmp, ft_strlen(tmp));
 	free(tmp);
+	free((*token)->token);
 }
 
 /*
@@ -103,7 +104,7 @@ int	heredoc(int num, t_token **token, t_list *lst, t_ints *t_int)
 		}
 		write_to_file(token, lst, t_int, tmp);
 	}
-	(*token)->token = ft_strdup("");
+	// (*token)->token = ft_strdup("");
 	return (close(t_int->hd), free(lim), 0);
 }
 
@@ -112,21 +113,26 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 	int		i;
 	int		j;
 	char	*lim;
+	t_token	*tok;
 
 	i = 0;
 	j = 0;
+	tok = (t_token *)malloc(sizeof(t_token));
+	if (!tok)
+		return ;
 	while (tokens + i && tokens[i])
 	{
 		if (tokens[i]->type == here_doc)
 		{
-			lim = tokens[i + 1]->token;
-			tokens[i + 1]->token = ft_strjoin(tokens[i + 1]->token, "\n");
+			lim = ft_strdup(tokens[i + 1]->token);
+			tok->token = ft_strjoin(lim, "\n");
 			free(lim);
-			heredoc(i, &tokens[i + 1], env_pack[0], t_int);
+			heredoc(i, &tok, env_pack[0], t_int);
 			j++;
 		}
 		i++;
 	}
+	free(tok);
 }
 
 void	rm_hd_files(t_token **tokens)

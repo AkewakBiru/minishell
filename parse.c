@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 12:33:39 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 13:22:00 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,12 @@ t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 		free_tokens(&tokens);
 		return (NULL);
 	}
-	i = 0;
-	while (tokens && tokens[i])
-	{
-		printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
-		i++;
-	}
+	// i = 0;
+	// while (tokens && tokens[i])
+	// {
+	// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
+	// 	i++;
+	// }
 	i = 0;
 	while(tokens[i])
 	{
@@ -77,12 +77,12 @@ t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 		// }
 		i++;
 	}
-	i = 0;
-	while (tokens && tokens[i])
-	{
-		printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
-		i++;
-	}
+	// i = 0;
+	// while (tokens && tokens[i])
+	// {
+	// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
+	// 	i++;
+	// }
 	return (tokens);
 }
 
