@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 20:46:56 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 22:01:59 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 10:13:00 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,21 @@ char	**construct_envp(t_list **lst)
 	}
 	envp[i] = 0;
 	return (envp);
+}
+
+void	create_env(t_list **head, char **envp)
+{
+	int		i;
+	t_list	*new;
+	t_dict	*dict;
+
+	i = -1;
+	while (envp[++i])
+	{
+		dict = create_dict(ft_strndup(envp[i], '='),
+				ft_strdup(ft_strchr(envp[i], '=') + 1), 1);
+		new = ft_lstnew_dict(dict);
+		ft_lstadd_back(head, new);
+		free_dict(dict, 0);
+	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 03:13:30 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 09:55:36 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,48 +42,69 @@ int	create_hd_file(int num, int flag)
 	return (hd);
 }
 
-void	sig_ignore(int sig)
-{
-	(void)sig;
-	rl_replace_line("", 0);
-}
+// void	sig_ignore(int sig)
+// {
+// 	(void)sig;
+// 	rl_replace_line("", 0);
+// }
 
-int	heredoc(int num, t_token *token, t_list *lst, t_ints *t_int)
+int	init_hd(t_ints	*t_int, int num)
 {
-	int		hd;
-	char	*tmp;
-	char	*expanded;
+	int	hd;
 
-	hd = create_hd_file(num, 1);
-	if (hd < 0)
-		return (0);
 	if (signal(SIGINT, handle_signal2) != SIG_ERR)
 		t_int->e_status = 1;
 	if (signal(SIGQUIT, SIG_IGN) != SIG_ERR)
 		t_int->e_status = 0;
+	hd = create_hd_file(num, 1);
+	if (hd < 0)
+		return (-1);
+	return (hd);
+}
+
+void	write_to_file(t_token *token, t_list *lst, t_ints *t_int, char *tmp)
+{
+	char	*expanded;
+
+	token->token = ft_strdup(tmp);
+	expanded = expand(token, lst, t_int);
+	if (expanded)
+	{
+		write(t_int->hd, expanded, ft_strlen(expanded));
+		free(expanded);
+	}
+	else
+		write(t_int->hd, tmp, ft_strlen(tmp));
+	free(tmp);
+}
+
+/*
+	needs to be checked for leaks
+*/
+int	heredoc(int num, t_token *token, t_list *lst, t_ints *t_int)
+{
+	char	*tmp;
+	char	*lim;
+
+	t_int->hd = init_hd(t_int, num);
+	if (t_int->hd == -1)
+		return (0);
+	lim = ft_strdup(token->token);
 	while (1)
 	{
 		write(1, "> ", 2);
 		tmp = get_next_line(0);
 		if (!tmp)
-			return (0);
-		if (ft_strncmp(tmp, token->token, ft_strlen(tmp)) == 0)
+			return (close(t_int->hd), free(lim), 0);
+		if (ft_strncmp(tmp, lim, ft_strlen(tmp)) == 0)
 		{
 			free(tmp);
 			break ;
 		}
-		expanded = expand(token, lst, t_int);
-		if (expanded)
-		{
-			write(hd, expanded, ft_strlen(expanded));
-			free(expanded);
-		}
-		else
-			write(hd, tmp, ft_strlen(tmp));
-		free(tmp);
+		write_to_file(token, lst, t_int, tmp);
 	}
-	close(hd);
-	return (0);
+	token->token = ft_strdup("");
+	return (close(t_int->hd), free(lim), 0);
 }
 
 void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
@@ -98,10 +119,10 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 	{
 		if (tokens[i]->type == here_doc)
 		{
-			lim = tokens[i+1]->token;
-			tokens[i+1]->token = ft_strjoin(tokens[i+1]->token, "\n");
+			lim = tokens[i + 1]->token;
+			tokens[i + 1]->token = ft_strjoin(tokens[i + 1]->token, "\n");
 			free(lim);
-			heredoc(i, tokens[i+1], env_pack[0], t_int);
+			heredoc(i, tokens[i + 1], env_pack[0], t_int);
 			j++;
 		}
 		i++;

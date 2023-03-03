@@ -13,13 +13,14 @@
 #include "minishell.h"
 #include "./libft/libft.h"
 
-void	free_dict(t_dict	*dict)
+void	free_dict(t_dict	*dict, int flag)
 {
 	free(dict->key);
 	dict->key = 0;
 	free(dict->value);
 	dict->value = 0;
-	free(dict);
+	if (!flag)
+		free(dict);
 	dict = 0;
 }
 

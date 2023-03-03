@@ -6,45 +6,11 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 14:39:41 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 10:11:40 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	print_env(t_list **lst, t_ints *t_int)
-{
-	t_list	*tmp;
-
-	tmp = *lst;
-	while (tmp)
-	{
-		printf("%s=%s\n", ((t_dict *)tmp->content)->key,
-			((t_dict *)tmp->content)->value);
-		tmp = tmp->next;
-	}
-	t_int->e_status = 0;
-}
-
-void	print_list(t_list **lst, t_ints *t_int)
-{
-	t_list	*tmp;
-
-	if (!lst || !(*lst))
-		return ;
-	sort_list(lst);
-	tmp = *lst;
-	while (tmp)
-	{
-		if (((t_dict *)tmp->content)->flag == 1)
-			printf("declare -x %s=\"%s\"\n",
-				((t_dict *)tmp->content)->key, ((t_dict *)tmp->content)->value);
-		else
-			printf("declare -x %s\n", ((t_dict *)tmp->content)->key);
-		tmp = tmp->next;
-	}
-	t_int->e_status = 0;
-}
 
 void	update_env(t_dict *cmd, t_list **env)
 {
@@ -59,15 +25,11 @@ void	update_env(t_dict *cmd, t_list **env)
 	{
 		if (cmd->flag == 1)
 			update_dict(key, value, env);
-		free(key);
-		return ;
+		return (free(key));
 	}
 	new = create_dict(key, value, cmd->flag);
 	if (!new)
-	{
-		ft_lstclear(env, free);
-		return ;
-	}
+		return (ft_lstclear(env, free));
 	node = ft_lstnew_dict(new);
 	free(new);
 	free(key);
@@ -146,10 +108,7 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export,
 
 	i = 1;
 	if (!(cmd_utils + i) || !cmd_utils[i])
-	{
-		print_list(export, t_int);
-		return ;
-	}
+		return (print_list(export, t_int));
 	if (!check_key_names(cmd_utils[0], cmd_utils))
 	{
 		t_int->e_status = 1;
@@ -164,27 +123,7 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export,
 		if (ft_strchr(cmd_utils[i], '='))
 			update_env(dict, lst);
 		update_env(dict, export);
-		if (dict->key)
-			free(dict->key);
-		if (dict->value)
-			free(dict->value);
+		free_dict(dict, 1);
 		i++;
-	}
-}
-
-void	create_env(t_list **head, char **envp)
-{
-	int		i;
-	t_list	*new;
-	t_dict	*dict;
-
-	i = -1;
-	while (envp[++i])
-	{
-		dict = create_dict(ft_strndup(envp[i], '='),
-				ft_strdup(ft_strchr(envp[i], '=') + 1), 1);
-		new = ft_lstnew_dict(dict);
-		ft_lstadd_back(head, new);
-		free_dict(dict);
 	}
 }

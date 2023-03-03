@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 03:14:35 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 10:10:33 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,12 @@ typedef struct s_ints
 	int	*pipes;
 	int	e_status;
 	int	child_id;
+	int	hd;
 }	t_ints;
 
 // parse utils
-int	is_white_space(char c);
-int	should_expand(t_token ***tokens, int index, char *line);
+int			is_white_space(char c);
+int			should_expand(t_token ***tokens, int index, char *line);
 
 char		*expand(t_token *token, t_list *lst, t_ints *t_int);
 void		check_quotes(char c, int *s_quote, int *d_quote);
@@ -93,7 +94,7 @@ int			label_tokens(t_token ***tokens);
 t_token		**tokenize(char const *line);
 
 // dictionary utils
-void		free_dict(t_dict	*dict);
+void		free_dict(t_dict	*dict, int flag);
 int			key_exists(char *s, t_list **new);
 t_dict		*create_dict(char *key, char *value, int flag);
 int			update_dict(char *key, char *value, t_list **head);
@@ -105,7 +106,6 @@ void		print_list(t_list **lst, t_ints *t_int);
 void		update_env(t_dict *cmd, t_list **env);
 void		export_bltin(t_list **lst, char **cmd_utils, t_list **export,
 				t_ints *t_int);
-void		create_env(t_list **head, char **envp);
 
 // cd and pwd utils
 char		*get_pwd(char **cmd_utils);
@@ -159,12 +159,13 @@ int			create_hd_file(int num, int flag);
 // builtin utils
 int			is_builtin(char *cmd);
 void		exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int,
-		int is_child);
+				int is_child);
 
 int			check_key_names(char *cmd, char **cmd_utils);
 void		handle_signal(int sig);
 
 char		**construct_envp(t_list **lst);
+void		create_env(t_list **head, char **envp);
 
 // input and output redirection utils
 int			redir(t_token **tokens, t_ints *t_int);

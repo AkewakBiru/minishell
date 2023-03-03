@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 09:08:17 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 14:41:24 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 10:10:51 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	check_shl_val(t_list *envp[2], t_dict *dict, unsigned long long n)
 	dict->value = ft_itoa(n);
 	update_env(dict, &(envp)[0]);
 	update_env(dict, &(envp)[1]);
-	free_dict(dict);
+	free_dict(dict, 0);
 	return (0);
 }
 
@@ -58,6 +58,6 @@ int	update_shell(t_list *envp[2])
 	dict->value = ft_itoa(n);
 	update_env(dict, &(envp)[0]);
 	update_env(dict, &(envp)[1]);
-	free_dict(dict);
+	free_dict(dict, 0);
 	return (0);
 }
