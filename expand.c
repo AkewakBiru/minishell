@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 15:06:35 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 15:38:07 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,30 +64,27 @@ char	*get_value(char *var_name, t_list *lst)
 	return (0);
 }
 
-int	should_expand(t_token ***tokens, int index, char *line)
-{
-	int	i;
-	// int	here_doc;
-	int	s_quote;
-	int	d_quote;
+// int	should_expand(t_token ***tokens, int index, char *line)
+// {
+// 	int	i;
+// 	int	s_quote;
+// 	int	d_quote;
 
-	i = -1;
-	s_quote = 0;
-	d_quote = 0;
-	// here_doc = 0;
-	while(line[++i])
-	{
-		check_quotes(line[i], &s_quote, &d_quote);
-		// here_doc = check_heredoc(line, i);
-		if (line[i] == '$' && !s_quote && (*tokens)[index]->type != delimiter && (*tokens)[index]->type != delimiter_q &&((line[i + 1] == '?')
-			|| (!d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
-			|| ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
-			return (1);
-	}
-	// printf("doesnt should_expand()\n");
-	return (0);
-}
+// 	i = -1;
+// 	s_quote = 0;
+// 	d_quote = 0;
+// 	while(line[++i])
+// 	{
+// 		check_quotes(line[i], &s_quote, &d_quote);
+// 		if (line[i] == '$' && !s_quote && (*tokens)[index]->type != delimiter && (*tokens)[index]->type != delimiter_q &&((line[i + 1] == '?')
+// 			|| (!d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
+// 			|| ft_isalpha(line[i + 1])
+// 			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
+// 			return (1);
+// 	}
+// 	// printf("doesnt should_expand()\n");
+// 	return (0);
+// }
 
 int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 {
@@ -179,7 +176,7 @@ char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_i
 			ft_memcpy(&new_line[j], get_value(var_name, lst), ft_strlen(get_value(var_name, lst)));
 			i += ft_strlen(var_name);
 			j += ft_strlen(get_value(var_name, lst));
-			if (!ft_strlen(get_value(var_name, lst)))
+			if (!ft_strlen(get_value(var_name, lst)) && (*token)->type == cmd)
 				(*token)->type = empty_expansion;
 			free(var_name);
 			continue;
