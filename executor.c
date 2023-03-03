@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 14:53:26 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 15:59:01 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int	child_exec(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int,
 	ex_fail_msg(cmds[t_int->counter], cmds[t_int->counter]->cmd_args, t_int);
 	free_arr(envp);
 	free_mem_child(cmds, env_pack, t_int, tokens);
-	free(t_int->pipes);
 	exit(t_int->e_status);
 }
 
