@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 09:08:17 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 10:10:51 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 20:23:34 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	check_shl_val(t_list *envp[2], t_dict *dict, unsigned long long n)
 			ft_putendl_fd(") too high, resetting to 1", 2);
 			n = 0;
 		}
-		else if (n < 0 || n > 2147483646)
+		else if (n > 2147483646)
 			n = -1;
 		n++;
 	}
