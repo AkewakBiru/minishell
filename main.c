@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 09:38:05 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 15:09:22 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	del_node(void *node)
 	free(((t_dict *)((t_list *)node)->content)->key);
 	free(((t_dict *)((t_list *)node)->content)->value);
 	free(((t_dict *)((t_list *)node)->content));
+	free(node);
 	return ;
 }
 

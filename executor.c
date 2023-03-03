@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 22:02:22 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 14:53:26 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,11 @@ int	child_exec(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int,
 	dup_close(cmds, t_int, tokens);
 	if (is_builtin(cmds[t_int->counter]->cmd))
 	{
+		if (!ft_strcmp(cmds[t_int->counter]->cmd, "exit")
+			&& count_arg(cmds[t_int->counter]->cmd_args) <= 2)
+			free_tokens(&tokens);
 		exec_builtin(cmds, env_pack, t_int, 1);
+		free_mem_child(cmds, env_pack, t_int, tokens);
 		exit(t_int->e_status);
 	}
 	envp = construct_envp(env_pack + 0);
@@ -50,10 +54,7 @@ int	child_exec(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int,
 		execve(cmds[t_int->counter]->cmd, cmds[t_int->counter]->cmd_args, envp);
 	ex_fail_msg(cmds[t_int->counter], cmds[t_int->counter]->cmd_args, t_int);
 	free_arr(envp);
-	free_tokens(&tokens);
-	free_cmd_params(cmds);
-	ft_lstclear_dict(env_pack + 0, free);
-	ft_lstclear_dict(env_pack + 1, free);
+	free_mem_child(cmds, env_pack, t_int, tokens);
 	free(t_int->pipes);
 	exit(t_int->e_status);
 }

@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:43 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 22:02:13 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 15:16:40 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	ex_fail_msg(t_cmd_op *cmd, char **args, t_ints *t_int)
 	dir = opendir(cmd->cmd);
 	if (dir)
 	{
-		t_int->e_status = error_msg("Is a directory", args, 2, 126);
+		t_int->e_status = error_msg("is a directory", args, 2, 126);
 		closedir(dir);
 	}
 	else if (ft_strchr(cmd->cmd, '/')
@@ -52,6 +52,8 @@ void	ex_fail_msg(t_cmd_op *cmd, char **args, t_ints *t_int)
 	else if (ft_strchr(cmd->cmd, '/') && access(cmd->cmd, X_OK) != 0
 		&& access(cmd->cmd, F_OK) == 0)
 		t_int->e_status = error_msg("permission denied", args, 2, 126);
+	else if (access(cmd->cmd, X_OK) == 0)
+		return ;
 	else
 		t_int->e_status = error_msg("command not found", args, 2, 127);
 }

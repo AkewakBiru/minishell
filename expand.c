@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 13:42:21 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 15:06:35 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			len--;
 		else if (line[i] == '$' && !s_quote && type != delimiter && type != delimiter_q && (ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2])) || (line[i + 1] == '_' && key_exists("_", &lst)))) //|| is_white_space(line[i + 2]) || !line[i + 2]))))
+			|| (line[i + 1] == '_' && (ft_isalnum(line[i + 2]) || key_exists("_", &lst))))) //|| is_white_space(line[i + 2]) || !line[i + 2]))))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)

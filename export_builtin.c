@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 10:11:40 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 14:57:05 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,4 +126,5 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export,
 		free_dict(dict, 1);
 		i++;
 	}
+	free(dict);
 }

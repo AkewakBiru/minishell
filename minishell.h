@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 12:37:03 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 14:54:36 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,8 @@ void		free_tokens(t_token ***tokens_p);
 void		free_cmd_params(t_cmd_op **cmds);
 void		free_split(char **str);
 void		free_env_utils(t_strs	*cmd_list);
+void		free_mem_child(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int,
+				t_token **tokens);
 
 // file utils
 int			open_infile(t_cmd_op **cmds, t_ints *t_int, t_token **tokens);
