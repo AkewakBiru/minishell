@@ -3,41 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 14:55:03 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 20:04:45 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_redir(char c)
-{
-	if (c == '<' || c == '>')
-		return (1);
-	return (0);
-}
-
-void	check_quotes(char c, int *s_quote, int *d_quote)
-{
-	if (c == '\"' && !*s_quote && !*d_quote)
-		*d_quote = 1;
-	else if (c == '\"' && !*s_quote)
-		*d_quote = 0;
-	if (c == '\'' && !*d_quote && !*s_quote)
-		*s_quote = 1;
-	else if (c == '\'' && !*d_quote)
-		*s_quote = 0;
-}
-
 int	is_token(char const *s, int index, int s_quote, int d_quote)
 {
 	if (((is_white_space(s[index]) || s[index] == '|'
-			|| (is_redir(s[index]) && !is_redir(s[index + 1])))
+				|| (is_redir(s[index]) && !is_redir(s[index + 1])))
 			&& s[index + 1] != 0 && !is_white_space(s[index + 1])
 			&& !d_quote && !s_quote) || (((is_redir(s[index + 1])
-			&& !is_redir(s[index])) || s[index + 1] == '|')
+					&& !is_redir(s[index])) || s[index + 1] == '|')
 			&& !d_quote && !s_quote))
 		return (1);
 	return (0);
@@ -74,35 +55,7 @@ static int	get_num_tokens(char const *s)
 
 // printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
 
-t_token	**malloc_fail(t_token **res, int i)
-{
-	i--;
-	if (i >= 0)
-	{
-		free(res[i]);
-		i--;
-	}
-	while (i >= 0)
-	{
-		free(res[i]->token);
-		free(res[i]);
-		i--;
-	}
-	free(res);
-	return (NULL);
-}
-
-char	*combine_strs(char *s1, char *s2)
-{
-	char *res;
-	
-	res = ft_strjoin(s1, s2);
-	free(s1);
-	free(s2);
-	return (res);
-}
-
-int	handle_quotes(int j, int num, const char *s, t_token **token)
+int	handle_quotes(int *j, int num, const char *s, t_token **token)
 {
 	int		d_quote;
 	int		s_quote;
@@ -110,28 +63,61 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 
 	s_quote = 0;
 	d_quote = 0;
-	res = ft_substr(s, j - num, num);
+	res = ft_substr(s, *j - num, num);
 	if (!res)
 		return (0);
-	while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))
+	while (s[*j] && !is_white_space(s[*j]) && s[*j] != '|' && !is_redir(s[*j]))
 	{
 		num = 0;
-		while (s[j] && (s_quote || d_quote || (!is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))))
+		while (s[*j] && (s_quote || d_quote || (!is_white_space(s[*j]) && s[*j] != '|' && !is_redir(s[*j]))))
 		{
+			check_quotes(s[*j], &s_quote, &d_quote);
+			*j += 1;
 			num++;
-			check_quotes(s[j++], &s_quote, &d_quote);
 		}
 		if (num)
 		{
-			res = combine_strs(res, ft_substr(s, j - num, num));
+			res = combine_strs(res, ft_substr(s, *j - num, num));
 			if (!res)
 				return (0);
-			continue;
+			continue ;
 		}
-		j++;
+		*j += 1;
 	}
 	(*token)->token = res;
-	return (j);
+	return (*j);
+}
+
+void	increment(int *num1, int *num2)
+{
+	*num1 += 1;
+	*num2 += 1;
+}
+
+void	read_until_seperator(int *index, int *num, char const *s, t_token **res)
+{
+	*num = 0;
+	(*res)->type = unset;
+	while (s[*index] && is_white_space(s[*index]))
+		*index += 1;
+	while (s[*index] && !is_white_space(s[*index]) && s[*index] != '|'
+		&& !is_redir(s[*index]) && s[*index] != '\'' && s[*index] != '\"')
+		increment(index, num);
+}
+
+void	label_special(int *index, int *num, char const *s, t_token **res)
+{
+	if (s[*index] == '|')
+	{
+		increment(index, num);
+		(*res)->type = pip;
+	}
+	else
+	{
+		while (is_redir(s[*index]))
+			increment(index, num);
+		(*res)->type = redirection;
+	}
 }
 
 t_token	**split_tokens(char const *s, t_token ***res)
@@ -140,62 +126,27 @@ t_token	**split_tokens(char const *s, t_token ***res)
 	int	j;
 	int	num;
 
-	i = 0;
+	i = -1;
 	j = 0;
-	while (i < get_num_tokens(s))
+	while (++i < get_num_tokens(s))
 	{
-		num = 0;
-		(*res)[i]->type = unset;
-		while (s[j] && is_white_space(s[j]))
-			j++;
-		while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
-		{
-			j++;
-			num++;
-		}
+		read_until_seperator(&j, &num, s, &(*res)[i]);
 		if (s[j] == '\'' || s[j] == '\"')
 		{
-			j = handle_quotes(j, num, s, (&(*res)[i]));
-			if (!j)
+			if (!handle_quotes(&j, num, s, (&(*res)[i])))
 				return (malloc_fail(*res, i));
 			if (i > 0 && (*res)[i - 1] && (*res)[i - 1]->type == redirection)
 				(*res)[i]->type = delimiter_q;
-			i++;
-			continue;
+			continue ;
 		}
-		if (!num && s[j] == '|')
-		{
-			num++;
-			j++;
-			(*res)[i]->type = pip;
-		}
-		if (!num && is_redir(s[j]))
-		{
-			while (is_redir(s[j]))
-			{
-				num++;
-				j++;
-			}
-			(*res)[i]->type = redirection;
-		}
+		if (!num && (s[j] == '|' || is_redir(s[j])))
+			label_special(&j, &num, s, &((*res)[i]));
 		(*res)[i]->token = ft_substr(s, j - num, num);
 		if ((*res)[i]->token == NULL)
 			return (malloc_fail(*res, i));
-		i++;
 	}
 	(*res)[i] = NULL;
 	return (*res);
-}
-
-t_token	**empty_token()
-{
-	t_token	**res;
-
-	res = malloc(sizeof(t_token *));
-	if (!res)
-		return (NULL);
-	res[0] = NULL;
-	return (res);
 }
 
 t_token	**tokenize(char const *line)
