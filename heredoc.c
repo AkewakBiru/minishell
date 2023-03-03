@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 13:52:18 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 16:10:46 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,6 @@ int	create_hd_file(int num, int flag)
 		perror("");
 		return (-1);
 	}
-	return (hd);
-}
-
-// void	sig_ignore(int sig)
-// {
-// 	(void)sig;
-// 	rl_replace_line("", 0);
-// }
-
-int	init_hd(t_ints	*t_int, int num)
-{
-	int	hd;
-
-	if (signal(SIGINT, handle_signal2) != SIG_ERR)
-		t_int->e_status = 1;
-	if (signal(SIGQUIT, SIG_IGN) != SIG_ERR)
-		t_int->e_status = 0;
-	hd = create_hd_file(num, 1);
-	if (hd < 0)
-		return (-1);
 	return (hd);
 }
 
@@ -104,7 +84,6 @@ int	heredoc(int num, t_token **token, t_list *lst, t_ints *t_int)
 		}
 		write_to_file(token, lst, t_int, tmp);
 	}
-	// (*token)->token = ft_strdup("");
 	return (close(t_int->hd), free(lim), 0);
 }
 
@@ -133,29 +112,4 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 		i++;
 	}
 	free(tok);
-}
-
-void	rm_hd_files(t_token **tokens)
-{
-	int		i;
-	int		j;
-	char	*fname;
-	char	*num;
-
-	i = 0;
-	j = 0;
-	while (tokens + i && tokens[i])
-	{
-		if (tokens[i]->type == here_doc)
-		{
-			num = ft_itoa(i);
-			fname = ft_strjoin(".heredoc", num);
-			if (!access(fname, F_OK))
-				unlink(fname);
-			free(num);
-			free(fname);
-			j++;
-		}
-		i++;
-	}
 }

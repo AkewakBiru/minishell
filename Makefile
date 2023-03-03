@@ -6,7 +6,7 @@
 #    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/03/03 10:12:28 by abiru            ###   ########.fr        #
+#    Updated: 2023/03/03 16:11:34 by abiru            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ CFLAGS = -Wextra -Werror -Wall
 
 SRCS = main.c dict_utils.c export_builtin.c list_utils.c parse.c tokenize.c cd_pwd_builtins.c unset.c echo.c exit.c label_tokens.c expand.c parse_utils.c \
 		cmd_list.c pipex_utils.c executor.c get_next_line.c heredoc.c error_utils.c redir_in_out.c init_env.c free_utils.c redir_in.c redir_out.c pipes.c \
-		dup_utils.c file_utils.c builtin_utils.c envp_constructor.c cmd_tools.c cmdlist_utils.c print_env.c
+		dup_utils.c file_utils.c builtin_utils.c envp_constructor.c cmd_tools.c cmdlist_utils.c print_env.c hd_utils.c
 
 LIBFT = ./libft/libft.a
 

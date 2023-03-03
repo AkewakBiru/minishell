@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 14:54:36 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 16:12:49 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,9 @@ void		rm_hd_files(t_token **tokens);
 void		do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int);
 int			heredoc(int num, t_token **delim, t_list *lst, t_ints *t_int);
 int			create_hd_file(int num, int flag);
+int			init_hd(t_ints	*t_int, int num);
+void		rm_hd_files(t_token **tokens);
+void		handle_signal2(int sig);
 
 // builtin utils
 int			is_builtin(char *cmd);
