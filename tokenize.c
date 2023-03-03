@@ -6,7 +6,7 @@
 /*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:31:18 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 02:39:18 by youssef          ###   ########.fr       */
+/*   Updated: 2023/03/03 14:55:03 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,18 @@ void	check_quotes(char c, int *s_quote, int *d_quote)
 		*s_quote = 0;
 }
 
+int	is_token(char const *s, int index, int s_quote, int d_quote)
+{
+	if (((is_white_space(s[index]) || s[index] == '|'
+			|| (is_redir(s[index]) && !is_redir(s[index + 1])))
+			&& s[index + 1] != 0 && !is_white_space(s[index + 1])
+			&& !d_quote && !s_quote) || (((is_redir(s[index + 1])
+			&& !is_redir(s[index])) || s[index + 1] == '|')
+			&& !d_quote && !s_quote))
+		return (1);
+	return (0);
+}
+
 static int	get_num_tokens(char const *s)
 {
 	int	i;
@@ -51,17 +63,16 @@ static int	get_num_tokens(char const *s)
 	while (s[i] != 0)
 	{
 		check_quotes(s[i], &s_quote, &d_quote);
-		if (((is_white_space(s[i]) || s[i] == '|' || (is_redir(s[i]) && !is_redir(s[i + 1])))
-			&& s[i + 1] != 0 && !is_white_space(s[i + 1]) && !d_quote && !s_quote)
-			|| (((is_redir(s[i + 1]) && !is_redir(s[i])) || s[i + 1] == '|') && !d_quote && !s_quote))
+		if (is_token(s, i, s_quote, d_quote))
 			num++;
-		// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
 		i++;
 	}
 	if (s_quote || d_quote)
 		return (-1);
 	return (num);
 }
+
+// printf("c: %c, sq: %d, dq: %d, num: %d\n", s[i], s_quote, d_quote, num);
 
 t_token	**malloc_fail(t_token **res, int i)
 {
@@ -102,7 +113,6 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 	res = ft_substr(s, j - num, num);
 	if (!res)
 		return (0);
-	// printf("j: %d, num: %d,res: %s\n", j, num, res);
 	while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]))
 	{
 		num = 0;
@@ -110,7 +120,6 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 		{
 			num++;
 			check_quotes(s[j++], &s_quote, &d_quote);
-			// j++;
 		}
 		if (num)
 		{
@@ -119,17 +128,6 @@ int	handle_quotes(int j, int num, const char *s, t_token **token)
 				return (0);
 			continue;
 		}
-		// if (s[j] == '\"')// || s[j] == '\'')
-		// 	check_quotes(s[j++], &s_quote, &d_quote);
-		// while (s[j] && ((d_quote && s[j] != '\"')))// || (s_quote && s[j] != '\'')))
-		// {
-		// 	check_quotes(s[j++], &s_quote, &d_quote);
-		// 	num++;
-		// }
-		// check_quotes(s[j], &s_quote, &d_quote);
-		// res = combine_strs(res, ft_substr(s, j - num, num));
-		// if (!res)
-		// 	return (0);
 		j++;
 	}
 	(*token)->token = res;
@@ -148,20 +146,15 @@ t_token	**split_tokens(char const *s, t_token ***res)
 	{
 		num = 0;
 		(*res)[i]->type = unset;
-		//skip start
 		while (s[j] && is_white_space(s[j]))
 			j++;
-		// printf("entering while-loop 2\n");
 		while (s[j] && !is_white_space(s[j]) && s[j] != '|' && !is_redir(s[j]) && s[j] != '\'' && s[j] != '\"')
 		{
-			// printf("letter: %c, sq: %d, dq: %d\n", s[j], s_quote, d_quote);
 			j++;
 			num++;
 		}
-		// printf("left while loop with letter %c\n", s[j]);
 		if (s[j] == '\'' || s[j] == '\"')
 		{
-			// printf("combine called\n");
 			j = handle_quotes(j, num, s, (&(*res)[i]));
 			if (!j)
 				return (malloc_fail(*res, i));
@@ -188,7 +181,6 @@ t_token	**split_tokens(char const *s, t_token ***res)
 		(*res)[i]->token = ft_substr(s, j - num, num);
 		if ((*res)[i]->token == NULL)
 			return (malloc_fail(*res, i));
-		// printf("word: %s\n", (*res)[i]->token);
 		i++;
 	}
 	(*res)[i] = NULL;
@@ -231,25 +223,3 @@ t_token	**tokenize(char const *line)
 	split_tokens(line, &res);
 	return (res);
 }
-
-// int main()
-// {
-// 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-// 	char *s = "\" \"\'\'\"gr\"ep||echo>h>>< | \'| hi>|\'there  ";
-// 	// char *s = "he\'\"\"\'e\' cho hi\'|hi >>>there";//"\"\"echo>\"\" \"hi\"";
-// 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
-// 	// char *s = "ec\"\"\'\'ho";
-// 	printf("%s\n", s);
-// 	printf("%d\n\n", get_num_tokens(s));
-// 	t_token **r = tokenize(s);
-// 	int i = 0;
-// 	while (r && r[i])
-// 	{
-// 		printf("token: %s, type: %u\n", r[i]->token, r[i]->type);
-// 		free(r[i]->token);
-// 		free(r[i]);
-// 		i++;
-// 	}
-// 	printf("i: %d\n", i);
-// 	free(r);
-// }
