@@ -3,38 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 19:56:07 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 21:41:55 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
-
-// int	is_special(char c)
-// {
-// 	if (c == '|' || c == '>' || c == '<' || c == ';' || c == '\\')
-// 		return (1);
-// 	return (0);
-// }
-
-// int	check_if_heredoc(char *line, int i)
-// {
-// 	while(i >= 0 && is_white_space(line[i]))
-// 		i--;
-// 	if (i > 1 && line[i] == '<' && line[--i] == '<')
-// 		return (1);
-// 	return (0);
-// }
-
-// int	check_heredoc(char *line, int i)
-// {
-// 	if(i > 0 && line[i] == '<' && line[i - 1] == '<')
-// 		return (1);
-// 	return (0);
-// }
 
 char	*get_var_name(char *line)
 {
@@ -42,7 +18,7 @@ char	*get_var_name(char *line)
 	char	*var_name;
 
 	i = 1;
-	while(ft_isalnum(line[i]) || line[i] == '_')
+	while (ft_isalnum(line[i]) || line[i] == '_')
 		i++;
 	var_name = malloc(sizeof(char) * (i));
 	if (!var_name)
@@ -50,12 +26,12 @@ char	*get_var_name(char *line)
 	var_name[--i] = '\0';
 	while (--i >= 0)
 		var_name[i] = line[i + 1];
-	return(var_name);
+	return (var_name);
 }
 
 char	*get_value(char *var_name, t_list *lst)
 {
-	while(lst)
+	while (lst)
 	{
 		if (!ft_strcmp(var_name, ((t_dict *)lst->content)->key))
 			return (((t_dict *)lst->content)->value);
@@ -64,27 +40,26 @@ char	*get_value(char *var_name, t_list *lst)
 	return (0);
 }
 
-// int	should_expand(t_token ***tokens, int index, char *line)
-// {
-// 	int	i;
-// 	int	s_quote;
-// 	int	d_quote;
+int	is_exit_stat(int index, char *line, int type, int s_quote)
+{
+	if (line[index] == '$' && !s_quote && line[index + 1] == '?'
+		&& type != delimiter && type != delimiter_q)
+		return (1);
+	return (0);
+}
 
-// 	i = -1;
-// 	s_quote = 0;
-// 	d_quote = 0;
-// 	while(line[++i])
-// 	{
-// 		check_quotes(line[i], &s_quote, &d_quote);
-// 		if (line[i] == '$' && !s_quote && (*tokens)[index]->type != delimiter && (*tokens)[index]->type != delimiter_q &&((line[i + 1] == '?')
-// 			|| (!d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
-// 			|| ft_isalpha(line[i + 1])
-// 			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2]))))
-// 			return (1);
-// 	}
-// 	// printf("doesnt should_expand()\n");
-// 	return (0);
-// }
+int	get_exit_stat_len(int exit_stat, int *len)
+{
+	char	*var_name;
+
+	var_name = ft_itoa(t_int->e_status);
+	if (!var_name)
+		return (1);
+	*len -= 2;
+	*len += ft_strlen(var_name);
+	free(var_name);
+	return (0);
+}
 
 int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 {
@@ -98,27 +73,18 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 	s_quote = 0;
 	d_quote = 0;
 	len = ft_strlen(line);
-	(void)t_int;
-	while(line[++i])
+	while (line[++i])
 	{
 		check_quotes(line[i], &s_quote, &d_quote);
 		if ((line[i] == '\'' && !d_quote) || (line[i] == '\"' && !s_quote))
 			len--;
-		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
-		// 	continue;
-		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && type != delimiter && type != delimiter_q)
-		{
-			var_name = ft_itoa(t_int->e_status);
-			if (!var_name)
+		if (is_exit_stat(i, line, type, s_quote))
+			if (get_exit_stat_len(t_int->e_status, &len))
 				return (-1);
-			len -= 2;
-			len += ft_strlen(var_name);
-			free(var_name);
-		}
 		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			len--;
 		else if (line[i] == '$' && !s_quote && type != delimiter && type != delimiter_q && (ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && (ft_isalnum(line[i + 2]) || key_exists("_", &lst))))) //|| is_white_space(line[i + 2]) || !line[i + 2]))))
+			|| (line[i + 1] == '_' && (ft_isalnum(line[i + 2]) || key_exists("_", &lst)))))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)
@@ -152,8 +118,6 @@ char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_i
 		check_quotes(line[i], &s_quote, &d_quote);
 		if ((line[i] == '\'' && !d_quote) || (line[i] == '\"' && !s_quote))
 			continue;
-		// if (line[i] == '$' && i > 1 && line[i - 1] == '<' && line[i - 2] == '<')
-		// 	continue;
 		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && (*token)->type != delimiter && (*token)->type != delimiter_q)
 		{
 			var_name = ft_itoa(t_int->e_status);
@@ -168,7 +132,7 @@ char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_i
 		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
 			continue;
 		if (line[i] == '$' && !s_quote && (*token)->type != delimiter && (*token)->type != delimiter_q && (ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2])) || (line[i + 1] == '_' && key_exists("_", &lst))))// || is_white_space(line[i + 2]) || !line[i + 2]))))
+			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2])) || (line[i + 1] == '_' && key_exists("_", &lst))))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)
@@ -184,7 +148,6 @@ char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_i
 		new_line[j++] = line[i];
 	}
 	new_line[j] = '\0';
-	// printf("%s\n", new_line);
 	return (new_line);
 }
 
@@ -193,8 +156,6 @@ char	*expand(t_token **token, t_list *lst, t_ints *t_int)
 	char	*new_line;
 	int		len;
 
-	// if (!should_expand(line))
-	// 	return (0);
 	len = get_expanded_len((*token)->token, (*token)->type, lst, t_int);
 	if (len == -1)
 		return (0);
@@ -203,16 +164,3 @@ char	*expand(t_token **token, t_list *lst, t_ints *t_int)
 		return (0);
 	return (new_line);
 }
-
-// int main()
-// {
-// 	// char *s = "echo \'hi\'f\'\" \"\"\'\"\'\"\'there\'  ";
-// 	char *s = "echo e$ffs";
-// 	// char *s = "\"\"echo - | > \"a\" \"hi\"";//"he\'\"\"\'e\' cho hi\'|hi >>there";
-// 	// char *s = " echo hi \"\" there\"     s\"\"\'$x\"";
-// 	// char *s = "ec\"\"\'\'ho";
-// 	printf("%s\n", s);
-// 	// printf("should_expand: %d\n", should_expand(s));
-// 	// get_expanded_len(s, -1);
-// 	// printf("name: %s\n\n", get_var_name(s));
-// }
