@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 21:09:53 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 21:14:16 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	label_tokens(t_token ***tokens)
 	set_first_token(&i, &begins_w_redir, tokens);
 	while ((*tokens)[i])
 	{
-		if (is_syntax_error(tokens, i))
+		if (is_syntax_error(i, tokens))
 			return (1);
 		if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == pip)
 			(*tokens)[i]->type = cmd;
