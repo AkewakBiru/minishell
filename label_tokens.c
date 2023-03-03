@@ -6,78 +6,72 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/02 12:53:43 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 21:09:53 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	label_redirection(t_token *token)
+void	set_first_token(int *index, int *begins_w_redir, t_token ***tokens)
 {
-	if (!ft_strcmp(token->token, "<"))
-		token->type = redir_in;
-	if (!ft_strcmp(token->token, ">"))
-		token->type = redir_out;
-	if (!ft_strcmp(token->token, "<<"))
-		token->type = here_doc;
-	if (!ft_strcmp(token->token, ">>"))
-		token->type = redir_out_append;
-	if (token->type == redirection)
-		return (1);
-	return (0);
+	if ((*tokens)[*index]->type == unset)
+	{
+		(*tokens)[*index]->type = cmd;
+		*index += 1;
+	}
+	else
+		*begins_w_redir = 1;
 }
 
-int	is_redirection(enum e_input_type type)
+void	set_delimiter(int index, int begins_w_redir, t_token ***tokens)
 {
-	if (type == redir_in || type == redir_out || type == here_doc
-		|| type == redir_out_append)
-		return (1);
-	return (0);
+	if ((*tokens)[index]->type == unset)
+		(*tokens)[index]->type = delimiter;
+	if (begins_w_redir && (*tokens)[index + 1]
+		&& (*tokens)[index + 1]->type == unset)
+		(*tokens)[index + 1]->type = cmd;
 }
 
-int	valid_file(char *name)
+void	set_redirection_arg(int index, int begins_w_redir, t_token ***tokens)
 {
-	if (name[0] == '/' || name[0] == '.' || name[0] == ':')
-		return (0);
-	return (1);
+	(*tokens)[index]->type = file;
+	if (begins_w_redir && (*tokens)[index + 1]
+		&& (*tokens)[index + 1]->type == unset)
+		(*tokens)[index + 1]->type = cmd;
+}
+
+int	is_redirection_arg(int index, t_token ***tokens)
+{
+	if (((*tokens)[index]->type == unset
+		|| (*tokens)[index]->type == delimiter_q)
+		&& is_redirection((*tokens)[index - 1]->type)
+		&& (*tokens)[index - 1]->type != here_doc)
+		return (1);
+	return (0);
 }
 
 int	label_tokens(t_token ***tokens)
 {
 	int	i;
-	int begins_w_redir;
+	int	begins_w_redir;
 
 	i = 0;
 	begins_w_redir = 0;
 	if ((*tokens)[i] && (*tokens)[i]->type == pip)
 		return (1);
-	if ((*tokens)[i]->type == unset)
-		(*tokens)[i++]->type = cmd;
-	else
-		begins_w_redir = 1;
+	set_first_token(&i, &begins_w_redir, tokens);
 	while ((*tokens)[i])
 	{
-		if (((*tokens)[i]->type == pip && ((*tokens)[i - 1]->type == pip || !(*tokens)[i + 1]))
-			|| ((*tokens)[i]->type == redirection && label_redirection((*tokens)[i]))
-			|| (is_redirection((*tokens)[i]->type) && (!(*tokens)[i + 1] || !((*tokens)[i + 1]->type == unset || (*tokens)[i + 1]->type == delimiter_q) || ((*tokens)[i]->type != here_doc && !valid_file((*tokens)[i + 1]->token)))))
+		if (is_syntax_error(tokens, i))
 			return (1);
 		if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == pip)
 			(*tokens)[i]->type = cmd;
 		else if ((*tokens)[i]->token[0] == '-')
 			(*tokens)[i]->type = option;
 		else if (i > 0 && (*tokens)[i - 1]->type == here_doc)
-		{
-			if ((*tokens)[i]->type == unset)
-				(*tokens)[i]->type = delimiter;
-			if (begins_w_redir && (*tokens)[i + 1] && (*tokens)[i + 1]->type == unset)
-				(*tokens)[i + 1]->type = cmd;
-		}
-		else if (((*tokens)[i]->type == unset || (*tokens)[i]->type == delimiter_q) && is_redirection((*tokens)[i - 1]->type) && (*tokens)[i - 1]->type != here_doc)
-		{
-			(*tokens)[i]->type = file;
-			if (begins_w_redir && (*tokens)[i + 1] && (*tokens)[i + 1]->type == unset)
-				(*tokens)[i + 1]->type = cmd;
-		}
+			set_delimiter(i, begins_w_redir, tokens);
+		else if (is_redirection_arg(i, tokens))
+			set_redirection_arg(i, begins_w_redir, tokens);
 		else if ((*tokens)[i]->type == unset)
 			(*tokens)[i]->type = arg;
 		i++;

@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 20:30:24 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 21:12:09 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ typedef struct s_ints
 // parse utils
 int			is_white_space(char c);
 int			is_redir(char c);
-int			should_expand(t_token ***tokens, int index, char *line);
+void		check_quotes(char c, int *s_quote, int *d_quote);
 
 //tokenize utils
 void		increment(int *num1, int *num2);
@@ -96,6 +96,13 @@ void		read_one_token(int *j, int *num, const char *s);
 void		read_until_seperator(int *index, int *num, char const *s, t_token **res);
 void		label_special(int *index, int *num, char const *s, t_token **res);
 
+//label utils
+int			label_redirection(t_token *token);
+int			is_syntax_error(int index, t_token ***tokens);
+int			is_redirection(enum e_input_type type);
+int			valid_file(char *name);
+
+//parsing
 char		*expand(t_token **token, t_list *lst, t_ints *t_int);
 void		check_quotes(char c, int *s_quote, int *d_quote);
 void		free_tokens(t_token ***tokens_p);
