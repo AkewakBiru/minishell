@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_list.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:29:12 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 22:00:48 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 16:48:06 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ t_cmd_op	*create_cmd(t_strs **cmd_list, t_token **tokens,
 	command->cmd_args = get_cmd_args(tokens, &i);
 	if (command->cmd_args + 0 && is_builtin(command->cmd_args[0]))
 		command->cmd = ft_strdup(command->cmd_args[0]);
-	else if (command->cmd_args[0] == 0)
+	else if (command->cmd_args[0] == 0 || !ft_strcmp(command->cmd_args[0], ""))
 		command->cmd = ft_strdup("");
 	else if ((ft_strchr(command->cmd_args[0], '/'))
 		|| (command->cmd_args[0] && !(*cmd_list)->env_p))
