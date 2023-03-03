@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 15:56:47 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 18:47:56 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,15 @@ t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 		free(temp);
 		i++;
 	}
+	i = 0;
+	while (tokens && tokens[i])
+	{
+		printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
+		i++;
+	}
 	return (tokens);
 }
 
-	// i = 0;
-	// while (tokens && tokens[i])
-	// {
-	// 	printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
-	// 	i++;
-	// }
 
 // t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 // {

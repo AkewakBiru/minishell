@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 16:10:46 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/03 19:09:52 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,14 @@ int	create_hd_file(int num, int flag)
 void	write_to_file(t_token **token, t_list *lst, t_ints *t_int, char *tmp)
 {
 	char	*expanded;
+	int		delim;
 
 	(*token)->token = ft_strdup(tmp);
-	expanded = expand(token, lst, t_int);
+	delim = (*token)->type;
+	(*token)->type = arg;
+	expanded = 0;
+	if (delim == delimiter)
+		expanded = expand(token, lst, t_int);
 	if (expanded)
 	{
 		write(t_int->hd, expanded, ft_strlen(expanded));
@@ -66,11 +71,13 @@ int	heredoc(int num, t_token **token, t_list *lst, t_ints *t_int)
 {
 	char	*tmp;
 	char	*lim;
+	int		delim;
 
 	t_int->hd = init_hd(t_int, num);
 	if (t_int->hd == -1)
 		return (0);
 	lim = ft_strdup((*token)->token);
+	delim = (*token)->type;
 	while (1)
 	{
 		write(1, "> ", 2);
@@ -82,6 +89,7 @@ int	heredoc(int num, t_token **token, t_list *lst, t_ints *t_int)
 			free(tmp);
 			break ;
 		}
+		(*token)->type = delim;
 		write_to_file(token, lst, t_int, tmp);
 	}
 	return (close(t_int->hd), free(lim), 0);
@@ -105,6 +113,7 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 		{
 			lim = ft_strdup(tokens[i + 1]->token);
 			tok->token = ft_strjoin(lim, "\n");
+			tok->type = tokens[i + 1]->type;
 			free(lim);
 			heredoc(i, &tok, env_pack[0], t_int);
 			j++;
