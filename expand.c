@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 19:49:48 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/03 19:56:07 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,10 +178,8 @@ char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_i
 			j += ft_strlen(get_value(var_name, lst));
 			if (!ft_strlen(get_value(var_name, lst)) && (*token)->type == cmd)
 				(*token)->type = empty_expansion;
-			if (!ft_strlen(get_value(var_name, lst)) && (*token)->type == cmd && d_quote)
-				(*token)->type = empty_expansion_dq;
 			free(var_name);
-			continue;
+			continue ;
 		}
 		new_line[j++] = line[i];
 	}
