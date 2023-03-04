@@ -3,21 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   label_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/04 15:23:15 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/04 20:21:27 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	set_first_token(int *index, int *begins_w_redir, t_token ***tokens)
+void	set_first_token(int *index, int *begins_w_redir,
+			t_token ***tokens, int flag)
 {
 	if ((*tokens)[*index]->type == unset)
 	{
 		(*tokens)[*index]->type = cmd;
-		*index += 1;
+		*begins_w_redir = 0;
+		if (flag)
+			*index += 1;
 	}
 	else
 		*begins_w_redir = 1;
@@ -56,17 +59,15 @@ int	label_tokens(t_token ***tokens)
 	int	begins_w_redir;
 
 	i = 0;
-	begins_w_redir = 0;
 	if ((*tokens)[i] && (*tokens)[i]->type == pip)
 		return (1);
-	set_first_token(&i, &begins_w_redir, tokens);
+	set_first_token(&i, &begins_w_redir, tokens, 1);
 	while ((*tokens)[i])
 	{
 		if (is_syntax_error(i, tokens))
 			return (1);
-		if ((*tokens)[i]->type == unset && ((*tokens)[i - 1]->type == pip
-			|| (*tokens)[i - 1]->type == file))
-			(*tokens)[i]->type = cmd;
+		if (i > 0 && (*tokens)[i - 1]->type == pip)
+			set_first_token(&i, &begins_w_redir, tokens, 0);
 		else if ((*tokens)[i]->token[0] == '-')
 			(*tokens)[i]->type = option;
 		else if (i > 0 && (*tokens)[i - 1]->type == here_doc)
