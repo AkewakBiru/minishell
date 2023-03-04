@@ -80,6 +80,10 @@ void	update_env_free(t_dict *dict, t_list **lst, t_list **export, int flag)
 	{
 		update_env(dict, lst);
 		update_env(dict, export);
+		if (dict->key)
+			free(dict->key);
+		if (dict->value)
+			free(dict->value);
 		return ;
 	}
 	update_env(dict, lst);
@@ -114,5 +118,6 @@ int	chg_dir(char **cmd_utils, t_list **lst, t_list **export, t_ints *t_int)
 	dict->key = ft_strdup("PWD");
 	dict->value = ft_strdup(val);
 	update_env_free(dict, lst, export, 0);
+	free(dict);
 	return (free(val), 0);
 }
