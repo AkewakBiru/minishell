@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 19:09:52 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/04 16:21:23 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ void	write_to_file(t_token **token, t_list *lst, t_ints *t_int, char *tmp)
 	char	*expanded;
 	int		delim;
 
+	if ((*token)->token)
+		free((*token)->token);
 	(*token)->token = ft_strdup(tmp);
 	delim = (*token)->type;
 	(*token)->type = arg;
@@ -61,7 +63,6 @@ void	write_to_file(t_token **token, t_list *lst, t_ints *t_int, char *tmp)
 	else
 		write(t_int->hd, tmp, ft_strlen(tmp));
 	free(tmp);
-	free((*token)->token);
 }
 
 /*
@@ -116,6 +117,7 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 			tok->type = tokens[i + 1]->type;
 			free(lim);
 			heredoc(i, &tok, env_pack[0], t_int);
+			free(tok->token);
 			j++;
 		}
 		i++;
