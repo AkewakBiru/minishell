@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/04 19:47:30 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/04 22:03:25 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 		}
 		else if (is_quote(line[i], line[i + 1], s_quote, d_quote))
 			len--;
-		else if (line[i] == '$' && !s_quote
+		else if (line[i] == '$' && !s_quote && line[i + 1]
 			&& is_variable(line[i + 1], line[i + 2], type, lst))
 			if (get_var_len(&len, &line[i], lst))
 				return (-1);
