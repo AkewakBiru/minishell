@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: youssef <youssef@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 14:42:49 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 21:41:55 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/04 16:53:47 by youssef          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ char	*get_value(char *var_name, t_list *lst)
 	return (0);
 }
 
-int	is_exit_stat(int index, char *line, int type, int s_quote)
+int	is_exit_stat(char c1, char c2, int type, int s_quote)
 {
-	if (line[index] == '$' && !s_quote && line[index + 1] == '?'
+	if (c1 == '$' && !s_quote && c2 == '?'
 		&& type != delimiter && type != delimiter_q)
 		return (1);
 	return (0);
@@ -52,12 +52,65 @@ int	get_exit_stat_len(int exit_stat, int *len)
 {
 	char	*var_name;
 
-	var_name = ft_itoa(t_int->e_status);
+	var_name = ft_itoa(exit_stat);
 	if (!var_name)
 		return (1);
 	*len -= 2;
 	*len += ft_strlen(var_name);
 	free(var_name);
+	return (0);
+}
+
+int	get_exit_stat(int *i, int *j, char *new_line, int exit_stat)
+{
+	char	*var_name;
+
+	var_name = ft_itoa(exit_stat);
+	if (!var_name)
+		return (1);
+	ft_memcpy(new_line, var_name, ft_strlen(var_name));
+	*i += 1;
+	*j += ft_strlen(var_name);
+	free(var_name);
+	return (0);
+}
+
+int	is_quote(char c1, char c2, int s_quote, int d_quote)
+{
+	if (c1 == '$' && !s_quote && !d_quote && (c2 == '\"' || c2 == '\''))
+		return (1);
+	return (0);
+}
+
+int	is_variable(char c1, char c2, int type, t_list *lst)
+{
+	if (type != delimiter && type != delimiter_q && (ft_isalpha(c1)
+			|| (c1 == '_' && (ft_isalnum(c2) || key_exists("_", &lst)))))
+		return (1);
+	return (0);
+}
+
+int	get_var_len(int *len, char *line, t_list *lst)
+{
+	char	*var_name;
+
+	var_name = get_var_name(line);
+	if (!var_name)
+		return (1);
+	*len -= ft_strlen(var_name) + 1;
+	*len += ft_strlen(get_value(var_name, lst));
+	free(var_name);
+	return (0);
+}
+
+int	get_var(int *i, int *j, char *line, char *new_line)
+{
+	char	*var_name;
+
+	var_name = get_var_name(line);
+	if (!var_name)
+		return (1);
+	// ft_memcpy(new_line, )
 	return (0);
 }
 
@@ -67,7 +120,6 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 	int		s_quote;
 	int		d_quote;
 	int		len;
-	char	*var_name;
 
 	i = -1;
 	s_quote = 0;
@@ -78,21 +130,15 @@ int	get_expanded_len(char *line, int type, t_list *lst, t_ints *t_int)
 		check_quotes(line[i], &s_quote, &d_quote);
 		if ((line[i] == '\'' && !d_quote) || (line[i] == '\"' && !s_quote))
 			len--;
-		if (is_exit_stat(i, line, type, s_quote))
+		if (is_exit_stat(line[i], line[i + 1], type, s_quote))
 			if (get_exit_stat_len(t_int->e_status, &len))
 				return (-1);
-		else if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
+		else if (is_quote(line[i], line[i + 1], s_quote, d_quote))
 			len--;
-		else if (line[i] == '$' && !s_quote && type != delimiter && type != delimiter_q && (ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && (ft_isalnum(line[i + 2]) || key_exists("_", &lst)))))
-		{
-			var_name = get_var_name(&line[i]);
-			if (!var_name)
+		else if (line[i] == '$' && !s_quote
+			&& is_variable(line[i + 1], line[i + 2], type, lst))
+			if (get_var_len(&len, &line[i], lst))
 				return (-1);
-			len -= ft_strlen(var_name) + 1;
-			len += ft_strlen(get_value(var_name, lst));
-			free(var_name);
-		}
 	}
 	return (len);
 }
@@ -118,21 +164,16 @@ char	*expand_line(char *line, t_token **token, int len, t_list *lst, t_ints *t_i
 		check_quotes(line[i], &s_quote, &d_quote);
 		if ((line[i] == '\'' && !d_quote) || (line[i] == '\"' && !s_quote))
 			continue;
-		if (line[i] == '$' && !s_quote && line[i + 1] == '?' && (*token)->type != delimiter && (*token)->type != delimiter_q)
+		if (is_exit_stat(line[i], line[i + 1], (*token)->type, s_quote))
 		{
-			var_name = ft_itoa(t_int->e_status);
-			if (!var_name)
+			if (get_exit_stat(&i, &j, &new_line[j], t_int->e_status))
 				return (0);
-			ft_memcpy(&new_line[j], var_name, ft_strlen(var_name));
-			i++;
-			j += ft_strlen(var_name);
-			free(var_name);
 			continue;
 		}
-		if (line[i] == '$' && !s_quote && !d_quote && (line[i + 1] == '\"' || line[i + 1] == '\''))
+		if (is_quote(line[i], line[i + 1], s_quote, d_quote))
 			continue;
-		if (line[i] == '$' && !s_quote && (*token)->type != delimiter && (*token)->type != delimiter_q && (ft_isalpha(line[i + 1])
-			|| (line[i + 1] == '_' && ft_isalnum(line[i + 2])) || (line[i + 1] == '_' && key_exists("_", &lst))))
+		if (line[i] == '$' && !s_quote
+			&& is_variable(line[i + 1], line[i + 2], (*token)->type, lst))
 		{
 			var_name = get_var_name(&line[i]);
 			if (!var_name)
