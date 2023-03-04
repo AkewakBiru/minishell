@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 12:04:45 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 19:15:59 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/04 19:57:45 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,6 @@ t_token	**parse(char *line, t_list *lst, t_ints *t_int)
 		tokens[i]->token = expand(&tokens[i], lst, t_int);
 		check_empty_expansion(&tokens[i]);
 		free(temp);
-		i++;
-	}
-	i = 0;
-	while (tokens && tokens[i])
-	{
-		printf("token: %s, type: %u\n", tokens[i]->token, tokens[i]->type);
 		i++;
 	}
 	return (tokens);
