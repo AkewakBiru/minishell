@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   label_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:42:13 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/03 21:14:16 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/04 15:23:15 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ int	label_tokens(t_token ***tokens)
 	{
 		if (is_syntax_error(i, tokens))
 			return (1);
-		if ((*tokens)[i]->type == unset && (*tokens)[i - 1]->type == pip)
+		if ((*tokens)[i]->type == unset && ((*tokens)[i - 1]->type == pip
+			|| (*tokens)[i - 1]->type == file))
 			(*tokens)[i]->type = cmd;
 		else if ((*tokens)[i]->token[0] == '-')
 			(*tokens)[i]->type = option;
