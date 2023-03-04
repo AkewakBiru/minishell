@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 21:12:09 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/04 19:55:27 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,16 @@ enum e_input_type
 	unset,
 	redirection
 };
+
+typedef struct s_expand
+{
+	int		i;
+	int		j;
+	int		sq;
+	int		dq;
+	int		flag;
+	char	*l;
+}	t_expand;
 
 typedef struct s_token
 {
@@ -93,7 +103,8 @@ char		*combine_strs(char *s1, char *s2);
 t_token		**malloc_fail(t_token **res, int i);
 t_token		**empty_token(void);
 void		read_one_token(int *j, int *num, const char *s);
-void		read_until_seperator(int *index, int *num, char const *s, t_token **res);
+void		read_until_seperator(int *index, int *num,
+				char const *s, t_token **res);
 void		label_special(int *index, int *num, char const *s, t_token **res);
 
 //label utils
@@ -101,6 +112,19 @@ int			label_redirection(t_token *token);
 int			is_syntax_error(int index, t_token ***tokens);
 int			is_redirection(enum e_input_type type);
 int			valid_file(char *name);
+
+//expand utils
+void		init_quotes_index(int *i, int *j, int *s_quote, int *d_quote);
+int			is_quote(char c1, char c2, int s_quote, int d_quote);
+int			is_exit_stat(char c1, char c2, int type, int s_quote);
+int			get_exit_stat_len(int exit_stat, int *len);
+int			get_exit_stat(int *i, int *j, char *new_line, int exit_stat);
+int			is_variable(char c1, char c2, int type, t_list *lst);
+int			get_var_len(int *len, char *line, t_list *lst);
+int			get_var(t_expand *t, t_token **token, char *new_line, t_list *lst);
+int			if_var(t_expand	*t_e, t_token **token, t_list *lst, char *nl);
+char		*get_var_name(char *line);
+char		*get_value(char *var_name, t_list *lst);
 
 //parsing
 char		*expand(t_token **token, t_list *lst, t_ints *t_int);
