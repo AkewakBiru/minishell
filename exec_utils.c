@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 10:43:37 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 10:58:05 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 17:01:40 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,6 @@ int	find_cmd(t_token **tokens, int i)
 
 void	update_status_counter(t_ints *t_int)
 {
-			t_int->e_status = 1;
-			t_int->counter++;
+	t_int->e_status = 1;
+	t_int->counter++;
 }

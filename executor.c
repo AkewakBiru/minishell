@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 15:33:59 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 16:52:07 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,12 +160,12 @@ int	executor(t_list *env_pack[2], t_token **tokens, t_ints *t_int)
 		return (EXIT_FAILURE);
 	}
 	t_int->e_status = 0;
-	if (signal(SIGINT, handle_signal) != SIG_ERR)
-		t_int->e_status = 1;
+	g_e_stat = t_int->e_status;
 	loop_exec_cmds(env_pack, tokens, cmds, t_int);
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
 	free_cmd_params(cmds);
 	cmds = 0;
+	g_e_stat = t_int->e_status;
 	return (EXIT_SUCCESS);
 }

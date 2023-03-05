@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
+/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 14:08:39 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 16:52:43 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	del_node(void *node)
 void	handle_signal(int sig)
 {
 	(void)sig;
+	g_e_stat = 1;
 	rl_on_new_line();
 	rl_redisplay();
 	write(1, "  \n", 3);
@@ -34,8 +35,7 @@ void	handle_signal(int sig)
 
 void	init_env_sig(t_list *env_pack[2], char **envp, t_ints *t_int)
 {
-	if (signal(SIGINT, handle_signal) != SIG_ERR)
-		t_int->e_status = 1;
+	(void) t_int;
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
 	env_pack[0] = 0;
@@ -79,6 +79,7 @@ int	main(int ac, char **av, char **envp)
 
 	if (ac != 1)
 		return (1);
+	g_e_stat = 0;
 	t_int.e_status = 0;
 	init_env_sig(env_pack, envp, &t_int);
 	while (1)

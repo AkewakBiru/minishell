@@ -6,7 +6,7 @@
 /*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 19:40:11 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/04 19:45:09 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/05 16:51:51 by yel-touk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ int	get_exit_stat(int *i, int *j, char *new_line, int exit_stat)
 {
 	char	*var_name;
 
-	var_name = ft_itoa(exit_stat);
+	(void) exit_stat;
+	var_name = ft_itoa(g_e_stat);
 	if (!var_name)
 		return (1);
 	ft_memcpy(new_line, var_name, ft_strlen(var_name));
