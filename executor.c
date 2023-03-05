@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 10:58:05 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 13:34:05 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,8 +161,7 @@ int	executor(t_list *env_pack[2], t_token **tokens, t_ints *t_int)
 	}
 	t_int->e_status = 0;
 	loop_exec_cmds(env_pack, tokens, cmds, t_int);
-	if (signal(SIGINT, handle_signal) != SIG_ERR)
-		t_int->e_status = 1;
+	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
 	free_cmd_params(cmds);
 	cmds = 0;
