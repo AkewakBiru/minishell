@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 20:43:31 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 22:00:30 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 10:12:14 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,20 @@ void	exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int,
 		exit_shell(env_pack, cmd, t_int, is_child);
 	else if (!ft_strcmp(cmd_arg[0], "echo"))
 		t_int->e_status = echo(cmd_arg);
+}
+
+void	create_key_val(t_dict **dict, char *cmd_utils)
+{
+	t_dict	*tmp;
+
+	tmp = *dict;
+	if (ft_strchr(cmd_utils, '='))
+		tmp->flag = 1;
+	else
+		tmp->flag = 0;
+	tmp->key = ft_strndup(cmd_utils, '=');
+	if (ft_strchr(cmd_utils, '='))
+		tmp->value = ft_strdup(ft_strchr(cmd_utils, '=') + 1);
+	else
+		tmp->value = ft_strdup("");
 }

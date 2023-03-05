@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_list.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:29:12 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 16:48:06 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/05 10:14:19 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 
 int	find_stdin2(t_token	**tokens, int j)
 {
-	if (tokens[j]->type == redir_in)
-		return (check_file(tokens[j + 1]->token, j));
-	return (j);
+	if (tokens[j]->type == redir_in || tokens[j]->type == here_doc)
+		return (j);
+	return (-2);
 }
 
 int	find_stdin(t_token	**tokens, int i)

@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 20:51:41 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 22:01:08 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 10:28:58 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,6 @@ int	wait_for_cmds(t_ints *t_int)
 	while (waitpid(-1, &e_status, 0) >= 0)
 		;
 	return (t_int->e_status);
-}
-
-int	check_file_existence(t_token **tokens, int i, t_ints *t_int)
-{
-	if (do_in_redir(tokens, i, 1, t_int) == -1)
-		return (-1);
-	if (do_out_redir(tokens, i, 1, t_int) == -1)
-		return (-1);
-	return (0);
 }
 
 int	init_utils(t_token **tokens, t_ints *t_int)

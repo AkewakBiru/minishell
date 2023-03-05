@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 15:09:22 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 10:38:21 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,10 @@ void	handle_signal(int sig)
 	rl_redisplay();
 }
 
-void	init_env_sig(t_list *env_pack[2], char **envp)
+void	init_env_sig(t_list *env_pack[2], char **envp, t_ints *t_int)
 {
-	signal(SIGINT, handle_signal);
+	if (signal(SIGINT, handle_signal) != SIG_ERR)
+		t_int->e_status = 1;
 	signal(SIGQUIT, SIG_IGN);
 	env_pack[0] = 0;
 	env_pack[1] = 0;
@@ -53,7 +54,8 @@ int	start(t_list *env_pack[2], t_ints *t_int)
 	{
 		ft_lstclear_dict(env_pack + 0, free);
 		ft_lstclear_dict(env_pack + 1, free);
-		return (ft_putendl_fd("exit", 2), -1);
+		t_int->e_status = 1;
+		return (ft_putendl_fd("exit", 1), -1);
 	}
 	if (!ft_strlen(line))
 		return (free(line), 0);
@@ -77,7 +79,7 @@ int	main(int ac, char **av, char **envp)
 
 	if (ac != 1)
 		return (1);
-	init_env_sig(env_pack, envp);
+	init_env_sig(env_pack, envp, &t_int);
 	t_int.e_status = 0;
 	while (1)
 	{

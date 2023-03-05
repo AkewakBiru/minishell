@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 20:49:53 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 14:57:05 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 10:12:05 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,44 +60,49 @@ int	check_alphanumeric(char *cmd)
 	return (1);
 }
 
-int	check_key_names(char *cmd, char **cmd_utils)
+int	check_key_name(char *cmd, char *arg)
 {
 	int	i;
 	int	flag;
 
 	i = 0;
 	flag = 1;
-	while (cmd_utils + i && cmd_utils[i])
+	if (arg + i && arg[i] == '\0')
+		flag = 0;
+	while (arg + i && arg[i])
 	{
-		flag = 1;
-		if (cmd_utils[i] + 0 && cmd_utils[i][0] == '\0')
+		if (arg[0] && (ft_isdigit(arg[0])
+				|| arg[0] == '='))
+		{
 			flag = 0;
-		if (cmd_utils[i] + 0 && (ft_isdigit(cmd_utils[i][0])
-			|| cmd_utils[i][0] == '='))
+			break ;
+		}
+		if (arg && !check_alphanumeric(arg))
+		{
 			flag = 0;
-		if (cmd_utils[i] + 0 && !check_alphanumeric(cmd_utils[i]))
-			flag = 0;
-		if (flag == 0)
-			custom_err_msg(cmd, cmd_utils[i]);
+			break ;
+		}
 		i++;
 	}
+	if (flag == 0)
+		custom_err_msg(cmd, arg);
 	return (flag);
 }
 
-void	create_key_val(t_dict **dict, char *cmd_utils)
+int	export_error(char *cmd, char *arg, t_ints *t_int, int *i)
 {
-	t_dict	*tmp;
-
-	tmp = *dict;
-	if (ft_strchr(cmd_utils, '='))
-		tmp->flag = 1;
-	else
-		tmp->flag = 0;
-	tmp->key = ft_strndup(cmd_utils, '=');
-	if (ft_strchr(cmd_utils, '='))
-		tmp->value = ft_strdup(ft_strchr(cmd_utils, '=') + 1);
-	else
-		tmp->value = ft_strdup("");
+	if (!ft_strcmp(arg, "_") || !ft_strncmp(arg, "_=", 2))
+	{
+		(*i)++;
+		return (1);
+	}
+	if (!check_key_name(cmd, arg))
+	{
+		t_int->e_status = 1;
+		(*i)++;
+		return (1);
+	}
+	return (0);
 }
 
 void	export_bltin(t_list **lst, char **cmd_utils, t_list **export,
@@ -109,20 +114,18 @@ void	export_bltin(t_list **lst, char **cmd_utils, t_list **export,
 	i = 1;
 	if (!(cmd_utils + i) || !cmd_utils[i])
 		return (print_list(export, t_int));
-	if (!check_key_names(cmd_utils[0], cmd_utils))
-	{
-		t_int->e_status = 1;
-		return ;
-	}
 	dict = (t_dict *)malloc(sizeof(t_dict));
 	if (!dict)
 		return ;
 	while (cmd_utils + i && cmd_utils[i])
 	{
+		if (export_error("export", cmd_utils[i], t_int, &i))
+			continue ;
 		create_key_val(&dict, cmd_utils[i]);
 		if (ft_strchr(cmd_utils[i], '='))
 			update_env(dict, lst);
 		update_env(dict, export);
+		t_int->e_status = 0;
 		free_dict(dict, 1);
 		i++;
 	}

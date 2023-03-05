@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 15:59:01 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/05 10:34:43 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,32 +103,99 @@ void	finish_exec(t_token **tokens, t_cmd_op **cmds, t_ints *t_int)
 	}
 }
 
-int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens,
-	t_cmd_op **cmds, t_ints *t_int)
+
+int do_redirection(t_token **tokens, t_ints *t_int, int i)
 {
-	int	i;
+	while (tokens + i && tokens[i] && tokens[i]->type != pip)
+	{
+		if (tokens[i]->type == redir_in)
+		{
+			if (check_rin_err(tokens, i, 0, t_int) == -1)
+				return (-5);
+		}
+		else if (tokens[i]->type == here_doc)
+		{
+			if (check_hd_err(tokens, i, 0, t_int) == -1)
+				return (-5);
+		}
+		else if (tokens[i]->type == redir_out)
+		{
+			if (check_rout(tokens, i, 0, t_int) == -1)
+				return (-5);
+		}
+		else if (tokens[i]->type == redir_out_append)
+		{
+			if (check_rout_app(tokens, i, 0, t_int) == -1)
+				return (-5);
+		}
+		i++;
+	}
+	return (0);
+}
+
+int	go_to_next_pip(t_token **tokens, int i)
+{
+	int	j;
+
+	j = i;
+	while (tokens + j && tokens[j])
+	{
+		if (tokens[j]->type != pip)
+			j++;
+		else
+			break ;
+	}
+	if (tokens + j && tokens[j] && tokens[j]->type == pip)
+		j++;
+	return (j);
+}
+
+int find_cmd(t_token **tokens, int i)
+{
+	while (tokens + i && tokens[i] && tokens[i]->type != pip)
+	{
+		if (tokens[i]->type == cmd)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+	/*
+		inside the while loop while a pipe is not encountered
+		do redirection.
+		check the output of the redirection and if it is fine
+		and check if there is a command. If there is:
+		execute the command and go to the next pipe and
+		continue
+	*/
+int loop_exec_cmds(t_list *env_pack[2], t_token **tokens,
+				   t_cmd_op **cmds, t_ints *t_int)
+{
+	int i;
 
 	if (init_utils(tokens, t_int) == -1)
 		return (1);
 	do_heredoc(tokens, env_pack, t_int);
-	redir(tokens, t_int);
 	i = 0;
 	while (tokens + i && tokens[i])
 	{
-		if (tokens[i]->type == cmd)
-		{
-			if (check_file_existence(tokens, i, t_int) == -1
-				|| cmds[t_int->counter]->redir_in == -5)
+		if (do_redirection(tokens, t_int, i) != -5)
+		{			
+			if (find_cmd(tokens, i) >= 0)
 			{
-				if (cmds[t_int->counter]->redir_in == -5)
-					t_int->counter++;
-				i++;
-				continue ;
+				cmds[t_int->counter]->redir_in = find_stdin(tokens, find_cmd(tokens, i));
+				cmds[t_int->counter]->redir_out = find_stdout(tokens, find_cmd(tokens, i));
+				exec_cmd(cmds, env_pack, t_int, tokens);
+				t_int->counter++;
 			}
-			exec_cmd(cmds, env_pack, t_int, tokens);
+		}
+		else if (find_cmd(tokens, i) >= 0)
+		{
+			t_int->e_status = 1;
 			t_int->counter++;
 		}
-		i++;
+		i = go_to_next_pip(tokens, i);
 	}
 	return (finish_exec(tokens, cmds, t_int), 0);
 }
@@ -151,7 +218,8 @@ int	executor(t_list *env_pack[2], t_token **tokens, t_ints *t_int)
 	}
 	t_int->e_status = 0;
 	loop_exec_cmds(env_pack, tokens, cmds, t_int);
-	signal(SIGINT, handle_signal);
+	if (signal(SIGINT, handle_signal) != SIG_ERR)
+		t_int->e_status = 1;
 	signal(SIGQUIT, SIG_IGN);
 	free_cmd_params(cmds);
 	cmds = 0;

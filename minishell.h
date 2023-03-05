@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/04 19:55:27 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/05 10:28:50 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,8 @@ void		del_node(void *node);
 void		free_cmd_params(t_cmd_op **cmds);
 
 t_cmd_op	**create_cmd_list(t_strs **cmd_list, t_token **tokens);
+int			find_stdout(t_token	**tokens, int i);
+int			find_stdin(t_token	**tokens, int i);
 
 // starts execution
 int			executor(t_list *env_pack[2], t_token **tokens, t_ints *t_int);
@@ -205,8 +207,10 @@ int			is_builtin(char *cmd);
 void		exec_builtin(t_cmd_op **cmd, t_list *env_pack[2], t_ints *t_int,
 				int is_child);
 
-int			check_key_names(char *cmd, char **cmd_utils);
+int			check_key_name(char *cmd, char *arg);
+int			check_alphanumeric(char *cmd);
 void		handle_signal(int sig);
+void		create_key_val(t_dict **dict, char *cmd_utils);
 
 char		**construct_envp(t_list **lst);
 void		create_env(t_list **head, char **envp);
@@ -218,12 +222,15 @@ int			do_out_redir(t_token **tokens, int i, int flag, t_ints *t_int);
 int			get_right_pipe(t_token **tokens, int i);
 int			get_left_pipe(t_token **tokens, int i);
 int			redir_error(char *msg, char *file, int err);
+int			check_hd_err(t_token **tokens, int j, int flag, t_ints *t_int);
+int			check_rin_err(t_token **tokens, int j, int flag, t_ints *t_int);
+int			check_rout_app(t_token **tokens, int j, int flag, t_ints *t_int);
+int			check_rout(t_token **tokens, int j, int flag, t_ints *t_int);
 
 // cmd tools: cmd_count, wait
 int			count_cmd_nums(t_token	**tokens);
 void		reset_fd(t_ints *t_int);
 int			wait_for_cmds(t_ints *t_int);
-int			check_file_existence(t_token **tokens, int i, t_ints *t_int);
 int			init_utils(t_token **tokens, t_ints *t_int);
 
 // cmdlist utils
