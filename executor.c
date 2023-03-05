@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 10:34:43 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 10:58:05 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,64 +103,6 @@ void	finish_exec(t_token **tokens, t_cmd_op **cmds, t_ints *t_int)
 	}
 }
 
-
-int do_redirection(t_token **tokens, t_ints *t_int, int i)
-{
-	while (tokens + i && tokens[i] && tokens[i]->type != pip)
-	{
-		if (tokens[i]->type == redir_in)
-		{
-			if (check_rin_err(tokens, i, 0, t_int) == -1)
-				return (-5);
-		}
-		else if (tokens[i]->type == here_doc)
-		{
-			if (check_hd_err(tokens, i, 0, t_int) == -1)
-				return (-5);
-		}
-		else if (tokens[i]->type == redir_out)
-		{
-			if (check_rout(tokens, i, 0, t_int) == -1)
-				return (-5);
-		}
-		else if (tokens[i]->type == redir_out_append)
-		{
-			if (check_rout_app(tokens, i, 0, t_int) == -1)
-				return (-5);
-		}
-		i++;
-	}
-	return (0);
-}
-
-int	go_to_next_pip(t_token **tokens, int i)
-{
-	int	j;
-
-	j = i;
-	while (tokens + j && tokens[j])
-	{
-		if (tokens[j]->type != pip)
-			j++;
-		else
-			break ;
-	}
-	if (tokens + j && tokens[j] && tokens[j]->type == pip)
-		j++;
-	return (j);
-}
-
-int find_cmd(t_token **tokens, int i)
-{
-	while (tokens + i && tokens[i] && tokens[i]->type != pip)
-	{
-		if (tokens[i]->type == cmd)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
 	/*
 		inside the while loop while a pipe is not encountered
 		do redirection.
@@ -169,10 +111,12 @@ int find_cmd(t_token **tokens, int i)
 		execute the command and go to the next pipe and
 		continue
 	*/
-int loop_exec_cmds(t_list *env_pack[2], t_token **tokens,
-				   t_cmd_op **cmds, t_ints *t_int)
+// void	look_for_cmd(t_token **tokens, t_ints *t_int, int i)
+
+int	loop_exec_cmds(t_list *env_pack[2], t_token **tokens,
+					t_cmd_op **cmds, t_ints *t_int)
 {
-	int i;
+	int	i;
 
 	if (init_utils(tokens, t_int) == -1)
 		return (1);
@@ -181,20 +125,19 @@ int loop_exec_cmds(t_list *env_pack[2], t_token **tokens,
 	while (tokens + i && tokens[i])
 	{
 		if (do_redirection(tokens, t_int, i) != -5)
-		{			
+		{	
 			if (find_cmd(tokens, i) >= 0)
 			{
-				cmds[t_int->counter]->redir_in = find_stdin(tokens, find_cmd(tokens, i));
-				cmds[t_int->counter]->redir_out = find_stdout(tokens, find_cmd(tokens, i));
+				cmds[t_int->counter]->redir_in = find_stdin(tokens,
+						find_cmd(tokens, i));
+				cmds[t_int->counter]->redir_out = find_stdout(tokens,
+						find_cmd(tokens, i));
 				exec_cmd(cmds, env_pack, t_int, tokens);
 				t_int->counter++;
 			}
 		}
 		else if (find_cmd(tokens, i) >= 0)
-		{
-			t_int->e_status = 1;
-			t_int->counter++;
-		}
+			update_status_counter(t_int);
 		i = go_to_next_pip(tokens, i);
 	}
 	return (finish_exec(tokens, cmds, t_int), 0);

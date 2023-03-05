@@ -5,7 +5,7 @@ shlvl is not being updated. It should be. - increase shell level whenever the ./
 lots of mem-leaks
 lots of norme_errors
 signal problems in child process (easy fix) -> fixed
-ctrl + c segfaults in heredoc, because of (get_next_line protection problem)
+counterl + c segfaults in heredoc, because of (get_next_line protection problem)
 redirection problem not fully fixed
 
 pipeline -> exit | exit | exit | pwd | exit - shouldn't exit (don't know why?)

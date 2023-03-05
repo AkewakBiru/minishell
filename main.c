@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:55:55 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 10:38:21 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 10:59:21 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ int	start(t_list *env_pack[2], t_ints *t_int)
 	{
 		ft_lstclear_dict(env_pack + 0, free);
 		ft_lstclear_dict(env_pack + 1, free);
-		t_int->e_status = 1;
 		return (ft_putendl_fd("exit", 1), -1);
 	}
 	if (!ft_strlen(line))

@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 10:28:50 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/05 10:58:05 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,6 +239,12 @@ int			count_args(t_token **tokens, int *i);
 char		**get_cmd_args(t_token **tokens, int *i);
 int			get_nearest_pip_cmd(t_token **tokens, int i);
 int			check_file(char *file, int j);
+
+// executor utils
+int			do_redirection(t_token **tokens, t_ints *t_int, int i);
+int			go_to_next_pip(t_token **tokens, int i);
+int			find_cmd(t_token **tokens, int i);
+void		update_status_counter(t_ints *t_int);
 
 // pipe utils
 int			*create_pipes(t_ints *t_int);

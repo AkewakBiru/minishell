@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 19:41:40 by yel-touk          #+#    #+#             */
-/*   Updated: 2023/03/04 22:02:32 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/05 10:41:26 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int	if_var(t_expand	*t_e, t_token **token, t_list *lst, char *nl)
 
 	type = (*token)->type;
 	line = (*token)->token;
-	if (line[t_e->i] == '$' && !t_e->sq
-		&& line[t_e->i + 1] && is_variable(line[t_e->i + 1], line[t_e->i + 2], type, lst))
+	if (line[t_e->i] == '$' && !t_e->sq && line[t_e->i + 1]
+		&& is_variable(line[t_e->i + 1], line[t_e->i + 2], type, lst))
 	{
 		if (get_var(t_e, token, &nl[t_e->j], lst))
 			return (1);
