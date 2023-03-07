@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 16:52:07 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/03/07 09:43:53 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	exec_cmd(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int,
 
 	if (!(cmds + t_int->counter) || !(cmds[t_int->counter]))
 		return (0);
-	if ((is_builtin(cmds[t_int->counter]->cmd) && t_int->cmd_count == 1))
+	if ((is_builtin(cmds[t_int->counter]->cmd) && t_int->pip_count < 1))
 	{
 		dup_close(cmds, t_int, tokens);
 		if (!ft_strcmp(cmds[t_int->counter]->cmd, "exit")
