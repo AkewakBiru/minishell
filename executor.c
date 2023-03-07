@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:02 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/07 09:43:53 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/07 10:37:54 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	exec_cmd(t_cmd_op **cmds, t_list *env_pack[2], t_ints *t_int,
 
 void	finish_exec(t_token **tokens, t_cmd_op **cmds, t_ints *t_int)
 {
-	if (t_int->cmd_count > 1)
+	if (t_int->pip_count > 0)
 		close_pipes(t_int);
 	if (t_int->cmd_count > 0 && (!(t_int->cmd_count == 1)
 			|| !(is_builtin(cmds[0]->cmd))))
