@@ -6,13 +6,13 @@
 #    By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/30 09:55:36 by abiru             #+#    #+#              #
-#    Updated: 2023/03/05 11:02:07 by abiru            ###   ########.fr        #
+#    Updated: 2023/03/31 00:08:15 by abiru            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = gcc -g -O0 -fsanitize=address
+CC = cc -I/usr/local/opt/readline/include -g3
 
 CFLAGS = -Wextra -Werror -Wall
 
@@ -21,6 +21,8 @@ SRCS = main.c dict_utils.c export_builtin.c list_utils.c parse.c tokenize.c cd_p
 		dup_utils.c file_utils.c builtin_utils.c envp_constructor.c cmd_tools.c cmdlist_utils.c print_env.c hd_utils.c tokenize_utils.c tokenize_utils2.c \
 		label_utils.c expand_utils.c expand_utils2.c redirections.c exec_utils.c
 
+OBJS = $(SRCS:.c=.o)
+
 LIBFT = ./libft/libft.a
 
 all: $(NAME)
@@ -28,9 +30,9 @@ all: $(NAME)
 %.o: %.c
 	$(CC) -c $(CFLAGS) $?
 
-$(NAME): $(LIBFT) $(SRCS)
+$(NAME): $(LIBFT) $(OBJS)
 # for mac
-		$(CC) $(CFLAGS) -Ilibft $(LIBFT) $(SRCS) -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include -o $@
+		$(CC) $(CFLAGS) -Ilibft $(LIBFT) $(OBJS) -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include -o $@
 # for linux
 # $(CC) $(CFLAGS) $(SRCS) -Ilibft ./libft/libft.a -lreadline  -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include -o $@
 
@@ -42,7 +44,7 @@ $(LIBFT):
 
 clean:
 	@make clean -C libft
-# rm -rf $(OBJS)
+	rm -rf $(OBJS)
 
 fclean: clean
 	@make fclean -C libft

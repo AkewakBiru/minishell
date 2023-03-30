@@ -6,14 +6,14 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 21:33:41 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/02 13:01:10 by abiru            ###   ########.fr       */
+/*   Updated: 2023/03/31 00:08:30 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-	max file (dir) name length in bash is 255 bytes
+	max file (dir) name length in Yash is 255 bytes
 */
 char	*get_pwd(char **cmd_utils)
 {
@@ -23,7 +23,7 @@ char	*get_pwd(char **cmd_utils)
 	cwd = getcwd(cwd, 0);
 	if (!cwd)
 	{
-		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd("Yash: ", 2);
 		ft_putstr_fd(cmd_utils[0], 2);
 		ft_putstr_fd(": ", 2);
 		if (cmd_utils + 1 && cmd_utils[1])
@@ -61,11 +61,20 @@ int	go_home(char **cmd_utils, t_list **lst, t_ints *t_int)
 	if (cmd_utils + 1 && cmd_utils[1] == 0)
 	{
 		if (key_exists("HOME", lst))
-			chdir(get_val(lst, "HOME"));
+		{
+			if (chdir(get_val(lst, "HOME")) == -1)
+			{
+				ft_putstr_fd("Yash: cd: ", 2);
+				ft_putstr_fd(get_val(lst, "HOME"), 2);
+				ft_putendl_fd(": No such file or directory", 2);
+				t_int->e_status = 1;
+				return (1);
+			}
+		}
 		else
 		{
 			t_int->e_status = 1;
-			ft_putendl_fd("bash: cd: HOME not set", 2);
+			ft_putendl_fd("Yash: cd: HOME not set", 2);
 			return (-1);
 		}
 		return (0);
