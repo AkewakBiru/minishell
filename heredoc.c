@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 17:10:23 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/04 16:21:23 by abiru            ###   ########.fr       */
+/*   Updated: 2023/04/25 12:19:35 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,7 @@ void	do_heredoc(t_token **tokens, t_list *env_pack[2], t_ints *t_int)
 		}
 		i++;
 	}
-	free(tok);
+	return ((void)j, free(tok));
+	// free(tok);
+	// (void)j;
 }

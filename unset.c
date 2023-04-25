@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/11 18:27:57 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 09:44:41 by abiru            ###   ########.fr       */
+/*   Updated: 2023/04/25 12:16:47 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ int	unset_builtin(char **cmd_utils, t_list **lst, t_list **export)
 			continue ;
 		}
 		if (key_exists(cmd_utils[i], lst))
-			ft_list_remove_if(lst, cmd_utils[i], &ft_strcmp);
+			ft_list_remove_if(lst, cmd_utils[i]);
 		if (key_exists(cmd_utils[i], export))
-			ft_list_remove_if(export, cmd_utils[i], &ft_strcmp);
+			ft_list_remove_if(export, cmd_utils[i]);
 		flag = 0;
 		i++;
 	}

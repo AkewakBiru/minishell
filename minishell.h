@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:58:30 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/05 16:51:42 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/04/25 12:16:40 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ int			chg_dir(char **cmd_utils, t_list **lst, t_list **export,
 
 // linked list utils
 void		sort_list(t_list **head);
-void		ft_list_remove_if(t_list **head, char *str, int (*cmp)());
+void		ft_list_remove_if(t_list **head, char *str);
 
 // echo
 int			echo(char **arg);

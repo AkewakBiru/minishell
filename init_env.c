@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-touk <yel-touk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 09:08:17 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 20:23:34 by yel-touk         ###   ########.fr       */
+/*   Updated: 2023/04/25 12:22:16 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	check_shl_val(t_list *envp[2], t_dict *dict, unsigned long long n)
 		if (n >= 9999 && n <= 2147483646)
 		{
 			n++;
-			ft_putstr_fd("bash: warning: shell level (", 2);
+			ft_putstr_fd("Yash: warning: shell level (", 2);
 			ft_putnbr_fd(n, 2);
 			ft_putendl_fd(") too high, resetting to 1", 2);
 			n = 0;

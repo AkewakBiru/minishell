@@ -6,7 +6,7 @@
 /*   By: abiru <abiru@student.42abudhabi.ae>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 21:35:43 by abiru             #+#    #+#             */
-/*   Updated: 2023/03/03 20:13:27 by abiru            ###   ########.fr       */
+/*   Updated: 2023/04/25 12:21:32 by abiru            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	custom_err_msg(char *cmd, char *arg)
 {
-	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd("Yash: ", 2);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": `", 2);
 	ft_putstr_fd(arg, 2);
@@ -23,7 +23,7 @@ void	custom_err_msg(char *cmd, char *arg)
 
 int	error_msg(char *msg, char **args, int num, int err)
 {
-	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd("Yash: ", 2);
 	if ((num == 1 || num == 2) && args + 0 && args[0])
 		ft_putstr_fd(args[0], 2);
 	if (args + 1 && args[1] && num != 2)
